@@ -36,9 +36,14 @@ class HamburgerMenu() : AppCompatActivity() {
         drawerLayout.addDrawerListener(object : DrawerListener {
             override fun onDrawerSlide(view: View, v: Float) {
                 drawerLayout.visibility = View.VISIBLE
+                /*
+                Eftersom drawer döljs och visas fungerar inte slide funktionen. Detta borde lösas här, helst  genom att anropa orginalkoden för slide men innan det göra den vissible. Detta fick jag ej dock att fungera!
+
+                super.onDrawerSlide(view, v)
+                */
             }
             override fun onDrawerOpened(view: View) {
-                drawerLayout.visibility = View.VISIBLE
+                //drawerLayout.visibility = View.VISIBLE
             }
             override fun onDrawerClosed(view: View) {
                 drawerLayout.visibility = View.INVISIBLE
@@ -46,8 +51,6 @@ class HamburgerMenu() : AppCompatActivity() {
 
             override fun onDrawerStateChanged(i: Int) {}
         })
-
-
 
         toggle.syncState()
         drawerLayout.visibility = View.INVISIBLE
@@ -80,12 +83,7 @@ class HamburgerMenu() : AppCompatActivity() {
             }
             true
         }
-
-
-
     }
-
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (toggle.onOptionsItemSelected(item)) {
