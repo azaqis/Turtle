@@ -29,4 +29,11 @@
         <item>View: Speedometer</item>
         <item>View: Ultrasonic Sensor</item>
     </string-array>
+
+    <string-array name="controllerSpinnerController">
+        <item>Controller: Joystick</item>
+        <item>Controller: Arrow-buttons</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -19,14 +19,23 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
-        val spinner = findViewById<Spinner>(R.id.spinnerView)
-        val adapter = ArrayAdapter.createFromResource(
+        val spinnerSpinnerView = findViewById<Spinner>(R.id.spinnerView)
+        val adapterSpinnerView = ArrayAdapter.createFromResource(
             this,
             R.array.controllerSpinnerView, R.layout.controller_spinner_layout
         )
-        adapter.setDropDownViewResource(R.layout.controller_spinner_dropdown_layout)
-        spinner.adapter = adapter
-        spinner.onItemSelectedListener = this
+        adapterSpinnerView.setDropDownViewResource(R.layout.controller_spinner_dropdown_layout)
+        spinnerSpinnerView.adapter = adapterSpinnerView
+        spinnerSpinnerView.onItemSelectedListener = this
+
+        val spinnerSpinnerController = findViewById<Spinner>(R.id.spinnerController)
+        val adapterSpinnerController = ArrayAdapter.createFromResource(
+            this,
+            R.array.controllerSpinnerController, R.layout.controller_spinner_layout
+        )
+        adapterSpinnerController.setDropDownViewResource(R.layout.controller_spinner_dropdown_layout)
+        spinnerSpinnerController.adapter = adapterSpinnerController
+        spinnerSpinnerController.onItemSelectedListener = this
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

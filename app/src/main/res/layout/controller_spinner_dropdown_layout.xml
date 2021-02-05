@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:text="Hej"
     android:textSize="20sp"
-    android:textAlignment="center"
     android:padding="10dp"
     android:background="@drawable/gradient_background_spinner"
     android:textColor="@android:color/white">

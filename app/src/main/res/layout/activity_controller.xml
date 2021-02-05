@@ -6,22 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".ControllerActivity">
 
-    <Spinner
-        android:id="@+id/spinnerView"
-        android:background="@drawable/gradient_background_spinner"
+    <LinearLayout
+        android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/top_barr"/>
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            layout="@layout/top_bar">
+        </include>
+
+        <Spinner
+            android:id="@+id/spinnerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gradient_background_spinner" />
+
+        <Spinner
+            android:id="@+id/spinnerController"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gradient_background_spinner" />
+
+
+    </LinearLayout>
 
     <include
-        android:id="@+id/top_barr"
-        layout="@layout/top_bar">
-    </include>
-
-    <include
-        android:id="@+id/draaaawer"
         layout="@layout/drawer_layout">
     </include>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
