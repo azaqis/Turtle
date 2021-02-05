@@ -22,4 +22,11 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="title_activity_controller">ControllerActivity</string>
+
+    <string-array name="controllerSpinnerView">
+        <item>View: Debug</item>
+        <item>View: Speedometer</item>
+        <item>View: Ultrasonic Sensor</item>
+    </string-array>
 </resources>
