@@ -10,47 +10,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.transition.Slide
 import kotlinx.android.synthetic.main.activity_bluetooth.*
+import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
 
 
 class BluetoothActivity : AppCompatActivity() {
-
-    lateinit var toggle : ActionBarDrawerToggle
-
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+        Log.d("BLUETOOTH", "1")
         setContentView(R.layout.activity_bluetooth)
+        Log.d("BLUETOOTH", "2")
+        HamburgerMenu(navView)
+        Log.d("BLUETOOTH", "3")
 
-
-        toggle = ActionBarDrawerToggle(this, findViewById(R.id.drawerLayout), R.string.open, R.string.close)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setIcon(R.drawable.hamburger_menu_icon)
-
-        hamburgerMenuIcon.setOnClickListener{
-            Log.d("najs", "asdasd")
-            drawerLayout.openDrawer(GravityCompat.START)
-        }
-
-        navView.setNavigationItemSelectedListener{
-            when(it.itemId){
-                R.id.item1 -> Toast.makeText(applicationContext, "Clicked item 1", Toast.LENGTH_SHORT).show()
-                R.id.item2 -> Toast.makeText(applicationContext, "Clicked item 2", Toast.LENGTH_SHORT).show()
-                R.id.item3 -> Toast.makeText(applicationContext, "Clicked item 3", Toast.LENGTH_SHORT).show()
-            }
-            true
-        }
-        Log.d("najs", "asdasd")
-        drawerLayout.openDrawer(GravityCompat.START)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(toggle.onOptionsItemSelected(item)){
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 
 }
