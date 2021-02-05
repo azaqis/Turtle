@@ -2,10 +2,7 @@ package se.anad19ps.student.turtle
 
 import android.os.Bundle
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
@@ -36,8 +33,8 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         adapterSpinnerController.setDropDownViewResource(R.layout.controller_spinner_dropdown_layout)
         spinnerSpinnerController.adapter = adapterSpinnerController
         spinnerSpinnerController.onItemSelectedListener = this
-    }
 
+    }
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         val text = parent!!.getItemAtPosition(position).toString()
         Toast.makeText(parent.context, text, Toast.LENGTH_SHORT).show()
