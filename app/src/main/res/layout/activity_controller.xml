@@ -13,5 +13,15 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/top_barr"/>
+
+    <include
+        android:id="@+id/top_barr"
+        layout="@layout/top_bar">
+    </include>
+
+    <include
+        android:id="@+id/draaaawer"
+        layout="@layout/drawer_layout">
+    </include>
 </androidx.constraintlayout.widget.ConstraintLayout>

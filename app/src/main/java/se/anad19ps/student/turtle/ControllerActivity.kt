@@ -7,6 +7,8 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.drawer_layout.*
+import kotlinx.android.synthetic.main.top_bar.*
 
 
 class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
@@ -14,6 +16,8 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_controller)
+
+        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
         val spinner = findViewById<Spinner>(R.id.spinnerView)
         val adapter = ArrayAdapter.createFromResource(
