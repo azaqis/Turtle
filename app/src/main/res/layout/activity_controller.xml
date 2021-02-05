@@ -6,22 +6,62 @@
     android:layout_height="match_parent"
     tools:context=".ControllerActivity">
 
-    <Spinner
-        android:id="@+id/spinnerView"
-        android:background="@drawable/gradient_background_spinner"
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/top_barr"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="2"
+        app:layout_constraintTop_toBottomOf="@+id/topBar">
+
+        <include
+            android:id="@+id/topBar"
+            layout="@layout/top_bar">
+        </include>
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Spinner
+                android:id="@+id/spinnerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gradient_background_spinner" />
+
+            <fragment
+                android:id="@+id/fragmentTop"
+                android:name="se.anad19ps.student.turtle.ControllerTopFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                tools:layout="@layout/fragment_controller_top" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Spinner
+                android:id="@+id/spinnerController"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gradient_background_spinner" />
+        </LinearLayout>
+    </LinearLayout>
 
     <include
-        android:id="@+id/top_barr"
-        layout="@layout/top_bar">
-    </include>
-
-    <include
-        android:id="@+id/draaaawer"
         layout="@layout/drawer_layout">
     </include>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
