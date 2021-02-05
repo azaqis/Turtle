@@ -1,16 +1,18 @@
 package se.anad19ps.student.turtle
 
-import android.content.Intent
 import android.app.Activity
+import android.content.Context
 import android.view.MenuItem
+import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import com.google.android.material.navigation.NavigationView
-import android.content.Context
-import android.widget.ImageView
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
+import com.google.android.material.navigation.NavigationView
+
 
 class HamburgerMenu() : AppCompatActivity() {
     lateinit var toggle: ActionBarDrawerToggle
@@ -30,13 +32,33 @@ class HamburgerMenu() : AppCompatActivity() {
         )
 
         drawerLayout.addDrawerListener(toggle)
+
+        drawerLayout.addDrawerListener(object : DrawerListener {
+            override fun onDrawerSlide(view: View, v: Float) {
+                drawerLayout.visibility = View.VISIBLE
+            }
+            override fun onDrawerOpened(view: View) {
+                drawerLayout.visibility = View.VISIBLE
+            }
+            override fun onDrawerClosed(view: View) {
+                drawerLayout.visibility = View.INVISIBLE
+            }
+
+            override fun onDrawerStateChanged(i: Int) {}
+        })
+
+
+
         toggle.syncState()
+        drawerLayout.visibility = View.INVISIBLE
+
         hamburgerMenuIcon.setOnClickListener {
+            drawerLayout.visibility = View.VISIBLE
             drawerLayout.openDrawer(GravityCompat.START)
         }
         navView.setNavigationItemSelectedListener {
             if (it.itemId == R.id.item1){
-                startActivity(Intent(con, BluetoothActivity::class.java))
+                //startActivity(Intent(con, BluetoothActivity::class.java))
             }
 
             when (it.itemId) {
@@ -58,7 +80,12 @@ class HamburgerMenu() : AppCompatActivity() {
             }
             true
         }
+
+
+
     }
+
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (toggle.onOptionsItemSelected(item)) {
