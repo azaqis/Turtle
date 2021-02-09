@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/item1"
-        android:title="Item 1"/>
+        android:id="@+id/drawerItemBluetoothConnect"
+        android:title="Bluetooth Connect"/>
     <item
-        android:id="@+id/item2"
-        android:title="Item 2"/>
+        android:id="@+id/drawerItemProgramming"
+        android:title="Programming"/>
     <item
-        android:id="@+id/item3"
-        android:title="Item3"/>
+        android:id="@+id/drawerItemRemoteController"
+        android:title="Remote Controller"/>
+    <item
+        android:id="@+id/drawerItemManageCommands"
+        android:title="Manage Commands"/>
 </menu>

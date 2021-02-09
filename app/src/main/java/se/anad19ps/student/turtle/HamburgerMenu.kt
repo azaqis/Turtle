@@ -2,19 +2,21 @@ package se.anad19ps.student.turtle
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
 import com.google.android.material.navigation.NavigationView
 
 
-class HamburgerMenu() : AppCompatActivity() {
+class HamburgerMenu(){
     lateinit var toggle: ActionBarDrawerToggle
 
     fun setUpHamburgerMenu(
@@ -59,32 +61,41 @@ class HamburgerMenu() : AppCompatActivity() {
             drawerLayout.visibility = View.VISIBLE
             drawerLayout.openDrawer(GravityCompat.START)
         }
+
         navView.setNavigationItemSelectedListener {
-            if (it.itemId == R.id.item1){
-                //startActivity(Intent(con, BluetoothActivity::class.java))
-            }
+
+
 
             when (it.itemId) {
-                R.id.item1 -> Toast.makeText(
-                    con,
-                    "Clicked item 1",
-                    Toast.LENGTH_SHORT
-                ).show()
-                R.id.item2 -> Toast.makeText(
-                    con,
-                    "Clicked item 2",
-                    Toast.LENGTH_SHORT
-                ).show()
-                R.id.item3 -> Toast.makeText(
-                    con,
-                    "Clicked item 3",
-                    Toast.LENGTH_SHORT
-                ).show()
+                R.id.drawerItemBluetoothConnect -> {
+                    val intent = Intent(con, SelectBluetoothDeviceActivity::class.java)
+                    ContextCompat.startActivity(con, intent, null)
+                    con.finish()
+                }
+                R.id.drawerItemProgramming -> {
+                    Toast.makeText(con, "Not implemented yet", Toast.LENGTH_SHORT).show()
+                    //val intent = Intent(con, ControllerActivity::class.java)
+                    //ContextCompat.startActivity(con, intent, null)
+                    //con.finish()
+                }
+                R.id.drawerItemRemoteController -> {
+                    val intent = Intent(con, ControllerActivity::class.java)
+                    ContextCompat.startActivity(con, intent, null)
+                    con.finish()
+                }
+                R.id.drawerItemManageCommands -> {
+                    Toast.makeText(con, "Not implemented yet", Toast.LENGTH_SHORT).show()
+                    //val intent = Intent(con, ControllerActivity::class.java)
+                    //ContextCompat.startActivity(con, intent, null)
+                    //con.finish()
+                }
+
             }
             true
         }
     }
 
+    /*
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (toggle.onOptionsItemSelected(item)) {
             return true
@@ -92,4 +103,5 @@ class HamburgerMenu() : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
     }
+    */
 }
