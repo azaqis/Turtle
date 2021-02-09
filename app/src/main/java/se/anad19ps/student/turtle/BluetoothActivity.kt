@@ -1,4 +1,4 @@
-package se.anad19ps.student.turtle
+/*package se.anad19ps.student.turtle
 
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
@@ -96,4 +96,4 @@ class BluetoothActivity : AppCompatActivity() {
             progress.dismiss()
         }
     }
-}
+}*/

@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
 
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
-        val intent = Intent(this, ControllerActivity::class.java)
+        val intent = Intent(this, ManageCustomCommandsActivity::class.java)
         startActivity(intent)
 		
     }

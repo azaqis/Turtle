@@ -1,4 +1,4 @@
-package se.anad19ps.student.turtle
+/*package se.anad19ps.student.turtle
 
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
@@ -87,4 +87,4 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             }
         }
     }
-}
+}*/
