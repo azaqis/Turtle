@@ -1,4 +1,4 @@
-package se.anad19ps.student.turtle
+/*package se.anad19ps.student.turtle
 
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
@@ -83,6 +83,4 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
         selectDeviceList.adapter = adapter
     }
-
-
 }

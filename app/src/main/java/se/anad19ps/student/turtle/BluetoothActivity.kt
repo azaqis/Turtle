@@ -1,4 +1,4 @@
-package se.anad19ps.student.turtle
+/*package se.anad19ps.student.turtle
 
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
@@ -16,3 +16,4 @@ import java.util.*
 class BluetoothActivity : AppCompatActivity() {
 
 }
+
