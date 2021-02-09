@@ -21,7 +21,7 @@
             android:label="@string/title_activity_main2"
             android:theme="@style/Theme.Turtle.NoActionBar" />
         <activity
-            android:name=".BluetoothActivity"
+            android:name=".SelectBluetoothDeviceActivity"
             android:label="@string/title_activity_bluetooth"
             android:theme="@style/Theme.Turtle.NoActionBar" />
         <activity android:name=".MainActivity">

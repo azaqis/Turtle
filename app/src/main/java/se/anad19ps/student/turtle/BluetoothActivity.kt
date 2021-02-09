@@ -1,90 +1,99 @@
 package se.anad19ps.student.turtle
 
-import android.app.Activity
+import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.content.Intent
+import android.bluetooth.BluetoothSocket
+import android.content.Context
+import android.os.AsyncTask
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
+import android.os.PersistableBundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_bluetooth.*
-import kotlinx.android.synthetic.main.drawer_layout.*
-import kotlinx.android.synthetic.main.top_bar.*
-
-
+import java.io.IOException
+import java.util.*
 
 class BluetoothActivity : AppCompatActivity() {
 
-    lateinit var bluetoothAdapter : BluetoothAdapter? = null
-    lateinit var pairedDevices : Set<BluetoothDevice>
-    val REQUEST_ENABLE_BLUETOOTH = 1
-
     companion object{
-        val EXTRA_ADRESS : String = "Device_address"
+        var bluetoothUUID : UUID = UUID.fromString("0000000000000000000000000000000000000000")
+        var bluetoothSocket : BluetoothSocket? = null
+        lateinit var progress : ProgressDialog
+        lateinit var bluetoothAdapter : BluetoothAdapter
+        var bluetoothIsConnected : Boolean = false
+        lateinit var bluetoothAdress : String
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_bluetooth)
+        bluetoothAdress = intent.getStringExtra(SelectBluetoothDeviceActivity.EXTRA_ADRESS).toString()
 
-        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
-
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        if(bluetoothAdapter == null){
-            Toast.makeText(this,"Error, Bluetooth is not enable. Device may not have support for Bluetooth", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if(!bluetoothAdapter!!.isEnabled){
-            val enableBluetoothIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBluetoothIntent, REQUEST_ENABLE_BLUETOOTH)
-        }
-
-        refreshBlutoothDevicesButton.setOnClickListener{paieredDeviceList()}
-
-
+        ConnectToDevice(this).execute()
     }
 
-    private fun paieredDeviceList(){
-        pairedDevices = bluetoothAdapter!!.bondedDevices
-        val list : ArrayList<BluetoothDevice> = ArrayList()
-
-        if(!pairedDevices.isEmpty()){
-            for(device : BluetoothDevice in pairedDevices){
-                list.add(device)
+    private fun sendCommand(input: String){
+        if(bluetoothSocket != null){
+            try {
+                bluetoothSocket!!.outputStream.write(input.toByteArray())
+            }
+            catch (e : IOException){
+                e.printStackTrace()
             }
         }
-        else{
-            Toast.makeText(this,"No devices found", Toast.LENGTH_SHORT).show()
-        }
+    }
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
-        selectDeviceList.adapter = adapter
-        selectDeviceList.onItemClickListener = AdapterView.OnItemClickListener {_, _, position, _ ->
-            val device : BluetoothDevice = list[position]
-            val address : String = device.address
-
-            val intent = Intent(this, ControlActivity::class.java)
-            intent.putExtra(EXTRA_ADRESS, address)
-            startActivity(intent)
+    private fun disconnect(){
+        if(bluetoothSocket != null){
+            try {
+                bluetoothSocket!!.close()
+                bluetoothSocket = null
+                bluetoothIsConnected = false
+            }
+            catch(e : IOException){
+                e.printStackTrace()
+            }
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
-        super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == REQUEST_ENABLE_BLUETOOTH){
-            if(resultCode == Activity.RESULT_OK){
-                if(bluetoothAdapter!!.isEnabled){
-                    Toast.makeText(this,"Bluetooth enabled", Toast.LENGTH_SHORT).show()
-                } else{
-                    Toast.makeText(this,"Bluetooth disabled", Toast.LENGTH_SHORT).show()
+    private class ConnectToDevice(c: Context) : AsyncTask<Void, Void, String>(){
+        private var connectSuccess : Boolean = true
+        private val context : Context
+
+        init {
+            this.context = c
+        }
+
+        override fun onPreExecute() {
+            super.onPreExecute()
+            progress = ProgressDialog.show(context, "Connecting...", "please wait")
+
+        }
+
+        override fun doInBackground(vararg params: Void?){
+            try {
+                if (bluetoothSocket == null || !bluetoothIsConnected){
+                    bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+                    val device: BluetoothDevice = bluetoothAdress.getRemoteDevice(bluetoothAdress)
+                    bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(bluetoothUUID)
+                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery()
+                    bluetoothSocket!!.connect()
                 }
             }
-            else if(resultCode == Activity.RESULT_CANCELED){
-                Toast.makeText(this,"Bluetooth enabling canceled", Toast.LENGTH_SHORT).show()
+            catch (e : IOException){
+                connectSuccess = false
+                e.printStackTrace()
             }
+        }
+
+        override fun onPostExecute(result: String?) {
+            super.onPostExecute(result)
+            if(!connectSuccess){
+                Log.i("BT", "BT COULD NOT CONNECT")
+            }
+            else{
+                bluetoothIsConnected = true
+            }
+            progress.dismiss()
         }
     }
 }
