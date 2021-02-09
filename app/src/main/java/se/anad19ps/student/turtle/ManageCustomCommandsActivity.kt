@@ -1,5 +1,6 @@
 package se.anad19ps.student.turtle
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -24,10 +25,15 @@ class ManageCustomCommandsActivity : AppCompatActivity() {
 
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
-        val buttonCreate = findViewById<Button>(R.id.button_create)
+        val buttonCreate = findViewById<Button>(R.id.buttonCreate)
         buttonCreate.setBackgroundColor(getResources().getColor(R.color.PrimaryColor))
 
-        val buttonDelete = findViewById<Button>(R.id.button_delete)
+        buttonCreate.setOnClickListener{
+            val intent = Intent(this, CreateCustomCommandActivity::class.java)
+            startActivity(intent)
+        }
+
+        val buttonDelete = findViewById<Button>(R.id.buttonDelete)
         buttonDelete.setBackgroundColor(getResources().getColor(R.color.PrimaryComplement))
 
         postToList()
