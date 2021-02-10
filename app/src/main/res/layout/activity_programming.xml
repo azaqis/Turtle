@@ -5,18 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ProgrammingActivity">
+    <include
+        layout="@layout/top_bar">
+    </include>
+
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/linearLayoutTest"
+        android:id="@+id/programming_spinner_linear_layout"
+        app:layout_constraintTop_toBottomOf="@+id/top_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/programming_recycle_view">
+        android:weightSum="3">
 
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/spinner"/>
+            android:id="@+id/programming_spinner_driving" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/programming_spinner_modules"/>
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/programming_spinner_custom"/>
 
     </LinearLayout>
 
@@ -25,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/programming_recycle_view"
-        app:layout_constraintTop_toTopOf="@+id/linearLayoutTest"/>
+        app:layout_constraintTop_toBottomOf="@+id/programming_spinner_linear_layout"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -91,5 +108,8 @@
             android:layout_margin="10dp"/>
     </LinearLayout>
 
+    <include
+        layout="@layout/drawer_layout">
+    </include>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

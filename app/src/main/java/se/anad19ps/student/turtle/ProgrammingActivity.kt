@@ -37,6 +37,8 @@ class ProgrammingActivity : AppCompatActivity(), RecyclerAdapter.ItemClickListen
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_programming)
 
+        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
+
         populateListGarbage(100)
 
         itemListSpinner.add(SpinnerMoveBlock(R.drawable.ic_arrow_up, "Move forward"))
