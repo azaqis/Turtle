@@ -1,11 +1,13 @@
 package se.anad19ps.student.turtle
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 
 class ManageCustomCommandsRecyclerAdapter (private var titles: List<String>, private var details: List<String>, private var images:List<Int>) :
@@ -20,7 +22,9 @@ RecyclerView.Adapter<ManageCustomCommandsRecyclerAdapter.ViewHolder>(){
         init {
             itemView.setOnClickListener { v : View ->
                 val position: Int = adapterPosition
-                Toast.makeText(itemView.context, "You clicked on item # ${position + 1}", Toast.LENGTH_SHORT).show()
+                val intent = Intent(itemView.context, EditCustomCommandActivity::class.java)
+                itemView.context.startActivity(intent)
+
             }
         }
 
