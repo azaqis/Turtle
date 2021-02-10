@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="se.anad19ps.student.turtle">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,12 +13,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Turtle">
         <activity android:name=".ProgrammingActivity"></activity>
+        <activity android:name=".CreateCustomCommandActivity"></activity>
+        <activity android:name=".ManageCustomCommandsActivity" />
+        <activity
+            android:name=".ControllerActivity"
+            android:label="@string/title_activity_controller"
+            android:theme="@style/Theme.Turtle.NoActionBar" />
         <activity
             android:name=".MainActivity2"
             android:label="@string/title_activity_main2"
             android:theme="@style/Theme.Turtle.NoActionBar" />
         <activity
-            android:name=".BluetoothActivity"
+            android:name=".SelectBluetoothDeviceActivity"
             android:label="@string/title_activity_bluetooth"
             android:theme="@style/Theme.Turtle.NoActionBar" />
         <activity android:name=".MainActivity">

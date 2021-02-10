@@ -22,4 +22,26 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="title_activity_controller">ControllerActivity</string>
+
+    <string-array name="controllerSpinnerView">
+        <item>View: Debug</item>
+        <item>View: Speedometer</item>
+        <item>View: Ultrasonic Sensor</item>
+    </string-array>
+
+    <string-array name="list">
+        <item>Item 1</item>
+        <item>Item 2</item>
+        <item>Item 3</item>
+        <item>Item 4</item>
+        <item>Item 5</item>
+    </string-array>
+
+    <string-array name="controllerSpinnerController">
+        <item>Controller: Joystick</item>
+        <item>Controller: Arrow-buttons</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

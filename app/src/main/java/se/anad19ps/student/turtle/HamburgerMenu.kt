@@ -1,69 +1,107 @@
 package se.anad19ps.student.turtle
 
-import android.util.Log
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.view.MenuItem
+import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
 import com.google.android.material.navigation.NavigationView
-import kotlinx.android.synthetic.main.drawer_layout.*
-import kotlinx.android.synthetic.main.top_bar.*
-import android.content.Context
-import java.security.AccessController.getContext
 
 
-class HamburgerMenu(navView: NavigationView) : AppCompatActivity(){
+class HamburgerMenu(){
     lateinit var toggle: ActionBarDrawerToggle
-    init {
-        Log.d("HAMBURGER", "1")
+
+    fun setUpHamburgerMenu(
+        con: Context,
+        navView: NavigationView,
+        drawerLayout: DrawerLayout,
+        hamburgerMenuIcon: ImageView
+    ) {
+
         toggle = ActionBarDrawerToggle(
-            this,
-            findViewById(R.id.drawerLayout),
+            con as Activity?,
+            drawerLayout,
             R.string.open,
             R.string.close
         )
-        Log.d("HAMBURGER", "2")
+
         drawerLayout.addDrawerListener(toggle)
+
+        drawerLayout.addDrawerListener(object : DrawerListener {
+            override fun onDrawerSlide(view: View, v: Float) {
+                drawerLayout.visibility = View.VISIBLE
+                /*
+                Eftersom drawer döljs och visas fungerar inte slide funktionen. Detta borde lösas här, helst  genom att anropa orginalkoden för slide men innan det göra den vissible. Detta fick jag ej dock att fungera!
+
+                super.onDrawerSlide(view, v)
+                */
+            }
+            override fun onDrawerOpened(view: View) {
+                //drawerLayout.visibility = View.VISIBLE
+            }
+            override fun onDrawerClosed(view: View) {
+                drawerLayout.visibility = View.INVISIBLE
+            }
+
+            override fun onDrawerStateChanged(i: Int) {}
+        })
+
         toggle.syncState()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setIcon(R.drawable.hamburger_menu_icon)
-        Log.d("HAMBURGER", "3")
+        drawerLayout.visibility = View.INVISIBLE
+
         hamburgerMenuIcon.setOnClickListener {
-            Log.d("najs", "asdasd")
+            drawerLayout.visibility = View.VISIBLE
             drawerLayout.openDrawer(GravityCompat.START)
         }
-        Log.d("HAMBURGER", "4")
 
         navView.setNavigationItemSelectedListener {
+
+
+
             when (it.itemId) {
-                R.id.item1 -> Toast.makeText(
-                    applicationContext,
-                    "Clicked item 1",
-                    Toast.LENGTH_SHORT
-                ).show()
-                R.id.item2 -> Toast.makeText(
-                    applicationContext,
-                    "Clicked item 2",
-                    Toast.LENGTH_SHORT
-                ).show()
-                R.id.item3 -> Toast.makeText(
-                    applicationContext,
-                    "Clicked item 3",
-                    Toast.LENGTH_SHORT
-                ).show()
+                R.id.drawerItemBluetoothConnect -> {
+                    val intent = Intent(con, SelectBluetoothDeviceActivity::class.java)
+                    ContextCompat.startActivity(con, intent, null)
+                    con.finish()
+                }
+                R.id.drawerItemProgramming -> {
+                    Toast.makeText(con, "Not implemented yet", Toast.LENGTH_SHORT).show()
+                    //val intent = Intent(con, ControllerActivity::class.java)
+                    //ContextCompat.startActivity(con, intent, null)
+                    //con.finish()
+                }
+                R.id.drawerItemRemoteController -> {
+                    val intent = Intent(con, ControllerActivity::class.java)
+                    ContextCompat.startActivity(con, intent, null)
+                    con.finish()
+                }
+                R.id.drawerItemManageCommands -> {
+                    Toast.makeText(con, "Not implemented yet", Toast.LENGTH_SHORT).show()
+                    //val intent = Intent(con, ControllerActivity::class.java)
+                    //ContextCompat.startActivity(con, intent, null)
+                    //con.finish()
+                }
+
             }
             true
         }
-        Log.d("najs", "asdasd")
-        drawerLayout.openDrawer(GravityCompat.START)
     }
 
+    /*
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(toggle.onOptionsItemSelected(item)){
+        if (toggle.onOptionsItemSelected(item)) {
             return true
         }
 
         return super.onOptionsItemSelected(item)
     }
+    */
 }
