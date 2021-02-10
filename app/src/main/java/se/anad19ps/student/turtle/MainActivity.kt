@@ -11,8 +11,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        startActivity(Intent(this, ProgrammingActivity::class.java))
-
+        val intent = startActivity(Intent(this, ManageCustomCommandsActivity::class.java))
         /*toggle = ActionBarDrawerToggle(
             this,
             findViewById(R.id.drawerLayout),
@@ -60,10 +59,8 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
 
-            return super.onOptionsItemSelected(item)*/
-        }
-
-        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
+            return super.onOptionsItemSelected(item)
+        }*/
 
 		
     }

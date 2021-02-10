@@ -73,10 +73,9 @@ class HamburgerMenu(){
                     con.finish()
                 }
                 R.id.drawerItemProgramming -> {
-                    Toast.makeText(con, "Not implemented yet", Toast.LENGTH_SHORT).show()
-                    //val intent = Intent(con, ControllerActivity::class.java)
-                    //ContextCompat.startActivity(con, intent, null)
-                    //con.finish()
+                    val intent = Intent(con, ProgrammingActivity::class.java)
+                    ContextCompat.startActivity(con, intent, null)
+                    con.finish()
                 }
                 R.id.drawerItemRemoteController -> {
                     val intent = Intent(con, ControllerActivity::class.java)
@@ -84,10 +83,9 @@ class HamburgerMenu(){
                     con.finish()
                 }
                 R.id.drawerItemManageCommands -> {
-                    Toast.makeText(con, "Not implemented yet", Toast.LENGTH_SHORT).show()
-                    //val intent = Intent(con, ControllerActivity::class.java)
-                    //ContextCompat.startActivity(con, intent, null)
-                    //con.finish()
+                    val intent = Intent(con, ManageCustomCommandsActivity::class.java)
+                    ContextCompat.startActivity(con, intent, null)
+                    con.finish()
                 }
 
             }
