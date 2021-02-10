@@ -3,9 +3,12 @@ package se.anad19ps.student.turtle
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.content.BroadcastReceiver
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
-import android.widget.AdapterView
+import android.os.Parcelable
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -49,12 +52,14 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         refreshBluetoothDevicesButton.setOnClickListener(){
             displayPairedDevices()
         }
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode){
             REQUEST_CODE_ENABLE_BT ->
-                if (requestCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK){
                     Toast.makeText(this, "Bluetooth is enabled", Toast.LENGTH_SHORT).show()
                 }
                 else{
@@ -66,13 +71,13 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
     private fun displayPairedDevices(){
         lateinit var pairedDevices : Set<BluetoothDevice>
-
         pairedDevices = btAdapter!!.bondedDevices
         val list: ArrayList<String> = ArrayList()
 
         if(pairedDevices.isNotEmpty()){
             for(device : BluetoothDevice in pairedDevices){
                 list.add(device.getName())
+
                 //Toast.makeText(this, device.toString(), Toast.LENGTH_SHORT).show()
             }
         }
@@ -83,4 +88,11 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
         selectDeviceList.adapter = adapter
     }
+
+
+
+
+
+
+
 }
