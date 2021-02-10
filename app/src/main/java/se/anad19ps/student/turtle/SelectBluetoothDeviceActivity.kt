@@ -3,12 +3,13 @@ package se.anad19ps.student.turtle
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothSocket
 import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.os.Parcelable
-import android.view.View
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +24,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
     //BT Adapter
     lateinit var  btAdapter: BluetoothAdapter
+    lateinit var  btSocket : BluetoothSocket
 
     //Array adapter for paired devices
     private var btArrayAdapter: ArrayAdapter<String>? = null
@@ -35,6 +37,8 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
         //Init BT Adapter
         btAdapter = BluetoothAdapter.getDefaultAdapter()
+
+        btAdapter.startDiscovery()
 
         //Check if BT is avaliable on device
         if(btAdapter == null){
@@ -50,10 +54,12 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         }
 
         refreshBluetoothDevicesButton.setOnClickListener(){
+            discoverBluetoothDevices()
             displayPairedDevices()
         }
 
-
+        val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+        registerReceiver(receiver, filter)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -87,12 +93,41 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
         selectDeviceList.adapter = adapter
+
     }
 
 
+    private fun discoverBluetoothDevices(){
+        if(btAdapter.isDiscovering){
+            btAdapter.cancelDiscovery()
+        }
+        btAdapter.startDiscovery()
+        val discoverDevicesIntent = IntentFilter(BluetoothDevice.ACTION_FOUND)
+        registerReceiver(receiver, discoverDevicesIntent)
+    }
+
+    /*
+    private val btBroadcastReciver = object : BroadcastReciver() {
+        override fun onRecive(context: Context?, intent: Intent?) {
+
+        }
+    }
+     */
 
 
-
-
-
+    private val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action: String? = intent.action
+            when(action) {
+                BluetoothDevice.ACTION_FOUND -> {
+                    // Discovery has found a device. Get the BluetoothDevice
+                    // object and its info from the Intent.
+                    val device: BluetoothDevice? =
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                    val deviceName = device?.name
+                    val deviceHardwareAddress = device?.address // MAC address
+                }
+            }
+        }
+    }
 }
