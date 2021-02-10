@@ -7,21 +7,22 @@
     android:layout_margin="5dp"
     app:cardBackgroundColor="#99AFD7"
     app:cardCornerRadius="12dp"
-    app:cardElevation="3dp"
-    app:contentPadding="4dp">
+    app:cardElevation="3dp">
+    <!--app:contentPadding="4dp"-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/constraintLayout">
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
             android:id="@+id/card_image_direction"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/ic_arrow_up"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            android:layout_marginEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/programming_card_button"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageView
             android:layout_width="40dp"
@@ -41,6 +42,19 @@
             android:text="PLACEHOLDER TEXT"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/card_image_drag_dots"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/programming_card_button"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:background="@drawable/programming_card_parameter_button"
+            android:scaleType="fitCenter"
+            android:padding="10dp"
+            android:text="1s"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 

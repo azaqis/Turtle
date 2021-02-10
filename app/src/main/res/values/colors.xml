@@ -14,4 +14,9 @@
     <color name="PrimaryComplement">#FE5F55</color>
     <color name="SecondaryLight">#BDD5EA</color>
 
+    <color name="SpinnerBackgroundTurquoise">#4DC1B1</color>
+    <color name="SpinnerBackgroundPink">#B46393</color>
+    <color name="SpinnerBackgroundOrange">#C15D4D</color>
+
+
 </resources>

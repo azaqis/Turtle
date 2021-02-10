@@ -1,17 +1,13 @@
 package se.anad19ps.student.turtle
 
-import android.app.ActionBar
-import android.content.ClipData
-import android.content.ClipDescription
-import android.graphics.Canvas
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.DragEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -20,16 +16,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_programming.*
 import kotlinx.android.synthetic.main.card_drag_drop.view.*
+import kotlinx.android.synthetic.main.drawer_layout.*
+import kotlinx.android.synthetic.main.top_bar.*
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class ProgrammingActivity : AppCompatActivity(), RecyclerAdapter.ItemClickListener {
+class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.ItemClickListener {
 
     private var layoutManager : RecyclerView.LayoutManager? = null
-    private lateinit var adapter : RecyclerView.Adapter<RecyclerAdapter.InnerViewHolder>
+    private lateinit var adapter : RecyclerView.Adapter<ProgrammingRecyclerAdapter.InnerViewHolder>
     private var itemList = mutableListOf<DragDropBlock>()
-    private var itemListSpinner = mutableListOf<SpinnerMoveBlock>()
     private lateinit var itemTouchHelper : ItemTouchHelper
 
 
@@ -39,24 +36,42 @@ class ProgrammingActivity : AppCompatActivity(), RecyclerAdapter.ItemClickListen
 
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
-        populateListGarbage(100)
 
-        itemListSpinner.add(SpinnerMoveBlock(R.drawable.ic_arrow_up, "Move forward"))
-        itemListSpinner.add(SpinnerMoveBlock(R.drawable.ic_arrow_right, "Turn right"))
+        /*Spinner stuff*/
+        val spinnerAdapterDriving = ArrayAdapter.createFromResource(
+            this,
+            R.array.list, R.layout.support_simple_spinner_dropdown_item
+        )
+        spinnerAdapterDriving.setDropDownViewResource(R.layout.programming_spinner_driving_dropdown_layout)
+        programming_spinner_driving.adapter = spinnerAdapterDriving
+
+        val spinnerAdapterModules = ArrayAdapter.createFromResource(
+            this,
+            R.array.list, R.layout.support_simple_spinner_dropdown_item
+        )
+        spinnerAdapterModules.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
+        programming_spinner_modules.adapter = spinnerAdapterModules
+
+        val spinnerAdapterCustom = ArrayAdapter.createFromResource(
+            this,
+            R.array.list, R.layout.support_simple_spinner_dropdown_item
+        )
+        spinnerAdapterCustom.setDropDownViewResource(R.layout.programming_spinner_custom_dropdown_layout)
+        programming_spinner_custom.adapter = spinnerAdapterCustom
+
+
+
+
+        populateListGarbage(100)
 
         layoutManager = LinearLayoutManager(this)
         programming_recycle_view.layoutManager = layoutManager
 
-        adapter = RecyclerAdapter(itemList, this)
+        adapter = ProgrammingRecyclerAdapter(itemList, this)
         programming_recycle_view.adapter = adapter
 
         itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(programming_recycle_view)
-
-        val spinnerAdapter = SpinnerAdapter(itemListSpinner , this)
-        spinner.adapter = spinnerAdapter
-
-
     }
 
     private fun populateListGarbage(num: Int) : List<DragDropBlock>{
@@ -103,14 +118,6 @@ class ProgrammingActivity : AppCompatActivity(), RecyclerAdapter.ItemClickListen
 
     override fun onItemClick(position: Int, holder: View) {
         holder.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AAAAAA"))
-    }
-
-
-    /*Move through list based on item time*/
-    fun goThroughList(position : Int, view : View){
-        for(i in 0 until itemList.size){
-
-        }
     }
 
 }
