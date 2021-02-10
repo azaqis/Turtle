@@ -12,8 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Turtle">
-        <activity android:name=".ProgrammingActivity"></activity>
-        <activity android:name=".CreateCustomCommandActivity"></activity>
+        <activity android:name=".EditCustomCommandActivity"></activity>
+        <activity android:name=".ProgrammingActivity" />
+        <activity android:name=".CreateCustomCommandActivity" />
         <activity android:name=".ManageCustomCommandsActivity" />
         <activity
             android:name=".ControllerActivity"

@@ -72,6 +72,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(programming_recycle_view)
+
+        val spinnerAdapter = SpinnerAdapter(itemListSpinner , this)
+        //spinner.adapter = spinnerAdapter
     }
 
     private fun populateListGarbage(num: Int) : List<DragDropBlock>{
