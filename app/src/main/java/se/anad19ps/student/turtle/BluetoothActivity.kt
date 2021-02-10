@@ -17,3 +17,4 @@ class BluetoothActivity : AppCompatActivity() {
 
 }
 
+*/
