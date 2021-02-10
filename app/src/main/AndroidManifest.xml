@@ -9,10 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Turtle">
+        <activity android:name=".ProgrammingActivity"></activity>
         <activity
             android:name=".MainActivity2"
             android:label="@string/title_activity_main2"
-            android:theme="@style/Theme.Turtle.NoActionBar"></activity>
+            android:theme="@style/Theme.Turtle.NoActionBar" />
         <activity
             android:name=".BluetoothActivity"
             android:label="@string/title_activity_bluetooth"

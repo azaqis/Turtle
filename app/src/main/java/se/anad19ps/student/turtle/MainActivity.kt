@@ -18,8 +18,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        startActivity(Intent(this, ProgrammingActivity::class.java))
 
-        toggle = ActionBarDrawerToggle(
+        /*toggle = ActionBarDrawerToggle(
             this,
             findViewById(R.id.drawerLayout),
             R.string.open,
@@ -66,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
 
-            return super.onOptionsItemSelected(item)
+            return super.onOptionsItemSelected(item)*/
         }
 
 
