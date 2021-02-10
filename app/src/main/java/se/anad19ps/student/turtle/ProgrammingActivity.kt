@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_programming.*
 import kotlinx.android.synthetic.main.card_drag_drop.view.*
+import kotlinx.android.synthetic.main.drawer_layout.*
+import kotlinx.android.synthetic.main.top_bar.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -52,9 +54,6 @@ class ProgrammingActivity : AppCompatActivity(), RecyclerAdapter.ItemClickListen
 
         itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(programming_recycle_view)
-
-        val spinnerAdapter = SpinnerAdapter(itemListSpinner , this)
-        spinner.adapter = spinnerAdapter
 
 
     }
