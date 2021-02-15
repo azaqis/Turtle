@@ -8,18 +8,26 @@
     android:layout_height="match_parent"
     tools:context=".SelectBluetoothDeviceActivity">
 
-    <include
-        android:id="@+id/topBar"
-        layout="@layout/top_bar" />
 
-    <ScrollView
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/topBar">
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical"
+        android:weightSum="2">
+
+        <include
+            android:id="@+id/topBar"
+            layout="@layout/top_bar"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
@@ -35,43 +43,60 @@
             <ListView
                 android:id="@+id/selectPairedDeviceList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:entries="@array/list"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewPairedDevices" />
 
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textViewScannedDevices"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Your paired devices"
+                android:text="Scanned devices"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/selectPairedDeviceList" />
 
-
             <ListView
                 android:id="@+id/selectScannedDeviceList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:entries="@array/list"
-                app:layout_constraintTop_toBottomOf="@+id/textViewScannedDevices" />
+                app:layout_constraintBottom_toTopOf="@id/refreshBluetoothDevicesButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewScannedDevices">
+            </ListView>
 
         </LinearLayout>
-    </ScrollView>
 
-    <Button
-        android:id="@+id/refreshBluetoothDevicesButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Refresh"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
-    <include
-        layout="@layout/drawer_layout" />
+
+
+        <Button
+            android:id="@+id/refreshBluetoothDevicesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Refresh"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_gravity="center_horizontal"/>
+
+    </LinearLayout>
+
+    <include layout="@layout/drawer_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
