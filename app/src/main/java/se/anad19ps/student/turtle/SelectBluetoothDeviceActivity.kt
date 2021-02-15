@@ -1,5 +1,6 @@
 package se.anad19ps.student.turtle
 
+import android.Manifest
 import android.app.Activity
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
@@ -9,12 +10,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_select_bluetooth_device.*
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
@@ -64,18 +69,27 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             Toast.makeText(this, "Bluetooth is not avaliable on this device", Toast.LENGTH_SHORT).show()
         }
         else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (ContextCompat.checkSelfPermission(baseContext,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 2)
+                }
+            }
             Toast.makeText(this, "Bluetooth is avaliable on this device", Toast.LENGTH_SHORT).show()
             //Turn on BT if not turned on
             if(!btAdapter.isEnabled){
                 var intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                 startActivityForResult(intent, REQUEST_CODE_ENABLE_BT)
             }
+            displayPairedDevices()
+            discoverBluetoothDevices()
         }
 
         refreshBluetoothDevicesButton.setOnClickListener(){
             discoverBluetoothDevices()
-            displayPairedDevices()
-            displayScannedDevices()
         }
 
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
@@ -94,6 +108,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+
 
     private fun displayPairedDevices(){
         lateinit var pairedDevices : Set<BluetoothDevice>
@@ -116,24 +131,6 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
     }
 
-    private fun displayScannedDevices(){
-        val list: ArrayList<String> = ArrayList()
-
-        if(devices.isNotEmpty()){
-            for(device : BluetoothDevice in devices){
-                list.add(device.name)
-            }
-        }
-        else{
-            Toast.makeText(this, "No scanned devices", Toast.LENGTH_SHORT).show()
-        }
-
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
-        selectScannedDeviceList.adapter = adapter
-
-    }
-
-
     private fun discoverBluetoothDevices(){
         if(btAdapter.isDiscovering){
             btAdapter.cancelDiscovery()
@@ -142,14 +139,6 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         val discoverDevicesIntent = IntentFilter(BluetoothDevice.ACTION_FOUND)
         registerReceiver(receiver, discoverDevicesIntent)
     }
-
-    /*
-    private val btBroadcastReciver = object : BroadcastReciver() {
-        override fun onRecive(context: Context?, intent: Intent?) {
-
-        }
-    }
-     */
 
     fun addDeviceToList(btDevice : BluetoothDevice){
         if(btDevice.name == null){
