@@ -1,6 +1,7 @@
 package se.anad19ps.student.turtle
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
@@ -8,6 +9,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -16,18 +18,35 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_select_bluetooth_device.*
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
+import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
-    private val REQUEST_CODE_ENABLE_BT: Int = 1;
+    companion object{
+        private val REQUEST_CODE_ENABLE_BT: Int = 1;
 
-    //BT Adapter
-    lateinit var  btAdapter: BluetoothAdapter
-    lateinit var  btSocket : BluetoothSocket
+        //BT Adapter
+        lateinit var  btAdapter: BluetoothAdapter
+        lateinit var  btSocket : BluetoothSocket
 
-    //Array adapter for paired devices
-    private var btArrayAdapter: ArrayAdapter<String>? = null
+        lateinit var btAddress : String
+        lateinit var  btProgress : ProgressDialog
+
+        var isConnected : Boolean = false
+
+        private var my_UUID: UUID = UUID.fromString("d989d859-9186-452a-8c43-0059a3599ac5")
+
+        //lateinit var btRepos : BluetoothRepository
+
+        var devices = mutableListOf<BluetoothDevice>()
+
+        val list: ArrayList<String> = ArrayList()
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +75,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         refreshBluetoothDevicesButton.setOnClickListener(){
             discoverBluetoothDevices()
             displayPairedDevices()
+            displayScannedDevices()
         }
 
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
@@ -92,7 +112,24 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         }
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
-        selectDeviceList.adapter = adapter
+        selectPairedDeviceList.adapter = adapter
+
+    }
+
+    private fun displayScannedDevices(){
+        val list: ArrayList<String> = ArrayList()
+
+        if(devices.isNotEmpty()){
+            for(device : BluetoothDevice in devices){
+                list.add(device.name)
+            }
+        }
+        else{
+            Toast.makeText(this, "No scanned devices", Toast.LENGTH_SHORT).show()
+        }
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+        selectScannedDeviceList.adapter = adapter
 
     }
 
@@ -114,6 +151,16 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
     }
      */
 
+    fun addDeviceToList(btDevice : BluetoothDevice){
+        if(btDevice.name == null){
+            list.add(btDevice.address)
+        }
+        else{
+            list.add(btDevice.name)
+        }
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+        selectScannedDeviceList.adapter = adapter
+    }
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -126,8 +173,60 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                     val deviceName = device?.name
                     val deviceHardwareAddress = device?.address // MAC address
+                    if (device != null && !devices.contains(device)) {
+                        devices.add(device)
+                        addDeviceToList(device)
+                    }
                 }
             }
         }
+    }
+
+    private class ConnectToDevice(c: Context) : AsyncTask<Void, Void, String>() {
+        private var connectSuccess: Boolean = true
+        private val context: Context
+
+        init {
+            this.context = c
+        }
+
+        override fun onPreExecute() {
+            super.onPreExecute()
+            btProgress = ProgressDialog.show(context, "Connecting...", "please wait")
+        }
+
+        override fun doInBackground(vararg p0: Void?): String? {
+            try {
+                if (btSocket == null || !isConnected) {
+                    btAdapter = BluetoothAdapter.getDefaultAdapter()
+                    val device: BluetoothDevice = btAdapter.getRemoteDevice(btAddress)
+                    btSocket = device.createInsecureRfcommSocketToServiceRecord(my_UUID)
+                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery()
+                    btSocket!!.connect()
+                }
+            } catch (e: IOException) {
+                connectSuccess = false
+                e.printStackTrace()
+            }
+            return null
+        }
+
+        override fun onPostExecute(result: String?) {
+            super.onPostExecute(result)
+            if (!connectSuccess) {
+                Log.i("data", "couldn't connect")
+            } else {
+                isConnected = true
+            }
+            btProgress.dismiss()
+        }
+    }
+
+
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(receiver)
     }
 }

@@ -1,16 +1,15 @@
 package se.anad19ps.student.turtle
 
-class BluetoothRepository {
-    private val devices = mutableListOf<BluetoothDevice>()
+class BluetoothRepository{
+    private val devices = mutableListOf<BluetoothDeviceInfo>()
 
-    fun addBluetoothDevice(bluetoothDevice : BluetoothDevice){
-
-        val btDevice: BluetoothDevice? = devices.find {
-            it.adress == bluetoothDevice.adress
+    fun addBluetoothDevice(bluetoothDeviceInfo : BluetoothDeviceInfo){
+        val btDeviceInfo: BluetoothDeviceInfo? = devices.find {
+            it.adress == bluetoothDeviceInfo.adress
         }
 
-        if(btDevice != null){
-            devices.add(bluetoothDevice)
+        if(btDeviceInfo != null){
+            devices.add(bluetoothDeviceInfo)
         }
     }
 
@@ -19,14 +18,31 @@ class BluetoothRepository {
     }
 
     fun getNameByAdress(adress : String) : String{
-        val btDevice: BluetoothDevice? = devices.find {
+        val btDeviceInfo: BluetoothDeviceInfo? = devices.find {
             it.adress == adress
         }
 
-        if(btDevice != null){
-            return btDevice!!.name
+        if(btDeviceInfo != null){
+            return btDeviceInfo!!.name
         }
 
         return "NO DEVICE FOUND"
     }
+
+    fun isEmpty() : Boolean{
+        if(devices.isEmpty()){
+            return false
+        }
+        return true
+    }
+
+    fun getAmountOfDevices() : Int{
+        return devices.size
+    }
+
+    fun getDeviceByIndex(index : Int) : BluetoothDeviceInfo{
+        return devices[index]
+    }
+
+
 }
