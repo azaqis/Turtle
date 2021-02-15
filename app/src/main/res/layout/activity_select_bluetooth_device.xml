@@ -12,46 +12,6 @@
         android:id="@+id/topBar"
         layout="@layout/top_bar" />
 
-    <TextView
-        android:id="@+id/textViewPairedDevices"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Your paired devices"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topBar" />
-
-    <ListView
-        android:id="@+id/selectPairedDeviceList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/list"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPairedDevices" />
-
-
-
-
-    <TextView
-        android:id="@+id/textViewScannedDevices"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Your paired devices"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectPairedDeviceList" />
-
-    <ListView
-        android:id="@+id/selectScannedDeviceList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/list"
-        app:layout_constraintTop_toBottomOf="@+id/textViewScannedDevices" />
-
-
-
-
 
     <Button
         android:id="@+id/refreshBluetoothDevicesButton"
@@ -67,6 +27,47 @@
         layout="@layout/drawer_layout"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textViewPairedDevices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Your paired devices"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topBar" />
+
+        <ListView
+            android:id="@+id/selectPairedDeviceList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/list"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPairedDevices" />
+
+
+        <TextView
+            android:id="@+id/textViewScannedDevices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Your paired devices"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/selectPairedDeviceList" />
+
+
+        <ListView
+            android:id="@+id/selectScannedDeviceList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/list"
+            app:layout_constraintTop_toBottomOf="@+id/textViewScannedDevices" />
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
