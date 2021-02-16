@@ -14,4 +14,5 @@
     <color name="PrimaryComplement">#FE5F55</color>
     <color name="SecondaryLight">#BDD5EA</color>
 
+    <color name="GreyedButton">#BDBDBD</color>
 </resources>

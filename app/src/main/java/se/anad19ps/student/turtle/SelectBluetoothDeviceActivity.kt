@@ -57,39 +57,43 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_bluetooth_device)
 
+        refreshBluetoothDevicesButton.setBackgroundColor(getResources().getColor(R.color.PrimaryComplement))
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
         //Init BT Adapter
         btAdapter = BluetoothAdapter.getDefaultAdapter()
 
-        btAdapter.startDiscovery()
-
         //Check if BT is avaliable on device
-        if(btAdapter == null){
-            Toast.makeText(this, "Bluetooth is not avaliable on this device", Toast.LENGTH_SHORT).show()
-        }
-        else{
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (ContextCompat.checkSelfPermission(baseContext,
-                        Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(
-                        this,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 2)
-                }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (ContextCompat.checkSelfPermission(baseContext,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 2)
             }
-            Toast.makeText(this, "Bluetooth is avaliable on this device", Toast.LENGTH_SHORT).show()
-            //Turn on BT if not turned on
-            if(!btAdapter.isEnabled){
-                var intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                startActivityForResult(intent, REQUEST_CODE_ENABLE_BT)
-            }
-            displayPairedDevices()
-            discoverBluetoothDevices()
         }
+        Toast.makeText(this, "Bluetooth is avaliable on this device", Toast.LENGTH_SHORT).show()
+        //Turn on BT if not turned on
+        if(!btAdapter.isEnabled){
+            var intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(intent, REQUEST_CODE_ENABLE_BT)
+        }
+        displayPairedDevices()
+        discoverBluetoothDevices()
 
         refreshBluetoothDevicesButton.setOnClickListener(){
+            list.clear()
+            devices.clear()
+
+            val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+            selectScannedDeviceList.adapter = adapter
+
+            refreshBluetoothDevicesButton.setBackgroundColor(getResources().getColor(R.color.GreyedButton))
+            refreshBluetoothDevicesButton.setText("Now searching...")
             discoverBluetoothDevices()
+            /*refreshBluetoothDevicesButton.setBackgroundColor(getResources().getColor(R.color.PrimaryComplement))
+            refreshBluetoothDevicesButton.setText("Refresh")*/
         }
 
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
@@ -168,8 +172,12 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                     }
                 }
             }
+            refreshBluetoothDevicesButton.setBackgroundColor(getResources().getColor(R.color.PrimaryComplement))
+            refreshBluetoothDevicesButton.setText("Refresh")
         }
     }
+
+
 
     private class ConnectToDevice(c: Context) : AsyncTask<Void, Void, String>() {
         private var connectSuccess: Boolean = true
@@ -216,6 +224,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        btAdapter.cancelDiscovery()
         unregisterReceiver(receiver)
     }
 }
