@@ -64,59 +64,25 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         btAdapter = BluetoothAdapter.getDefaultAdapter()
 
         refreshBluetoothDevicesButton.setOnClickListener(){
-            resetScannedList()
+            list.clear()
+            devices.clear()
 
-            displayPairedDevices()
+            val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+            selectScannedDeviceList.adapter = adapter
 
             refreshBluetoothDevicesButton.setBackgroundColor(getResources().getColor(R.color.GreyedButton))
             refreshBluetoothDevicesButton.setText("Now searching...")
-
             discoverBluetoothDevices()
             /*refreshBluetoothDevicesButton.setBackgroundColor(getResources().getColor(R.color.PrimaryComplement))
             refreshBluetoothDevicesButton.setText("Refresh")*/
         }
 
-        //???????????
-        /*val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-        registerReceiver(receiver, filter)*/
     }
 
     override fun onStart(){
         super.onStart()
-        //Check if BT is available on device
-        checkBluetoothAvailability()
 
-        //Check if fine permission is allowed
-        checkFineLocationPermission()
-
-        resetScannedList()
-
-        discoverBluetoothDevices()
-        displayPairedDevices()
-    }
-
-    private fun resetScannedList(){
-        list.clear()
-        devices.clear()
-
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
-        selectScannedDeviceList.adapter = adapter
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode){
-            REQUEST_CODE_ENABLE_BT ->
-                if (resultCode == Activity.RESULT_OK){
-                    Toast.makeText(this, "Bluetooth is enabled", Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    Toast.makeText(this, "Bluetooth is not enabled, please try again", Toast.LENGTH_SHORT).show()
-                }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    private fun checkBluetoothAvailability(){
+        //Check if BT is avaliable on device
         if(btAdapter == null){
             Toast.makeText(this, "Bluetooth is not avaliable on this device", Toast.LENGTH_SHORT).show()
         }
@@ -128,9 +94,6 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 startActivityForResult(intent, REQUEST_CODE_ENABLE_BT)
             }
         }
-    }
-
-    private fun checkFineLocationPermission(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (ContextCompat.checkSelfPermission(baseContext,
                     Manifest.permission.ACCESS_FINE_LOCATION)
@@ -140,7 +103,43 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 2)
             }
         }
+
+        list.clear()
+        devices.clear()
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+        selectScannedDeviceList.adapter = adapter
+
+
+        discoverBluetoothDevices()
+        displayPairedDevices()
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode){
+            REQUEST_CODE_ENABLE_BT ->
+                if (resultCode == Activity.RESULT_OK){
+                    Toast.makeText(this, "Bluetooth is enabled", Toast.LENGTH_SHORT).show()
+
+                    list.clear()
+                    devices.clear()
+
+                    val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+                    selectScannedDeviceList.adapter = adapter
+
+
+                    discoverBluetoothDevices()
+                    displayPairedDevices()
+
+
+                }
+                else{
+                    Toast.makeText(this, "Bluetooth is not enabled, please try again", Toast.LENGTH_SHORT).show()
+                }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
 
     private fun displayPairedDevices(){
         lateinit var pairedDevices : Set<BluetoothDevice>
@@ -200,10 +199,12 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                     }
                 }
             }
+            if(!btAdapter.isDiscovering()){
+                refreshBluetoothDevicesButton.setBackgroundColor(getResources().getColor(R.color.PrimaryComplement))
+                refreshBluetoothDevicesButton.setText("Refresh")
+            }
         }
     }
-
-
 
     private class ConnectToDevice(c: Context) : AsyncTask<Void, Void, String>() {
         private var connectSuccess: Boolean = true
