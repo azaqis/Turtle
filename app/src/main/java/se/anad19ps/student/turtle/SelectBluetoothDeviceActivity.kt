@@ -63,7 +63,20 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         //Init BT Adapter
         btAdapter = BluetoothAdapter.getDefaultAdapter()
 
+        discoverBluetoothDevices()
+
         //Check if BT is avaliable on device
+        if(btAdapter == null){
+            Toast.makeText(this, "Bluetooth is not avaliable on this device", Toast.LENGTH_SHORT).show()
+        }
+        else{
+            Toast.makeText(this, "Bluetooth is avaliable on this device", Toast.LENGTH_SHORT).show()
+            //Turn on BT if not turned on
+            if(!btAdapter.isEnabled){
+                var intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                startActivityForResult(intent, REQUEST_CODE_ENABLE_BT)
+            }
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (ContextCompat.checkSelfPermission(baseContext,
                     Manifest.permission.ACCESS_FINE_LOCATION)
@@ -73,14 +86,8 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 2)
             }
         }
-        Toast.makeText(this, "Bluetooth is avaliable on this device", Toast.LENGTH_SHORT).show()
-        //Turn on BT if not turned on
-        if(!btAdapter.isEnabled){
-            var intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(intent, REQUEST_CODE_ENABLE_BT)
-        }
+
         displayPairedDevices()
-        discoverBluetoothDevices()
 
         refreshBluetoothDevicesButton.setOnClickListener(){
             list.clear()
@@ -172,8 +179,10 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                     }
                 }
             }
-            refreshBluetoothDevicesButton.setBackgroundColor(getResources().getColor(R.color.PrimaryComplement))
-            refreshBluetoothDevicesButton.setText("Refresh")
+            if(!btAdapter.isDiscovering()){
+                refreshBluetoothDevicesButton.setBackgroundColor(getResources().getColor(R.color.PrimaryComplement))
+                refreshBluetoothDevicesButton.setText("Refresh")
+            }
         }
     }
 
