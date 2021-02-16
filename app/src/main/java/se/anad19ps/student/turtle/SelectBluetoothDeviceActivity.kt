@@ -28,6 +28,8 @@ import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_select_bluetooth_device.*
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SelectBluetoothDeviceActivity : AppCompatActivity() {
@@ -108,6 +110,14 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         val filterDiscover = IntentFilter(BluetoothDevice.ACTION_FOUND)
         registerReceiver(discoverReceiver, filterDiscover)
 
+        val filterACLConnected = IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED)
+        registerReceiver(aclConnectedReceiver, filterACLConnected)
+
+        val filterACLDisconnectRequested = IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED)
+        registerReceiver(aclDisconnectedRequestedReceiver, filterACLDisconnectRequested)
+
+        val filterACLDisconnected = IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED)
+        registerReceiver(aclDisconnectedReciever, filterACLDisconnected)
     }
 
     override fun onStart(){
@@ -235,7 +245,10 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         selectPairedDeviceList.onItemClickListener = AdapterView.OnItemClickListener { _, v, position, _ ->
             val device: BluetoothDevice = listOfPairedDevices[position]
             //Here the app tries to connect/bond with the device chosen in the listview
-            tryBonding(device, v)
+            Toast.makeText(v.context, "Connecting to: " + device.name + "...", Toast.LENGTH_SHORT).show()
+
+            //Takes a bit of more time, maybe use GATT or something else if time for it exists
+            tryConnect(device)
         }
 
     }
@@ -277,10 +290,21 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
     }
 
     private fun tryBonding(device: BluetoothDevice, v: View){
-        Toast.makeText(v.context, "Trying to connect to device: " + device.name, Toast.LENGTH_SHORT).show()
+        Toast.makeText(v.context, "Trying to bond to device: " + device.name, Toast.LENGTH_SHORT).show()
         //create.bond() doesnt work for all APIs
-        Log.d(TAG, "Trying to pair with " + device.name)
+        Log.d(TAG, "Trying to bond with " + device.name)
         device.createBond()
+    }
+
+    private fun tryConnect(device: BluetoothDevice) {
+        val thread = Thread {
+            //create.bond() doesnt work for all APIs
+            Log.d(TAG, "Trying to connect with " + device.name)
+            val id: UUID = device.uuids?.get(0)!!.uuid
+            val bts = device.createRfcommSocketToServiceRecord(id)
+            bts?.connect()
+        }
+        thread.start()
     }
 
     private val discoverReceiver = object : BroadcastReceiver() {
@@ -326,6 +350,36 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                     Log.d(TAG, "BroadcastReceiver: BOND_NONE.")
                     Log.e(TAG, "BroadcastReceiver: BOND_NONE." + mDevice.name)
                 }
+            }
+        }
+    }
+
+    private val aclConnectedReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (action == BluetoothDevice.ACTION_ACL_CONNECTED) {
+                val mDevice = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                Toast.makeText(context, "Connected to: " + mDevice?.name, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private val aclDisconnectedRequestedReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (action == BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED) {
+                val mDevice = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                Toast.makeText(context, "Disconnected requested: " + mDevice?.name, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private val aclDisconnectedReciever: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (action == BluetoothDevice.ACTION_ACL_DISCONNECTED) {
+                val mDevice = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                Toast.makeText(context, "Disconnected: " + mDevice?.name, Toast.LENGTH_SHORT).show()
             }
         }
     }
