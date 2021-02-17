@@ -36,8 +36,8 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
     }
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val text = parent!!.getItemAtPosition(position).toString()
-        Toast.makeText(parent.context, text, Toast.LENGTH_SHORT).show()
+        /*val text = parent!!.getItemAtPosition(position).toString()
+        Toast.makeText(parent.context, text, Toast.LENGTH_SHORT).show()*/
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
