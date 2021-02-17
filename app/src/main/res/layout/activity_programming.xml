@@ -68,6 +68,7 @@
         android:gravity="center">
 
         <ImageButton
+            android:id="@+id/programming_delete_btn"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/ic_baseline_delete_24"
@@ -79,6 +80,7 @@
             android:layout_margin="10dp"/>
 
         <ImageButton
+            android:id="@+id/programming_reset_btn"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/ic_restart"

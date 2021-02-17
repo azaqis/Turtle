@@ -35,7 +35,7 @@ class ProgrammingRecyclerAdapter(
         holder.directionImage.setImageResource(itemList[position].directionImage)    //Data stored in DragDropBlock
         holder.dragImage.setImageResource(itemList[position].dragImage)
         holder.text.text = itemList[position].text
-        holder.firstButton.text = itemList[position].parameter.toString()
+        holder.firstButton.text = itemList[position].displayParameter.toString()
     }
 
     fun getItemById(id : Int) : DragDropBlock{
@@ -76,6 +76,11 @@ class ProgrammingRecyclerAdapter(
                 }
             }
         }
+    }
+
+    fun resetDragDropBlockParameters(){
+        for(i in itemList)
+            i.displayParameter = i.parameter
     }
 
     interface ItemClickListener {

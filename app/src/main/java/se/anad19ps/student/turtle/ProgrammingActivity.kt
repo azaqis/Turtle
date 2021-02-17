@@ -3,34 +3,38 @@ package se.anad19ps.student.turtle
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_programming.*
-import kotlinx.android.synthetic.main.card_drag_drop.view.*
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Semaphore
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.ItemClickListener {
+    private enum class RunState {
+        IDLE,
+        RUNNING,
+        PAUSE
+    }
 
-    private var layoutManager : RecyclerView.LayoutManager? = null
-    private lateinit var adapter : ProgrammingRecyclerAdapter
-   //private lateinit var adapter : RecyclerView.Adapter<ProgrammingRecyclerAdapter.InnerViewHolder>
+    private var layoutManager: RecyclerView.LayoutManager? = null
+    private lateinit var adapter: ProgrammingRecyclerAdapter
     private var itemList = mutableListOf<DragDropBlock>()
-    private lateinit var itemTouchHelper : ItemTouchHelper
+    private lateinit var itemTouchHelper: ItemTouchHelper
+    private lateinit var state: RunState
+
+    private val sem = Semaphore(1)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,33 +45,57 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         setupSpinners()
 
-        populateListGarbage(10)
+        setupButtons()
+
+        populateListGarbage(100)
+
+        state = RunState.IDLE
 
         layoutManager = LinearLayoutManager(this)
         programming_recycle_view.layoutManager = layoutManager
 
-        adapter = ProgrammingRecyclerAdapter(itemList, this)
+        adapter = ProgrammingRecyclerAdapter(itemList, this)    //Setup adapter
         programming_recycle_view.adapter = adapter
 
         itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(programming_recycle_view)
+    }
 
-
-
-
+    private fun setupButtons(){
         /*Start coroutine from button click. Traverse list*/
-        var job : Job? = null
-        var tmpState = 0
-        programming_play_button.setOnClickListener{
-            if(tmpState == 0) {
+        var job: Job? = null
+        programming_play_button.setOnClickListener {
+            if(state == RunState.IDLE){
                 job = GlobalScope.launch(Dispatchers.Main) {
+                    state = RunState.RUNNING
+                    programming_play_button.setImageResource(R.drawable.ic_pause)
                     traverseList()
                 }
             }
+            else if (state == RunState.PAUSE) {
+                if(sem.availablePermits == 0) {
+                    sem.release()   //Used to avoid idle wait in traverseList
+                }
+                programming_play_button.setImageResource(R.drawable.ic_pause)
+                state = RunState.RUNNING
+            }
+            else if(state == RunState.RUNNING){
+                programming_play_button.setImageResource(R.drawable.ic_play_arrow)
+                state = RunState.PAUSE
+            }
+        }
+        programming_reset_btn.setOnClickListener{
+            job?.cancel()
+            resetListTraverse()
+        }
+
+        /*Delete button*/
+        programming_delete_btn.setOnClickListener{
+            //Maby getParent from adapter? Probably not a good solution for some reason
         }
     }
 
-    private fun setupSpinners(){
+    private fun setupSpinners() {
         val spinnerAdapterDriving = ArrayAdapter.createFromResource(
             this,
             R.array.list, R.layout.support_simple_spinner_dropdown_item
@@ -90,11 +118,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_custom.adapter = spinnerAdapterCustom
     }
 
-    private fun populateListGarbage(num: Int) : List<DragDropBlock>{
+    private fun populateListGarbage(num: Int): List<DragDropBlock> {
         itemList = ArrayList<DragDropBlock>()
 
-        for(i in 0 until num){
-            val drawable = when (i%4){
+        for (i in 0 until num) {
+            val drawable = when (i % 4) {
                 0 -> R.drawable.ic_arrow_up
                 1 -> R.drawable.ic_arrow_down
                 2 -> R.drawable.ic_arrow_right
@@ -105,7 +133,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 drawable,
                 "Insert text $i",
                 "Garbage command",
-                4
+                1,
+                1
             )
             itemList.add(item)
         }
@@ -118,7 +147,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         ItemTouchHelper.UP.or(
             ItemTouchHelper.DOWN
         ), ItemTouchHelper.RIGHT
-    ){
+    ) {
         override fun onMove(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
@@ -144,20 +173,18 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         changeItemParameterDialog(position, holder)
     }
 
-    private fun changeItemParameterDialog(position: Int, holder: View){
+    private fun changeItemParameterDialog(position: Int, holder: View) {
         val builder = AlertDialog.Builder(this).create()
         val dialogLayout = LayoutInflater.from(this).inflate(R.layout.input_dialog_layout, null)
         val editText = dialogLayout.findViewById<EditText>(R.id.input_dialog_text_in)
-        var alertDialog : AlertDialog
-        var positiveBtn : android.widget.Button
 
         editText.setText(itemList[position].parameter.toString())
 
         builder.setTitle("Change parameter")
-        builder.setButton(AlertDialog.BUTTON_POSITIVE, "Ok"){dialog, which ->
-            dialogPressOk(position, editText.text.toString().toInt())
+        builder.setButton(AlertDialog.BUTTON_POSITIVE, "Ok") { dialog, which ->
+            updateItemValue(position, editText.text.toString().toInt())
         }
-        builder.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel"){dialog, which ->
+        builder.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { dialog, which ->
             //Nothing
         }
         builder.setView(dialogLayout)
@@ -172,42 +199,47 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 /*Button is enabled if no non numeric chars in editText*/
-                //builder.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = editText.toString().matches(Regex("[0-9]"))
+                builder.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = !s.isNullOrBlank()
             }
         })
     }
 
-    private fun dialogPressOk(position: Int, value: Int){
+    private fun updateItemValue(position: Int, value: Int) {
         itemList[position].parameter = value
+        itemList[position].displayParameter = value
         adapter.notifyDataSetChanged()
     }
 
-    /*How should this function work? Can it be paused? If commands are send with time parameter through bluetooth stopping will not take effect until
-    * block of code is complete in robot*/
-    private suspend fun traverseList(){
-        val items = adapter.getList().toMutableList()
+    private suspend fun traverseList() {
         val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
-        var savedParameterTimes = mutableListOf<Int>()
+        val delayTimeMillis : Long = 100
 
-        /*Store parameter values so that they can be reinserted later*/
-        for(item in items){
-            savedParameterTimes.add(item.parameter)
-        }
+        itemList.forEachIndexed{index, item ->
+            recycler.scrollToPosition(index) //Scrolls list so that current item is on screen
 
-        recycler.scrollToPosition(0)
-
-        /*Update to work for millis later*/
-        items.forEachIndexed{index, dragDropBlock ->
-            while (dragDropBlock.parameter > 0){
-                delay(200)
-                dragDropBlock.parameter--
-                adapter.notifyDataSetChanged()
+            while (item.displayParameter > 0) {
+                when (state) {  //State machine
+                    RunState.RUNNING -> {
+                        delay(delayTimeMillis) //Will finish current 'delayTimeMillis' period before pause
+                        item.displayParameter--
+                        adapter.notifyDataSetChanged()
+                    }
+                    RunState.PAUSE -> {
+                        sem.acquire()
+                    }
+                }
             }
         }
+        resetListTraverse()
+    }
 
-        items.forEachIndexed { index, dragDropBlock ->
-            dragDropBlock.parameter = savedParameterTimes[index]
+    private fun resetListTraverse(){
+        if(sem.availablePermits == 0) {  //Must keep this check
+            sem.release()
         }
+        state = RunState.IDLE
+        adapter.resetDragDropBlockParameters()
         adapter.notifyDataSetChanged()
+        programming_play_button.setImageResource(R.drawable.ic_play_arrow)
     }
 }
