@@ -24,6 +24,10 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="title_activity_controller">ControllerActivity</string>
 
+    <string name="input_dialog_hint">Enter time</string>
+
+
+
 
     <string-array name="controllerSpinnerView">
         <item>View: Debug</item>

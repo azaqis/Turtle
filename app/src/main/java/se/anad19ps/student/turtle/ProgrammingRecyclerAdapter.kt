@@ -1,5 +1,6 @@
 package se.anad19ps.student.turtle
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,19 +17,38 @@ class ProgrammingRecyclerAdapter(
     private val clickListener: ItemClickListener
 
 ) : RecyclerView.Adapter<ProgrammingRecyclerAdapter.InnerViewHolder>() {
+    private lateinit var par : ViewGroup
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): ProgrammingRecyclerAdapter.InnerViewHolder {
         var itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.card_drag_drop, parent, false)
+        par = parent
         return InnerViewHolder(itemView)
     }
-
-    override fun onBindViewHolder(holder: ProgrammingRecyclerAdapter.InnerViewHolder, position: Int) {
+    /*Fill view holder with data. Remember that recyclerview contains re-usable holders that needs to be loaded when enetring screen*/
+    override fun onBindViewHolder(
+        holder: ProgrammingRecyclerAdapter.InnerViewHolder,
+        position: Int
+    ) {
         holder.directionImage.setImageResource(itemList[position].directionImage)    //Data stored in DragDropBlock
         holder.dragImage.setImageResource(itemList[position].dragImage)
         holder.text.text = itemList[position].text
+        holder.firstButton.text = itemList[position].parameter.toString()
+    }
+
+    fun getItemById(id : Int) : DragDropBlock{
+        return itemList[id]
+    }
+
+    fun getList() : List<DragDropBlock>{
+        return itemList
+    }
+
+    /*I get the feeling Peter will not like this solution...*/
+    fun getParent() : ViewGroup{
+        return par
     }
 
     override fun getItemCount() = itemList.count()
@@ -37,16 +57,16 @@ class ProgrammingRecyclerAdapter(
         var dragImage: ImageView = view.findViewById(R.id.card_image_drag_dots)
         var directionImage: ImageView = view.findViewById(R.id.card_image_direction)
         var text: TextView = view.findViewById(R.id.card_text)
-
-        val firstButton = view.findViewById<Button>(R.id.programming_card_button)
+        var firstButton: Button = view.findViewById<Button>(R.id.programming_card_button)
 
         init {
             view.setOnClickListener(this)
-            firstButton.setOnClickListener{ //This happens when each individual button is pressed
-                firstButton.text = "BUTTON!"
+            firstButton.setOnClickListener { //This happens when each individual button is pressed
+                onClick(view)
             }
         }
 
+        /*Is override function needed?*/
         override fun onClick(v: View?) {
             val position = adapterPosition
 
