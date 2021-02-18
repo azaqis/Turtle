@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Turtle">
-        <activity android:name=".EditCustomCommandActivity"></activity>
+        <activity android:name=".SavedProjectsActivity"></activity>
+        <activity android:name=".EditCustomCommandActivity" />
         <activity android:name=".ProgrammingActivity" />
         <activity android:name=".CreateCustomCommandActivity" />
         <activity android:name=".ManageCustomCommandsActivity" />
@@ -37,17 +38,19 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".SelectBluetoothDeviceActivity"   android:enabled="true"
-            android:stopWithTask="false" >
+        <receiver
+            android:name=".SelectBluetoothDeviceActivity"
+            android:enabled="true"
+            android:stopWithTask="false">
             <intent-filter>
                 <action android:name="com.simplemobiletools.applauncher.sendbroadcast" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
-
     </application>
-
 
 </manifest>
