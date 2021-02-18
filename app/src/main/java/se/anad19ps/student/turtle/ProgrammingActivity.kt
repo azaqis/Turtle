@@ -47,7 +47,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         setupButtons()
 
-        populateListGarbage(100)
+        itemList = populateListGarbage(100)
 
         state = RunState.IDLE
 
@@ -93,6 +93,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_delete_btn.setOnClickListener{
             //Maby getParent from adapter? Probably not a good solution for some reason
         }
+
+        programming_load_button.setOnClickListener{
+            loadList(populateListGarbage(20))
+        }
     }
 
     private fun setupSpinners() {
@@ -118,8 +122,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_custom.adapter = spinnerAdapterCustom
     }
 
-    private fun populateListGarbage(num: Int): List<DragDropBlock> {
-        itemList = ArrayList<DragDropBlock>()
+    private fun populateListGarbage(num: Int): MutableList<DragDropBlock> {
+        val list = mutableListOf<DragDropBlock>()
 
         for (i in 0 until num) {
             val drawable = when (i % 4) {
@@ -136,11 +140,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 1,
                 1
             )
-            itemList.add(item)
+            list.add(item)
         }
-        return itemList
+        return list
     }
 
+    private fun loadList(list : MutableList<DragDropBlock>){
+        itemList.clear()
+        itemList.addAll(list)
+        adapter.notifyDataSetChanged()
+    }
 
     /*For rearranging recyclerview*/
     private var simpleCallback = object : ItemTouchHelper.SimpleCallback(
@@ -153,8 +162,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
         ): Boolean {
-            var startPosition = viewHolder.adapterPosition
-            var endPosition = target.adapterPosition
+            val startPosition = viewHolder.adapterPosition
+            val endPosition = target.adapterPosition
 
             Collections.swap(itemList, startPosition, endPosition)
             recyclerView.adapter?.notifyItemMoved(startPosition, endPosition)
@@ -162,7 +171,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            var position = viewHolder.adapterPosition
+            val position = viewHolder.adapterPosition
 
             itemList.removeAt(position)
             adapter.notifyItemRemoved(position)
