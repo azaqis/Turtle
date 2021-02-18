@@ -4,10 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.bluetooth.BluetoothSocket
+import android.content.*
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
@@ -20,9 +18,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
+import com.google.android.gms.tasks.Task
 import kotlinx.android.synthetic.main.activity_select_bluetooth_device.*
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
+import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -196,6 +199,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
     private fun checkFineLocationAllowed() : Boolean{
         //Permission for fine location which needs to be checked if you run a later API
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            showLocationPrompt()
             if (ContextCompat.checkSelfPermission(
                     baseContext,
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -232,6 +236,13 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+            LocationRequest.PRIORITY_HIGH_ACCURACY -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    Log.e("Status: ", "On")
+                } else {
+                    Log.e("Status: ", "Off")
+                }
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -295,7 +306,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
     }
 
-    private fun getDevicesNameArray(array : ArrayList<BluetoothDevice>) : ArrayList<String>{
+    private fun getDevicesNameArray(array: ArrayList<BluetoothDevice>) : ArrayList<String>{
         val devicesNameList: ArrayList<String> = ArrayList()
         for(device : BluetoothDevice in array){
             //Primarily, show device name, but some only have an address, then show the address
@@ -319,10 +330,22 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             //create.bond() doesnt work for all APIs
             Log.d(TAG, "Trying to connect with " + device.name)
             val id: UUID = device.uuids?.get(0)!!.uuid
-            val bts = device.createRfcommSocketToServiceRecord(id)
-            bts?.connect()
+            val btSocket = device.createRfcommSocketToServiceRecord(id)
+            try{
+                btSocket?.connect()
+            }
+            catch (e: IOException){
+                Log.d(TAG, e.toString())
+                showToast("Connection failed, device may be already connected or out of range")
+            }
         }
         thread.start()
+    }
+
+    private fun showToast(toast: String?) {
+        runOnUiThread {
+            Toast.makeText(this, toast, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private val discoverReceiver = object : BroadcastReceiver() {
@@ -357,7 +380,11 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 }
                 //case2: creating a bone
                 if (mDevice.bondState == BluetoothDevice.BOND_BONDING) {
-                    Toast.makeText(context, "Connecting to: " + mDevice.name + "...", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "Connecting to: " + mDevice.name + "...",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDING.")
                     Log.e(TAG, "BroadcastReceiver: BOND_BONDING." + mDevice.name)
                 }
@@ -386,7 +413,11 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             val action = intent.action
             if (action == BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED) {
                 val mDevice = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-                Toast.makeText(context, "Disconnected requested: " + mDevice?.name, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "Disconnected requested: " + mDevice?.name,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -400,6 +431,69 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             }
         }
     }
+
+
+    private fun showLocationPrompt() {
+        val locationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+
+        val result: Task<LocationSettingsResponse> = LocationServices.getSettingsClient(this).checkLocationSettings(
+            builder.build()
+        )
+
+        result.addOnCompleteListener { task ->
+            try {
+                val response = task.getResult(ApiException::class.java)
+                // All location settings are satisfied. The client can initialize location
+                // requests here.
+            } catch (exception: ApiException) {
+                when (exception.statusCode) {
+                    LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
+                        try {
+                            // Cast to a resolvable exception.
+                            val resolvable: ResolvableApiException =
+                                exception as ResolvableApiException
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            resolvable.startResolutionForResult(
+                                this, LocationRequest.PRIORITY_HIGH_ACCURACY
+                            )
+                        } catch (e: IntentSender.SendIntentException) {
+                            // Ignore the error.
+                        } catch (e: ClassCastException) {
+                            // Ignore, should be an impossible error.
+                        }
+                    }
+                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                        // Location settings are not satisfied. But could be fixed by showing the
+                        // user a dialog.
+
+                        // Location settings are not satisfied. However, we have no way to fix the
+                        // settings so we won't show the dialog.
+                    }
+                }
+            }
+        }
+    }
+
+    /*
+    private fun writeDataToConnectedDevice(data: String) {
+        var outStream = btSocket.outputStream
+        try {
+            outStream = btSocket.outputStream
+        } catch (e: IOException) {
+            Log.d(TAG, "Bug BEFORE Sending stuff", e)
+        }
+        val msgBuffer = data.toByteArray()
+
+        try {
+            outStream.write(msgBuffer)
+        } catch (e: IOException) {
+            Log.d(TAG, "Bug while sending stuff", e)
+        }
+
+    }*/
 
     override fun onDestroy() {
         super.onDestroy()
