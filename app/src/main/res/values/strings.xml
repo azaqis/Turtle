@@ -27,8 +27,6 @@
     <string name="input_dialog_hint">Enter time</string>
 
 
-
-
     <string-array name="controllerSpinnerView">
         <item>View: Debug</item>
         <item>View: Speedometer</item>
