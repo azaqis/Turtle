@@ -50,15 +50,19 @@ class ControllerArrowButtonsFragment : Fragment() {
 
         btnUp.setOnClickListener {
             vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString("2")    //Switch-case in arduino-code, 2 is forward, 8 is backwards etc.
         }
         btnDown.setOnClickListener {
             vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString("8")
         }
         btnLeft.setOnClickListener {
             vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString("4")
         }
         btnRight.setOnClickListener {
             vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString("6")
         }
 
         return root

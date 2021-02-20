@@ -43,6 +43,11 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         lateinit var btAdapter: BluetoothAdapter
         lateinit var scannedDevicesNameListViewAdapter: ArrayAdapter<String>
         lateinit var pairedDevicesNameListViewAdapter: ArrayAdapter<String>
+
+        var sendBluetoothDataIsReady : Boolean = false
+        var recieveBluetoothDataIsReady : Boolean = false
+        var messageToSend : String = ""
+        var bluetoothConnectionThreadActive : Boolean = true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +60,8 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 R.color.PrimaryComplement
             )
         )
+
+        hideProgressShowButton()
 
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
@@ -71,7 +78,8 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             //Here the app tries to connect/bond with the device chosen in the listview
             Toast.makeText(v.context, "Connecting to: " + device.name + "...", Toast.LENGTH_SHORT).show()
             //Takes a bit of more time, maybe use GATT or something else if time for it exists
-            tryConnect(device)
+            showProgressHideButton()
+            BluetoothClient(device, this).start()
         }
 
 
@@ -85,6 +93,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         selectScannedDeviceList.onItemClickListener = AdapterView.OnItemClickListener { _, v, position, _ ->
             val device: BluetoothDevice = scannedDevicesList[position]
             //Here the app tries to connect/bond with the device chosen in the listview
+            showProgressHideButton()
             tryBonding(device, v)
         }
 
@@ -325,6 +334,45 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         device.createBond()
     }
 
+
+    class BluetoothClient(device: BluetoothDevice, uicontext : Context): Thread() {
+        private val socket = device.createRfcommSocketToServiceRecord(device.uuids?.get(0)!!.uuid)
+        private val context = uicontext
+
+        override fun run() {
+            try{
+                Log.d(TAG, "Connecting")
+                this.socket.connect()
+            } catch (e : IOException){
+                Log.d(TAG, "Connection failed")
+                Utils.UtilsObject.showToast("Connection failed, device may be already connected or out of range", context)
+            }
+
+            val outputStream = this.socket.outputStream
+            val inputStream = this.socket.inputStream
+
+            while(bluetoothConnectionThreadActive) {
+                if (sendBluetoothDataIsReady) {
+                    sendBluetoothDataIsReady = false
+                    try {
+                        outputStream.write(messageToSend.toByteArray())
+                        outputStream.flush()
+                        Log.d(TAG, "Sent")
+                    } catch(e: IOException) {
+                        Log.d(TAG, "Cannot send", e)
+                    }
+                }
+                if(recieveBluetoothDataIsReady){
+                    Log.d(TAG, "Cannot send")
+                }
+            }
+            outputStream.close()
+            inputStream.close()
+            this.socket.close()
+        }
+    }
+
+    /*
     private fun tryConnect(device: BluetoothDevice) {
         val thread = Thread {
             //create.bond() doesnt work for all APIs
@@ -340,13 +388,13 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             }
         }
         thread.start()
-    }
+    }*/
 
-    private fun showToast(toast: String?) {
+    /*private fun showToast(toast: String?) {
         runOnUiThread {
             Toast.makeText(this, toast, Toast.LENGTH_SHORT).show()
         }
-    }
+    }*/
 
     private val discoverReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -373,6 +421,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 //3 cases:
                 //case1: bonded already
                 if (mDevice!!.bondState == BluetoothDevice.BOND_BONDED) {
+                    hideProgressShowButton()
                     Toast.makeText(context, "Connected to: " + mDevice.name, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDED.")
                     Log.e(TAG, "BroadcastReceiver: BOND_BONDED." + mDevice.name)
@@ -390,6 +439,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 }
                 //case3: breaking a bond
                 if (mDevice.bondState == BluetoothDevice.BOND_NONE) {
+                    hideProgressShowButton()
                     Toast.makeText(context, "Connection failed", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "BroadcastReceiver: BOND_NONE.")
                     Log.e(TAG, "BroadcastReceiver: BOND_NONE." + mDevice.name)
@@ -402,6 +452,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
             if (action == BluetoothDevice.ACTION_ACL_CONNECTED) {
+                hideProgressShowButton()
                 val mDevice = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
                 Toast.makeText(context, "Connected to: " + mDevice?.name, Toast.LENGTH_SHORT).show()
             }
@@ -412,6 +463,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
             if (action == BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED) {
+                hideProgressShowButton()
                 val mDevice = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
                 Toast.makeText(
                     context,
@@ -426,6 +478,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
             if (action == BluetoothDevice.ACTION_ACL_DISCONNECTED) {
+                hideProgressShowButton()
                 val mDevice = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
                 Toast.makeText(context, "Disconnected: " + mDevice?.name, Toast.LENGTH_SHORT).show()
             }
@@ -475,6 +528,15 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun showProgressHideButton(){
+        progressBar.visibility = View.VISIBLE
+        refreshBluetoothDevicesButton.visibility = View.INVISIBLE
+    }
+    private fun hideProgressShowButton(){
+        progressBar.visibility = View.INVISIBLE
+        refreshBluetoothDevicesButton.visibility = View.VISIBLE
     }
 
     /*
