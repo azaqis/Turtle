@@ -51,6 +51,7 @@ class SaveFilesManager(con : Context) {
             fwProjectSaveFile.write(data.dragImage.toString() + "\n")
             fwProjectSaveFile.write(data.parameter.toString() + "\n")
             fwProjectSaveFile.write(data.text + "\n")
+            fwProjectSaveFile.write(data.type.toString() + "\n")
             Log.e("FILE_LOG", "Saved a DragDropBlock in: $projectName")
         }
         fwProjectSaveFile.flush()
@@ -136,6 +137,7 @@ class SaveFilesManager(con : Context) {
         var dragImageReadFromFile: Int = -1
         var parameterReadFromFile: Int = -1
         var textReadFromFile: String = ""
+        var type: DragDropBlock.e_type = DragDropBlock.e_type.CUSTOM
 
         File(context.filesDir,"$projectName.txt").useLines { lines ->
             lines.forEach {
@@ -146,10 +148,12 @@ class SaveFilesManager(con : Context) {
                     3 -> dragImageReadFromFile = it.toInt()
                     4 -> parameterReadFromFile = it.toInt()
                     5 -> textReadFromFile = it
+                    6 -> type = DragDropBlock.e_type.valueOf(it.toString())
                 }
-                if (count < 5) {
+                if (count < 6) {
                     count++
                 } else {
+                    Log.e("FILE_LOG", "Type read was: $type")
                     count = 0
                     projectItemsList.add(
                         DragDropBlock(
@@ -158,7 +162,8 @@ class SaveFilesManager(con : Context) {
                             textReadFromFile,
                             commandReadFromFile,
                             parameterReadFromFile,
-                            displayParameterReadFromFile
+                            displayParameterReadFromFile,
+                            type
                         )
                     )
                 }

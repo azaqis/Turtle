@@ -11,7 +11,7 @@ data class DragDropBlock(
     var parameter: Int,
     var displayParameter: Int,
     val type: e_type
-) {
+) : Serializable{
     enum class e_type{
         DRIVE,
         MODULE,

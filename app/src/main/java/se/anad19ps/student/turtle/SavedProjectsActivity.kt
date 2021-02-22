@@ -49,7 +49,8 @@ class SavedProjectsActivity : AppCompatActivity() {
                 "Insert text test $i",
                 "Garbage command",
                 1,
-                1
+                1,
+                DragDropBlock.e_type.DRIVE
             )
             itemList.add(item)
         }
@@ -71,6 +72,7 @@ class SavedProjectsActivity : AppCompatActivity() {
 
             val newArray : Array<DragDropBlock>
             newArray = arrayWithDragAndDropBlocks!!.toTypedArray()
+
 
             intent.putExtra("PROJECT_DATA", newArray)
             startActivity(intent)

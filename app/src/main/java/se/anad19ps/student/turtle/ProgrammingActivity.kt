@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.top_bar.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Semaphore
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.ItemClickListener {
     private enum class RunState {
@@ -63,12 +64,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         //I added code here start
         var intent = getIntent()
         val a : Array<DragDropBlock> = intent.getSerializableExtra("PROJECT_DATA") as Array<DragDropBlock>
-        itemList = a.toCollection(ArrayList())
+        //itemList = a.toCollection(ArrayList())
         //notifyDataSetChanged don't do anything
         //adapter.notifyDataSetChanged()
         //I added code here end
 		
-		//Commented out to be abble to populate from file
+		//Commented out to be able to populate from file
         //itemList = populateListGarbage(2, DragDropBlock.e_type.DRIVE)
 
         state = RunState.IDLE
@@ -144,7 +145,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
+                //Found a bug? One item of each kind (driving, module, custom gets automatically added in the programming view even if you dont click on an item in the spinner)
+                //itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
                 adapter.notifyDataSetChanged()
             }
         }
@@ -153,7 +155,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
+                //itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
                 adapter.notifyDataSetChanged()
             }
         }
@@ -162,7 +164,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
+                //itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
                 adapter.notifyDataSetChanged()
             }
         }
