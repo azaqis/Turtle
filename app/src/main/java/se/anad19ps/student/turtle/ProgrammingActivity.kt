@@ -1,13 +1,16 @@
 package se.anad19ps.student.turtle
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ArrayAdapter
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -19,8 +22,6 @@ import kotlinx.android.synthetic.main.top_bar.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Semaphore
 import java.util.*
-import kotlin.collections.ArrayList
-
 
 class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.ItemClickListener {
     private enum class RunState {
@@ -31,8 +32,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private var layoutManager: RecyclerView.LayoutManager? = null
     private lateinit var adapter: ProgrammingRecyclerAdapter
-    //I Changed list type to ArrayList
+
+    private lateinit var spinnerDriveAdapter : ProgrammingSpinnerAdapter
+    private lateinit var spinnerModulesAdapter : ProgrammingSpinnerAdapter
+    private lateinit var spinnerCustomAdapter : ProgrammingSpinnerAdapter
+
     private var itemList = ArrayList<DragDropBlock>()
+    private var driveBlocksSpinner = mutableListOf<DragDropBlock>()
+    private var modulesBlocksSpinner = mutableListOf<DragDropBlock>()
+    private var customBlocksSpinner = mutableListOf<DragDropBlock>()
+
     private lateinit var itemTouchHelper: ItemTouchHelper
     private lateinit var state: RunState
 
@@ -58,13 +67,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         //notifyDataSetChanged don't do anything
         //adapter.notifyDataSetChanged()
         //I added code here end
+		
+		//Commented out to be abble to populate from file
+        //itemList = populateListGarbage(2, DragDropBlock.e_type.DRIVE)
 
         state = RunState.IDLE
 
         layoutManager = LinearLayoutManager(this)
         programming_recycle_view.layoutManager = layoutManager
 
-        adapter = ProgrammingRecyclerAdapter(itemList, this)    //Setup adapter
+        adapter = ProgrammingRecyclerAdapter(itemList, this)
         programming_recycle_view.adapter = adapter
 
         itemTouchHelper = ItemTouchHelper(simpleCallback)
@@ -105,35 +117,61 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_delete_btn.setOnClickListener{
             //Maby getParent from adapter? Probably not a good solution for some reason
         }
+
+        programming_load_button.setOnClickListener{
+            loadList(populateListGarbage(20, DragDropBlock.e_type.DRIVE))
+        }
     }
 
+    /*May want to limit number of chars in each spinner item. Affects the size of the spinners*/
     private fun setupSpinners() {
-        val spinnerAdapterDriving = ArrayAdapter.createFromResource(
-            this,
-            R.array.list, R.layout.support_simple_spinner_dropdown_item
-        )
-        spinnerAdapterDriving.setDropDownViewResource(R.layout.programming_spinner_driving_dropdown_layout)
-        programming_spinner_driving.adapter = spinnerAdapterDriving
+        driveBlocksSpinner = populateListGarbage(5, DragDropBlock.e_type.DRIVE)
+        spinnerDriveAdapter = ProgrammingSpinnerAdapter(driveBlocksSpinner, this)
+        spinnerDriveAdapter.setDropDownViewResource(R.layout.programming_spinner_driving_dropdown_layout)
+        programming_spinner_driving.adapter = spinnerDriveAdapter
 
-        val spinnerAdapterModules = ArrayAdapter.createFromResource(
-            this,
-            R.array.list, R.layout.support_simple_spinner_dropdown_item
-        )
-        spinnerAdapterModules.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
-        programming_spinner_modules.adapter = spinnerAdapterModules
+        modulesBlocksSpinner = populateListGarbage(4, DragDropBlock.e_type.MODULE)
+        spinnerModulesAdapter = ProgrammingSpinnerAdapter(modulesBlocksSpinner, this)
+        spinnerModulesAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
+        programming_spinner_modules.adapter = spinnerModulesAdapter
 
-        val spinnerAdapterCustom = ArrayAdapter.createFromResource(
-            this,
-            R.array.list, R.layout.support_simple_spinner_dropdown_item
-        )
-        spinnerAdapterCustom.setDropDownViewResource(R.layout.programming_spinner_custom_dropdown_layout)
-        programming_spinner_custom.adapter = spinnerAdapterCustom
+        customBlocksSpinner = populateListGarbage(5, DragDropBlock.e_type.CUSTOM)
+        spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinner, this)
+        spinnerCustomAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
+        programming_spinner_custom.adapter = spinnerCustomAdapter
+
+        programming_spinner_driving.onItemSelectedListener = object: OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
+                adapter.notifyDataSetChanged()
+            }
+        }
+
+        programming_spinner_modules.onItemSelectedListener = object: OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
+                adapter.notifyDataSetChanged()
+            }
+        }
+
+        programming_spinner_custom.onItemSelectedListener = object: OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
+                adapter.notifyDataSetChanged()
+            }
+        }
     }
 
-    private fun populateListGarbage(num: Int): List<DragDropBlock> {
-        itemList = ArrayList<DragDropBlock>()
+    private fun populateListGarbage(num: Int, type: DragDropBlock.e_type): ArrayList<DragDropBlock> {
+        val list = ArrayList<DragDropBlock>()
 
-        for (i in 0 until num) {
+        for (i in 0 until num){
             val drawable = when (i % 4) {
                 0 -> R.drawable.ic_arrow_up
                 1 -> R.drawable.ic_arrow_down
@@ -146,13 +184,19 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Insert text $i",
                 "Garbage command",
                 1,
-                1
+                1,
+                type
             )
-            itemList.add(item)
+            list.add(item)
         }
-        return itemList
+        return list
     }
 
+    private fun loadList(list: MutableList<DragDropBlock>){
+        itemList.clear()
+        itemList.addAll(list)
+        adapter.notifyDataSetChanged()
+    }
 
     /*For rearranging recyclerview*/
     private var simpleCallback = object : ItemTouchHelper.SimpleCallback(
@@ -165,8 +209,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
         ): Boolean {
-            var startPosition = viewHolder.adapterPosition
-            var endPosition = target.adapterPosition
+            val startPosition = viewHolder.adapterPosition
+            val endPosition = target.adapterPosition
 
             Collections.swap(itemList, startPosition, endPosition)
             recyclerView.adapter?.notifyItemMoved(startPosition, endPosition)
@@ -174,7 +218,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            var position = viewHolder.adapterPosition
+            val position = viewHolder.adapterPosition
 
             itemList.removeAt(position)
             adapter.notifyItemRemoved(position)
@@ -226,12 +270,13 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
         val delayTimeMillis : Long = 100
 
-        itemList.forEachIndexed{index, item ->
+        itemList.forEachIndexed{ index, item ->
             recycler.scrollToPosition(index) //Scrolls list so that current item is on screen
 
             while (item.displayParameter > 0) {
                 when (state) {  //State machine
                     RunState.RUNNING -> {
+                        /*ADD COMMAND TO BLUETOOTH HERE?*/
                         delay(delayTimeMillis) //Will finish current 'delayTimeMillis' period before pause
                         item.displayParameter--
                         adapter.notifyDataSetChanged()

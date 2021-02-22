@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/rounded_style_fragment"
-    tools:context=".ControllerTopFragment" >
+    android:background="@drawable/controller_debug_fragment_style"
+    tools:context=".ControllerDebugFragment" >
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,6 +23,35 @@
         <include
             android:id="@+id/topBar"
             layout="@layout/top_bar"/>
+        <!-- IF we would like to see currently connected device but problem
+         is that we cant get info about that from the API, only intent-changes,
+         so we cant get that info on startup.
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="20dp"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/textViewTitleConnection"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/PrimaryDark"
+                android:text="Current connected device:"/>
+
+            <TextView
+                android:id="@+id/textViewCurrentConnectedDevice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/PrimaryDark"
+                android:text="placeholder"/>
+
+        </LinearLayout>
+        -->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -82,17 +111,35 @@
         </LinearLayout>
 
 
-
-
-        <Button
-            android:id="@+id/refreshBluetoothDevicesButton"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Refresh"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_margin="10dp">
+
+            <Button
+                android:id="@+id/refreshBluetoothDevicesButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Refresh"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_gravity="center"/>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </LinearLayout>
 
