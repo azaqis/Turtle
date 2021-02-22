@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val intent = startActivity(Intent(this, ManageCustomCommandsActivity::class.java))
+        val intent = startActivity(Intent(this, SavedProjectsActivity::class.java))
         /*toggle = ActionBarDrawerToggle(
             this,
             findViewById(R.id.drawerLayout),

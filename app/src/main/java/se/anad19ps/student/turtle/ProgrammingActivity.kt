@@ -1,5 +1,6 @@
 package se.anad19ps.student.turtle
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -30,7 +31,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private var layoutManager: RecyclerView.LayoutManager? = null
     private lateinit var adapter: ProgrammingRecyclerAdapter
-    private var itemList = mutableListOf<DragDropBlock>()
+    //I Changed list type to ArrayList
+    private var itemList = ArrayList<DragDropBlock>()
     private lateinit var itemTouchHelper: ItemTouchHelper
     private lateinit var state: RunState
 
@@ -47,7 +49,15 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         setupButtons()
 
-        populateListGarbage(100)
+        //populateListGarbage(100)
+
+        //I added code here start
+        var intent = getIntent()
+        val a : Array<DragDropBlock> = intent.getSerializableExtra("PROJECT_DATA") as Array<DragDropBlock>
+        itemList = a.toCollection(ArrayList())
+        //notifyDataSetChanged don't do anything
+        //adapter.notifyDataSetChanged()
+        //I added code here end
 
         state = RunState.IDLE
 
@@ -59,6 +69,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(programming_recycle_view)
+
+
     }
 
     private fun setupButtons(){
