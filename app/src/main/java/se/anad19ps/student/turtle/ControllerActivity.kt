@@ -16,23 +16,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
-        val spinnerSpinnerView = findViewById<Spinner>(R.id.spinnerView)
-        val adapterSpinnerView = ArrayAdapter.createFromResource(
-            this,
-            R.array.controllerSpinnerView, R.layout.controller_spinner_layout
-        )
-        adapterSpinnerView.setDropDownViewResource(R.layout.controller_spinner_dropdown_layout)
-        spinnerSpinnerView.adapter = adapterSpinnerView
-        spinnerSpinnerView.onItemSelectedListener = this
-
-        val spinnerSpinnerController = findViewById<Spinner>(R.id.spinnerController)
-        val adapterSpinnerController = ArrayAdapter.createFromResource(
-            this,
-            R.array.controllerSpinnerController, R.layout.controller_spinner_layout
-        )
-        adapterSpinnerController.setDropDownViewResource(R.layout.controller_spinner_dropdown_layout)
-        spinnerSpinnerController.adapter = adapterSpinnerController
-        spinnerSpinnerController.onItemSelectedListener = this
+        setupSpinnerAdapters()
 
     }
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -42,5 +26,39 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
         TODO("Not yet implemented")
+    }
+
+    private fun setupSpinnerAdapters(){
+        val spinnerSpinnerView = findViewById<Spinner>(R.id.spinnerView)
+        val adapterSpinnerView = ArrayAdapter.createFromResource(
+            this,
+            R.array.controllerSpinnerView, R.layout.controller_spinner_layout
+        )
+        adapterSpinnerView.setDropDownViewResource(R.layout.controller_spinner_dropdown_layout)
+        spinnerSpinnerView.adapter = adapterSpinnerView
+
+
+        spinnerSpinnerView.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+        }
+
+        //--------------------------------------------------------------------------------------------------------------------------------
+
+
+        val spinnerSpinnerController = findViewById<Spinner>(R.id.spinnerController)
+        val adapterSpinnerController = ArrayAdapter.createFromResource(
+            this,
+            R.array.controllerSpinnerController, R.layout.controller_spinner_layout
+        )
+        adapterSpinnerController.setDropDownViewResource(R.layout.controller_spinner_dropdown_layout)
+        spinnerSpinnerController.adapter = adapterSpinnerController
+        spinnerSpinnerController.onItemSelectedListener = this
     }
 }

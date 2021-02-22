@@ -35,11 +35,11 @@
 
             <fragment
                 android:id="@+id/fragmentTop"
-                android:name="se.anad19ps.student.turtle.ControllerTopFragment"
+                android:name="se.anad19ps.student.turtle.ControllerDebugFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
-                tools:layout="@layout/fragment_controller_top" />
+                tools:layout="@layout/fragment_controller_debug" />
 
         </LinearLayout>
 
@@ -56,6 +56,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/gradient_background_spinner" />
+
+            <fragment
+                android:id="@+id/fragmentBottom"
+                android:name="se.anad19ps.student.turtle.ControllerArrowButtonsFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                tools:layout="@layout/fragment_controller_arrow_buttons" />
         </LinearLayout>
     </LinearLayout>
 
