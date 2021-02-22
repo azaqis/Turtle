@@ -21,11 +21,40 @@
             android:gravity="center">
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonAvoidObstacles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Avoidance" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonStop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonLineFollower"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Line Follow"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="20sp">
+
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonUp"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_margin="20dp"
-                android:background="@drawable/controller_arrow_button_up"/>
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:background="@drawable/controller_arrow_button_up"
+                android:layout_marginLeft="20sp"
+                android:layout_marginRight="20sp"/>
 
         </LinearLayout>
 
@@ -35,26 +64,27 @@
             android:orientation="horizontal"
             android:gravity="center">
 
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonLeft"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="80sp"
+                android:layout_height="80sp"
                 android:background="@drawable/controller_arrow_button_left"
-                android:layout_margin="20dp"/>
+                android:gravity="left" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonDown"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="80sp"
+                android:layout_height="80sp"
                 android:background="@drawable/controller_arrow_button_down"
-                android:layout_margin="20dp"/>
+                android:layout_marginLeft="20sp"
+                android:layout_marginRight="20sp"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonRight"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:background="@drawable/controller_arrow_button_right"
-                android:layout_margin="20dp"/>
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:background="@drawable/controller_arrow_button_right" />
 
         </LinearLayout>
 

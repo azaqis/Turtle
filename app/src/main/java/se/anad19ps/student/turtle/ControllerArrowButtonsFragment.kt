@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.activity_select_bluetooth_device.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -47,22 +50,37 @@ class ControllerArrowButtonsFragment : Fragment() {
         val btnDown = root.findViewById<View>(R.id.buttonDown) as Button
         val btnLeft = root.findViewById<View>(R.id.buttonLeft) as Button
         val btnRight = root.findViewById<View>(R.id.buttonRight) as Button
+        val btnAvoidObstacles = root.findViewById<View>(R.id.buttonAvoidObstacles) as Button
+        val btnLineFollow = root.findViewById<View>(R.id.buttonLineFollower) as Button
+        val btnStop = root.findViewById<View>(R.id.buttonStop) as Button
 
         btnUp.setOnClickListener {
             vibrate(requireView())
-            Utils.UtilsObject.bluetoothSendString("2")    //Switch-case in arduino-code, 2 is forward, 8 is backwards etc.
+            Utils.UtilsObject.bluetoothSendString("2", root.context)    //Switch-case in arduino-code, 2 is forward, 8 is backwards etc.
         }
         btnDown.setOnClickListener {
             vibrate(requireView())
-            Utils.UtilsObject.bluetoothSendString("8")
+            Utils.UtilsObject.bluetoothSendString("8", root.context)
         }
         btnLeft.setOnClickListener {
             vibrate(requireView())
-            Utils.UtilsObject.bluetoothSendString("4")
+            Utils.UtilsObject.bluetoothSendString("4", root.context)
         }
         btnRight.setOnClickListener {
             vibrate(requireView())
-            Utils.UtilsObject.bluetoothSendString("6")
+            Utils.UtilsObject.bluetoothSendString("6", root.context)
+        }
+        btnAvoidObstacles.setOnClickListener {
+            vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString("3", root.context)
+        }
+        btnLineFollow.setOnClickListener {
+            vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString("1", root.context)
+        }
+        btnStop.setOnClickListener {
+            vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString("5", root.context)
         }
 
         return root
