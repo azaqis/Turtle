@@ -1,5 +1,6 @@
 package se.anad19ps.student.turtle
 
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -18,6 +20,7 @@ class ProgrammingRecyclerAdapter(
 
 ) : RecyclerView.Adapter<ProgrammingRecyclerAdapter.InnerViewHolder>() {
     private lateinit var par : ViewGroup
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -27,6 +30,7 @@ class ProgrammingRecyclerAdapter(
         par = parent
         return InnerViewHolder(itemView)
     }
+
     /*Fill view holder with data. Remember that recyclerview contains re-usable holders that needs to be loaded when enetring screen*/
     override fun onBindViewHolder(
         holder: ProgrammingRecyclerAdapter.InnerViewHolder,
@@ -36,19 +40,15 @@ class ProgrammingRecyclerAdapter(
         holder.dragImage.setImageResource(itemList[position].dragImage)
         holder.text.text = itemList[position].text
         holder.firstButton.text = itemList[position].displayParameter.toString()
-    }
 
-    fun getItemById(id : Int) : DragDropBlock{
-        return itemList[id]
-    }
-
-    fun getList() : List<DragDropBlock>{
-        return itemList
-    }
-
-    /*I get the feeling Peter will not like this solution...*/
-    fun getParent() : ViewGroup{
-        return par
+        when(itemList[position].type){
+            DragDropBlock.e_type.DRIVE ->
+                holder.firstButton.setBackgroundResource(R.drawable.programming_card_parameter_button_drive)
+            DragDropBlock.e_type.MODULE ->
+                holder.firstButton.setBackgroundResource(R.drawable.programming_card_parameter_button_module)
+            DragDropBlock.e_type.CUSTOM ->
+                holder.firstButton.setBackgroundResource(R.drawable.programming_card_parameter_button_custom)
+        }
     }
 
     override fun getItemCount() = itemList.count()
@@ -57,7 +57,7 @@ class ProgrammingRecyclerAdapter(
         var dragImage: ImageView = view.findViewById(R.id.card_image_drag_dots)
         var directionImage: ImageView = view.findViewById(R.id.card_image_direction)
         var text: TextView = view.findViewById(R.id.card_text)
-        var firstButton: Button = view.findViewById<Button>(R.id.programming_card_button)
+        var firstButton: Button = view.findViewById(R.id.programming_card_button)
 
         init {
             view.setOnClickListener(this)

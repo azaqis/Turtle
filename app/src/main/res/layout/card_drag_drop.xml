@@ -5,10 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_drag_drop"
     android:layout_margin="5dp"
-    app:cardBackgroundColor="#99AFD7"
     app:cardCornerRadius="12dp"
     app:cardElevation="3dp">
-    <!--app:contentPadding="4dp"-->
+    <!--    app:cardBackgroundColor="#99AFD7"-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,11 +48,12 @@
             android:id="@+id/programming_card_button"
             android:layout_width="70dp"
             android:layout_height="50dp"
-            android:background="@drawable/programming_card_parameter_button"
+            android:background="@drawable/programming_card_parameter_button_drive"
             android:scaleType="fitCenter"
             android:padding="10dp"
             android:text="1s"
             android:textColor="@color/white"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
