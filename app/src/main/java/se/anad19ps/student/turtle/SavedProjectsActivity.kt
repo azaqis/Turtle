@@ -1,103 +1,83 @@
 package se.anad19ps.student.turtle
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
+import android.util.Log
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ListAdapter
+import android.widget.Toast
 import java.io.File
 import kotlinx.android.synthetic.main.activity_saved_projects.*
+import kotlinx.android.synthetic.main.activity_select_bluetooth_device.*
+import kotlinx.android.synthetic.main.drawer_layout.*
+import kotlinx.android.synthetic.main.top_bar.*
+import java.io.FileWriter
 
 class SavedProjectsActivity : AppCompatActivity() {
 
     companion object {
-        val projectNamesFile = "projectNames.txt"
-
-        lateinit var arrayWithProjectNames: List<String>
-        lateinit var savedProjectsListViewAdapter : ArrayAdapter<String>
+        private lateinit var savedProjectsListViewAdapter : ArrayAdapter<String>
+        private lateinit var savedFilesManager : SaveFilesManager
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_saved_projects)
 
-        loadNamesOfProjects()
+        savedFilesManager = SaveFilesManager(this)
 
-        savedProjectsListViewAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayWithProjectNames)
+        savedProjectsListViewAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, savedFilesManager.getArrayWithNames())
         savedProjectsListView.adapter = savedProjectsListViewAdapter
-    }
 
-    fun saveProject(projectName: String, saveDataList: MutableList<DragDropBlock>) {
-        File(projectNamesFile).bufferedWriter().use { out ->
-            out.write("$projectName.txt")
-            out.write("\n")
-        }
+        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
-        File("$projectName.txt").bufferedWriter().use { out ->
-            for (data: DragDropBlock in saveDataList) {
-                out.write(data.command)
-                out.write("\n")
-                out.write(data.directionImage)
-                out.write("\n")
-                out.write(data.displayParameter)
-                out.write("\n")
-                out.write(data.dragImage)
-                out.write("\n")
-                out.write(data.parameter)
-                out.write("\n")
-                out.write(data.text)
-                out.write("\n")
+        //TEST CODE
+        var itemList = mutableListOf<DragDropBlock>()
+        val num = 5
+
+        for (i in 0 until num) {
+            val drawable = when (i % 4) {
+                0 -> R.drawable.ic_arrow_up
+                1 -> R.drawable.ic_arrow_down
+                2 -> R.drawable.ic_arrow_right
+                else -> R.drawable.ic_arrow_left
             }
+            val item = DragDropBlock(
+                R.drawable.ic_drag_dots,
+                drawable,
+                "Insert text test $i",
+                "Garbage command",
+                1,
+                1
+            )
+            itemList.add(item)
         }
-    }
 
-    fun loadNamesOfProjects() {
-        arrayWithProjectNames = File(projectNamesFile).readLines()
-        savedProjectsListViewAdapter.notifyDataSetChanged()
-    }
+        savedFilesManager.saveProject("MyProject1", itemList)
+        savedFilesManager.saveProject("MyProject2", itemList)
+        savedFilesManager.saveProject("MyProject3", itemList)
+        savedFilesManager.saveProject("MyProject4", itemList)
+        savedFilesManager.saveProject("MyProject5", itemList)
+        savedFilesManager.saveProject("MyProject6", itemList)
+        savedFilesManager.saveProject("MyProject7", itemList)
 
-    fun loadProject(projectName: String): MutableList<DragDropBlock>? {
-        var count = 0;
-        var projectItemsList = mutableListOf<DragDropBlock>()
+        savedProjectsListView.onItemClickListener = AdapterView.OnItemClickListener { _, v, position, _ ->
+            Toast.makeText(this, "Clicked on: " + savedFilesManager.getArrayWithNames()[position], Toast.LENGTH_SHORT).show()
 
-        //null would be a better init, but don't know if i can change DragDropBlock to accept null?
-        var commandReadFromFile: String = ""
-        var directionImageReadFromFile: Int = -1
-        var displayParameterReadFromFile: Int = -1
-        var dragImageReadFromFile: Int = -1
-        var parameterReadFromFile: Int = -1
-        var textReadFromFile: String = ""
+            val intent = Intent(this, ProgrammingActivity::class.java)
 
-        File("$projectName.txt").useLines { lines ->
-            lines.forEach {
-                when (count) {
-                    0 -> commandReadFromFile = it
-                    1 -> directionImageReadFromFile = it.toInt()
-                    2 -> displayParameterReadFromFile = it.toInt()
-                    3 -> dragImageReadFromFile = it.toInt()
-                    4 -> parameterReadFromFile = it.toInt()
-                    5 -> textReadFromFile = it
-                }
-                if (count < 5) {
-                    count++
-                } else {
-                    count = 0
-                    projectItemsList.add(
-                        DragDropBlock(
-                            dragImageReadFromFile,
-                            directionImageReadFromFile,
-                            textReadFromFile,
-                            commandReadFromFile,
-                            parameterReadFromFile,
-                            displayParameterReadFromFile
-                        )
-                    )
-                }
-            }
-            return projectItemsList
+            val arrayWithDragAndDropBlocks = savedFilesManager.loadProject(savedFilesManager.getArrayWithNames()[position])
+
+            val newArray : Array<DragDropBlock>
+            newArray = arrayWithDragAndDropBlocks!!.toTypedArray()
+
+            intent.putExtra("PROJECT_DATA", newArray)
+            startActivity(intent)
         }
-    }
 
+        //TEST CODE END
+
+
+    }
 }
