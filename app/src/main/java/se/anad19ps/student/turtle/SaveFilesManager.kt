@@ -1,9 +1,14 @@
 package se.anad19ps.student.turtle
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.util.Log
+import android.widget.Toast
 import java.io.File
 import java.io.FileWriter
+import java.util.*
+import kotlin.collections.ArrayList
 
 class SaveFilesManager(con : Context) {
 
@@ -22,6 +27,38 @@ class SaveFilesManager(con : Context) {
 
             if(File(context.filesDir, projectNamesFile).isFile){
                 Log.e("FILE_LOG", "projectNames.txt was successfully created")
+
+                //TEST CODE BEGIN, This code only adds test projects on first opening of the app, after first time opening, these projects should be opened by reading from the save file
+                var itemList = mutableListOf<DragDropBlock>()
+                val num = 5
+
+                for (i in 0 until num) {
+                    val drawable = when (i % 4) {
+                        0 -> R.drawable.ic_arrow_up
+                        1 -> R.drawable.ic_arrow_down
+                        2 -> R.drawable.ic_arrow_right
+                        else -> R.drawable.ic_arrow_left
+                    }
+                    val item = DragDropBlock(
+                        R.drawable.ic_drag_dots,
+                        drawable,
+                        "Insert text test $i",
+                        "Garbage command",
+                        1,
+                        1,
+                        DragDropBlock.e_type.DRIVE
+                    )
+                    itemList.add(item)
+                }
+
+                saveProject("MyProject1:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList)
+                saveProject("MyProject2:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList)
+                saveProject("MyProject3:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList)
+                saveProject("MyProject4:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList)
+                saveProject("MyProject5:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList)
+                saveProject("MyProject6:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList)
+                saveProject("MyProject7:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList)
+                //TEST CODE END
             }
             else{
                 Log.e("FILE_LOG", "projectNames.txt could not be created")
@@ -33,18 +70,47 @@ class SaveFilesManager(con : Context) {
         }
     }
 
-    fun saveProject(projectName: String, saveDataList: MutableList<DragDropBlock>) {
-        addNewName(projectName)
+    fun saveProject(projectName: String, saveDataList: MutableList<DragDropBlock>){
+        Log.e("FILE_LOG", "Request to save: $projectName")
+        if(!addNewName(projectName)){
+            Log.e("FILE_LOG", "Response that name exists, asking user for overwriting $projectName")
+            var dialog = AlertDialog.Builder(context)
+            dialog.setTitle("Project name exist already")
+            dialog.setMessage("Do you want to override the existing save file?")
+            val dialogClickListener = DialogInterface.OnClickListener{_, which ->
+                when(which){
+                    DialogInterface.BUTTON_NEGATIVE ->{
+                        Toast.makeText(context, "Did not overwrite save file", Toast.LENGTH_SHORT).show()
+                    }
+                    DialogInterface.BUTTON_POSITIVE ->{
+                        Toast.makeText(context, "Overwrite save file", Toast.LENGTH_SHORT).show()
+                        Log.e("FILE_LOG", "Overwriting: $projectName")
+                        saveProjectToFile(projectName, saveDataList)
+                    }
+
+                }
+            }
+            dialog.setPositiveButton("Yes", dialogClickListener)
+            dialog.setNegativeButton("No", dialogClickListener)
+            dialog.create().show()
+        }
+        else{
+            saveProjectToFile(projectName, saveDataList)
+        }
+    }
+
+    private fun saveProjectToFile(projectName: String, saveDataList: MutableList<DragDropBlock>){
+        Log.e("FILE_LOG", "Saving: $projectName")
 
         //If append is changed to false this code should not be needed, this code is to clear file from text
-        if(File(context.filesDir,"$projectName.txt").isFile){
-            File(context.filesDir,"$projectName.txt").delete()
+        if (File(context.filesDir, "$projectName.txt").isFile) {
+            File(context.filesDir, "$projectName.txt").delete()
         }
 
         //Save DragDropBlock info, append: true should maybe be changed to false and code over might then not be needed
-        File(context.filesDir,"$projectName.txt").createNewFile()
+        File(context.filesDir, "$projectName.txt").createNewFile()
         val fwProjectSaveFile = FileWriter(File(context.filesDir, "$projectName.txt"), true)
-        for (data: DragDropBlock in saveDataList){
+        for (data: DragDropBlock in saveDataList) {
             fwProjectSaveFile.write(data.command + "\n")
             fwProjectSaveFile.write(data.directionImage.toString() + "\n")
             fwProjectSaveFile.write(data.displayParameter.toString() + "\n")
@@ -56,33 +122,16 @@ class SaveFilesManager(con : Context) {
         }
         fwProjectSaveFile.flush()
         fwProjectSaveFile.close()
-
-        /*
-        File(this.filesDir,"$projectName.txt").bufferedWriter().use { out ->
-            for (data: DragDropBlock in saveDataList) {
-                out.write(data.command)
-                out.write("\n")
-                out.write(data.directionImage)
-                out.write("\n")
-                out.write(data.displayParameter)
-                out.write("\n")
-                out.write(data.dragImage)
-                out.write("\n")
-                out.write(data.parameter)
-                out.write("\n")
-                out.write(data.text)
-                out.write("\n")
-            }
-        }
-         */
     }
 
-    fun projectNameExits(name : String) : Boolean{
-        return arrayWithProjectNames.contains(name)
+    fun projectNameExist(name : String) : Boolean{
+        //Change to return on same line, written this way for dubuging
+        val nameExist = arrayWithProjectNames.contains(name)
+        return nameExist
     }
 
     fun addNewName(projectName: String) : Boolean{
-        if(!projectNameExits(projectName)){
+        if(!projectNameExist(projectName)){
             arrayWithProjectNames.add(projectName)
             updateNameFile()
             return true
@@ -91,18 +140,17 @@ class SaveFilesManager(con : Context) {
     }
 
     fun updateNameFile(){
-        for(projectName : String in arrayWithProjectNames){
-            //Add new name to projectNamesFile.txt, should check if name already exists
-            val fwProjectsNamesFile = FileWriter(File(context.filesDir, projectNamesFile), true)
-            fwProjectsNamesFile.write(projectName + "\n")
-            Log.e("FILE_LOG", "Saved name:  $projectName")
-            fwProjectsNamesFile.flush()
-            fwProjectsNamesFile.close()
+        val fwProjectsNamesFile = FileWriter(File(context.filesDir, projectNamesFile), false)
+        for(name : String  in arrayWithProjectNames){
+            fwProjectsNamesFile.write(name + "\n")
+            Log.e("FILE_LOG", "Saved name to file:  $name")
         }
+        fwProjectsNamesFile.flush()
+        fwProjectsNamesFile.close()
     }
 
     fun deleteProject(projectName : String) : Boolean{
-        if(projectNameExits(projectName)){
+        if(projectNameExist(projectName)){
             if(File(context.filesDir, "$projectName.txt").delete()){
                 arrayWithProjectNames.remove(projectName)
                 Log.e("FILE_LOG", "Deleted: " + projectName)
@@ -115,9 +163,14 @@ class SaveFilesManager(con : Context) {
     }
 
     fun loadNamesOfProjects() {
-        if(File(context.filesDir, projectNamesFile).isFile){
-            File(context.filesDir, projectNamesFile).bufferedReader().forEachLine {
-                addNewName(it)
+        Log.e("FILE_LOG", "Loading names requested")
+        if(File(context.filesDir, projectNamesFile).isFile) {
+            File(context.filesDir, projectNamesFile).useLines { lines ->
+                lines.forEach {
+                    val readVal = it
+                    Log.e("FILE_LOG", "Loaded from saved names file $readVal")
+                    arrayWithProjectNames.add(readVal)
+                }
             }
         }
     }

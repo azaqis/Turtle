@@ -3,12 +3,9 @@ package se.anad19ps.student.turtle
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -83,7 +80,7 @@ class HamburgerMenu(){
                     con.finish()
                 }
                 R.id.drawerItemManageCommands -> {
-                    val intent = Intent(con, ManageCustomCommandsActivity::class.java)
+                    val intent = Intent(con, ManageCustomDragDropBlocksActivity::class.java)
                     ContextCompat.startActivity(con, intent, null)
                     con.finish()
                 }

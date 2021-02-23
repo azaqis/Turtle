@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.activity_select_bluetooth_device.*
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
 import java.io.FileWriter
+import java.util.*
 
 class SavedProjectsActivity : AppCompatActivity() {
 
@@ -33,6 +34,7 @@ class SavedProjectsActivity : AppCompatActivity() {
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
         //TEST CODE
+        /*
         var itemList = mutableListOf<DragDropBlock>()
         val num = 5
 
@@ -62,6 +64,9 @@ class SavedProjectsActivity : AppCompatActivity() {
         savedFilesManager.saveProject("MyProject5", itemList)
         savedFilesManager.saveProject("MyProject6", itemList)
         savedFilesManager.saveProject("MyProject7", itemList)
+        savedProjectsListViewAdapter.notifyDataSetChanged()
+        */
+        //TEST CODE END
 
         savedProjectsListView.onItemClickListener = AdapterView.OnItemClickListener { _, v, position, _ ->
             Toast.makeText(this, "Clicked on: " + savedFilesManager.getArrayWithNames()[position], Toast.LENGTH_SHORT).show()
@@ -73,13 +78,9 @@ class SavedProjectsActivity : AppCompatActivity() {
             val newArray : Array<DragDropBlock>
             newArray = arrayWithDragAndDropBlocks!!.toTypedArray()
 
-
+            intent.putExtra("PROJECT_NAME", savedFilesManager.getArrayWithNames()[position])
             intent.putExtra("PROJECT_DATA", newArray)
             startActivity(intent)
         }
-
-        //TEST CODE END
-
-
     }
 }
