@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ControllerJoystickFragment"
+    android:background="@color/PrimaryLight"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:clickable="true"
+    android:focusable="true">
+
+    <se.anad19ps.student.turtle.JoystickView
+        android:id="@+id/joystick"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

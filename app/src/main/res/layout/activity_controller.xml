@@ -32,8 +32,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/gradient_background_spinner" />
-
-            <fragment
+            <!--Fragment doesnt work, doesnt change onItemListener-->
+            <FrameLayout
                 android:id="@+id/fragmentTop"
                 android:name="se.anad19ps.student.turtle.ControllerDebugFragment"
                 android:layout_width="match_parent"
@@ -56,8 +56,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/gradient_background_spinner" />
-
-            <fragment
+            <!--Fragment doesnt work, doesnt change onItemListener-->
+            <FrameLayout
                 android:id="@+id/fragmentBottom"
                 android:name="se.anad19ps.student.turtle.ControllerArrowButtonsFragment"
                 android:layout_width="match_parent"

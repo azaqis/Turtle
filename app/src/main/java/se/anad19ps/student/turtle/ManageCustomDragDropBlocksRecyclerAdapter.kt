@@ -21,6 +21,7 @@ RecyclerView.Adapter<ManageCustomDragDropBlocksRecyclerAdapter.ViewHolder>(){
             itemView.setOnClickListener { v : View ->
                 val position: Int = adapterPosition
                 val intent = Intent(itemView.context, EditCustomDragDropBlocksActivity::class.java)
+
                 itemView.context.startActivity(intent)
 
             }
