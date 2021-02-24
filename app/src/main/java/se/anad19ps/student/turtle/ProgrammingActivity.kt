@@ -1,10 +1,12 @@
 package se.anad19ps.student.turtle
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
@@ -48,6 +50,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private val sem = Semaphore(1)
 
+    private lateinit var saveFilesManager : SaveFilesManager
+    private lateinit var projectName : String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,9 +67,14 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         //populateListGarbage(100)
 
         //I added code here start
+        saveFilesManager = SaveFilesManager(this)
+
+        //Should change so that i send project name to this activity and then load the data via the savedFilesManager here instead
         var intent = getIntent()
         val a : Array<DragDropBlock> = intent.getSerializableExtra("PROJECT_DATA") as Array<DragDropBlock>
-        //itemList = a.toCollection(ArrayList())
+        itemList = a.toCollection(ArrayList())
+
+        projectName = intent.getSerializableExtra("PROJECT_NAME") as String
         //notifyDataSetChanged don't do anything
         //adapter.notifyDataSetChanged()
         //I added code here end
@@ -119,8 +129,34 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             //Maby getParent from adapter? Probably not a good solution for some reason
         }
 
-        programming_load_button.setOnClickListener{
-            loadList(populateListGarbage(20, DragDropBlock.e_type.DRIVE))
+        programming_load_button.setOnClickListener {
+            //loadList(populateListGarbage(20, DragDropBlock.e_type.DRIVE))
+
+            var dialog = android.app.AlertDialog.Builder(this)
+            dialog.setTitle("Do you want to save this project before opening a new project?")
+            dialog.setMessage("If you don't save, all progress in the current project will be lost")
+            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_NEGATIVE -> {
+                        Toast.makeText(
+                            this,
+                            "Did not save project",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        Toast.makeText(
+                            this,
+                            "Saving project...",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        saveFilesManager.saveProject(projectName, itemList)
+                    }
+                }
+            }
+            dialog.setPositiveButton("Yes", dialogClickListener)
+            dialog.setNegativeButton("No", dialogClickListener)
+            dialog.create().show()
         }
     }
 

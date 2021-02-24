@@ -13,7 +13,6 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -25,6 +24,7 @@ import kotlinx.android.synthetic.main.activity_select_bluetooth_device.*
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
 import java.io.IOException
+import java.io.OutputStream
 
 
 class SelectBluetoothDeviceActivity : AppCompatActivity() {
@@ -41,11 +41,13 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         lateinit var scannedDevicesNameListViewAdapter: ArrayAdapter<String>
         lateinit var pairedDevicesNameListViewAdapter: ArrayAdapter<String>
 
-        var sendBluetoothDataIsReady : Boolean = false
-        var receiveBluetoothDataIsReady : Boolean = false
-        var messageToSend : String? = null
         var bluetoothConnectionThreadActive : Boolean = false
+        var inputBuffer = ByteArray(1024)
+        var messageRecieved : String? = null
+        lateinit var clientThread : BluetoothClient
     }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +58,8 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 R.color.PrimaryComplement
             )
         )
+
+
         hideProgressShowButton()
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
@@ -104,7 +108,8 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             Utils.UtilsObject.showUpdatedToast("Connecting to: " + device.name + "...", this)
 
             showProgressHideButton()
-            BluetoothClient(device, this).start()
+            clientThread = BluetoothClient(device, this)
+            clientThread.start()
         }
 
 
@@ -171,6 +176,11 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
 
 
+
+
+
+
+
         //OBS! DOES NOT UPDATE IF REMOVED EVEN IF IT EXISTS IN onCreate!!!!!
         pairedDevicesNameListViewAdapter = ArrayAdapter(
             this,
@@ -178,6 +188,11 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             getDevicesNameArray(pairedDevicesList)
         )
         selectPairedDeviceList.adapter = pairedDevicesNameListViewAdapter
+
+
+
+
+
 
 
 
@@ -293,13 +308,25 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
 
 
+
+
+
+
+
+
+
         //OBS! THIS DOES NOT UPDATE IF REMOVED EVEN IF IT EXISTS IN onCreate!!!!!
         scannedDevicesNameListViewAdapter = ArrayAdapter(
             this,
             android.R.layout.simple_list_item_1,
             getDevicesNameArray(scannedDevicesList)
         )
-        selectScannedDeviceList.adapter = scannedDevicesNameListViewAdapter
+
+
+
+
+
+
 
 
 
@@ -321,16 +348,27 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
     }
 
     private fun tryBonding(device: BluetoothDevice, v: View){
-        Utils.UtilsObject.showUpdatedToast("Trying to bond to device: " + device.name, this)
-        Log.d(TAG, "Trying to bond with " + device.name)
+        //Dont bond if it is already bonded, then connect instead
+        if(!pairedDevicesList.contains(device)){
+            Utils.UtilsObject.showUpdatedToast("Trying to bond to device: " + device.name, this)
+            Log.d(TAG, "Trying to bond with " + device.name)
 
-        device.createBond()
+            device.createBond()
+        }
+        else{
+            Utils.UtilsObject.showUpdatedToast("Connecting to: " + device.name + "...", this)
+            Log.d(TAG, "Trying to connect to: " + device.name)
+
+            clientThread = BluetoothClient(device, this)
+            clientThread.start()
+        }
     }
 
 
     class BluetoothClient(device: BluetoothDevice, uiactivity : Activity): Thread() {
         private val socket = device.createRfcommSocketToServiceRecord(device.uuids?.get(0)!!.uuid)
         private val activity = uiactivity
+        private lateinit var outputStream : OutputStream
 
         override fun run() {
             bluetoothConnectionThreadActive = true
@@ -348,27 +386,32 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             }
 
             if(this.socket.isConnected){
-                val outputStream = this.socket.outputStream
+                outputStream = this.socket.outputStream
                 val inputStream = this.socket.inputStream
+                var bytes : Int
 
                 while(bluetoothConnectionThreadActive) {
-                    if (sendBluetoothDataIsReady) {
-                        sendBluetoothDataIsReady = false
-                        try {
-                            outputStream.write(messageToSend!!.toByteArray())
-                            outputStream.flush()
-                            Log.d(TAG, "Sent")
-                        } catch(e: IOException) {
-                            Log.d(TAG, "Cannot send", e)
-                        }
-                    }
-                    if(receiveBluetoothDataIsReady){
-                        Log.d(TAG, "Cannot send")
+                    try{
+                        bytes = inputStream.read(inputBuffer)
+                        messageRecieved = String(inputBuffer, 0, bytes)
+                        Utils.UtilsObject.bluetoothRecieveStringReady(messageRecieved!!)
+                    } catch (e : IOException){
+                        Log.e(TAG, "Error reading Input Stream. ", e)
                     }
                 }
                 outputStream.close()
                 inputStream.close()
                 this.socket.close()
+            }
+        }
+
+        fun write(stringToWrite : String){
+            try {
+                outputStream.write(stringToWrite!!.toByteArray())
+                outputStream.flush()
+                Log.d(TAG, "Sent")
+            } catch(e: IOException) {
+                Log.d(TAG, "Cannot send", e)
             }
         }
     }

@@ -1,15 +1,14 @@
 package se.anad19ps.student.turtle
 
+import android.content.Context
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.activity_select_bluetooth_device.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -46,6 +45,12 @@ class ControllerArrowButtonsFragment : Fragment() {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_controller_arrow_buttons, container, false)
 
+        initButtons(root)
+
+        return root
+    }
+
+    private fun initButtons(root : View){
         val btnUp = root.findViewById<View>(R.id.buttonUp) as Button
         val btnDown = root.findViewById<View>(R.id.buttonDown) as Button
         val btnLeft = root.findViewById<View>(R.id.buttonLeft) as Button
@@ -53,6 +58,25 @@ class ControllerArrowButtonsFragment : Fragment() {
         val btnAvoidObstacles = root.findViewById<View>(R.id.buttonAvoidObstacles) as Button
         val btnLineFollow = root.findViewById<View>(R.id.buttonLineFollower) as Button
         val btnStop = root.findViewById<View>(R.id.buttonStop) as Button
+
+        btnAvoidObstacles.setBackgroundColor(
+            getColor(
+                root.context,
+                R.color.PrimaryColor
+            )
+        )
+        btnLineFollow.setBackgroundColor(
+            getColor(
+                root.context,
+                R.color.PrimaryColor
+            )
+        )
+        btnStop.setBackgroundColor(
+            getColor(
+                root.context,
+                R.color.PrimaryComplement
+            )
+        )
 
         btnUp.setOnClickListener {
             vibrate(requireView())
@@ -82,8 +106,6 @@ class ControllerArrowButtonsFragment : Fragment() {
             vibrate(requireView())
             Utils.UtilsObject.bluetoothSendString("5", root.context)
         }
-
-        return root
     }
 
     private fun vibrate(view: View) {

@@ -1,10 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/controller_debug_fragment_style"
-    tools:context=".ControllerDebugFragment" >
+    tools:context=".ControllerDebugFragment"
+    android:orientation="horizontal"
+    android:weightSum="6"
+    android:clickable="true"
+    android:focusable="true">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_margin="4sp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewDebug"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+
+            tools:itemCount="3"
+            tools:listitem="@layout/fragment_controller_debug_row_layout"/>
+
+        <Button
+            android:id="@+id/buttonClearList"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Clear list"
+            android:layout_weight="2"
+            android:textColor="@color/PrimaryLight"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -15,10 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Turtle">
         <activity android:name=".SavedProjectsActivity"></activity>
-        <activity android:name=".EditCustomCommandActivity" />
+        <activity android:name=".EditCustomDragDropBlocksActivity" />
         <activity android:name=".ProgrammingActivity" />
-        <activity android:name=".CreateCustomCommandActivity" />
-        <activity android:name=".ManageCustomCommandsActivity" />
+        <activity android:name=".CreateCustomDragDropBlocksActivity" />
+        <activity android:name=".ManageCustomDragDropBlocksActivity" />
         <activity
             android:name=".ControllerActivity"
             android:label="@string/title_activity_controller"

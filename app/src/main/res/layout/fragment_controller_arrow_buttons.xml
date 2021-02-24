@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:background="@drawable/controller_arrows_fragment_style"
     tools:context=".ControllerArrowButtonsFragment"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,25 +20,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="center"
+            android:weightSum="3"
+            android:layout_marginBottom="4sp">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonAvoidObstacles"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Avoidance" />
+                android:layout_weight="1"
+                android:text="Avoidance"
+                android:layout_margin="4dp"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonStop"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Stop" />
+                android:layout_weight="1"
+                android:text="Stop"
+                android:layout_margin="4dp"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonLineFollower"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Line Follow"/>
+                android:text="Line Follow"
+                android:layout_weight="1"
+                android:layout_margin="4dp"/>
 
         </LinearLayout>
 
