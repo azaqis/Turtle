@@ -104,7 +104,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
         }
     }
-    override fun onJoystickMoved(xPercentageMoved: Float, yPercentageMoved: Float, source: Int) {
+    override fun onJoystickMoved(xPercentageMoved: Float, yPercentageMoved: Float) {
         Log.d("TAG", "X: $xPercentageMoved Y: $yPercentageMoved")
     }
 }

@@ -97,21 +97,20 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback,
                         yCoordinate
                     )
                     /*This function will be implemented in an activity. It is then called with these parameters whenever joystick is moved*/
-                    joystickCallback.onJoystickMoved((xCoordinate - originX)/radius, (yCoordinate - originY)/radius, id)
+                    joystickCallback.onJoystickMoved((xCoordinate - originX)/radius, (yCoordinate - originY)/radius)
                     return true
                 }
                 drawJoystick(event.x, event.y)
-                joystickCallback.onJoystickMoved((event.x - originX)/radius, (event.y - originY)/radius, id)
+                joystickCallback.onJoystickMoved((event.x - originX)/radius, (event.y - originY)/radius)
             } else {
                 drawJoystick(originX, originY)  //Reset
-                joystickCallback.onJoystickMoved(0.0f, 0.0f, id)
+                joystickCallback.onJoystickMoved(0.0f, 0.0f)
             }
         }
         return true
     }
 
     interface JoystickListener {
-        /*Source is useful if multiple joysticks will be used*/
-        fun onJoystickMoved(xPercentageMoved: Float, yPercentageMoved: Float, source: Int)
+        fun onJoystickMoved(xPercentageMoved: Float, yPercentageMoved: Float)
     }
 }
