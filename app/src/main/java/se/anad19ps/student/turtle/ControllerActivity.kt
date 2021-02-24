@@ -55,6 +55,11 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
                     0 -> topFragment = ControllerDebugFragment()
                     1 -> topFragment = ControllerSpeedometerFragment()
                     2 -> topFragment = ControllerUltraSonicFragment()
+                }*/
+                when (position) {
+                    0 -> topFragment = ControllerDebugFragment()
+                    1 -> topFragment = ControllerSpeedometerFragment()
+                    2 -> topFragment = ControllerUltraSonicFragment()
                 }
 
                 var managerTopFragment = supportFragmentManager
@@ -62,7 +67,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
                 transaction.replace(R.id.fragmentTop, topFragment)
                 transaction.addToBackStack(null)
-                transaction.commit()*/
+                transaction.commit()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
