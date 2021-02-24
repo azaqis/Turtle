@@ -32,6 +32,8 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
     companion object{
         val scannedDevicesList: ArrayList<BluetoothDevice> = ArrayList()
         val pairedDevicesList: ArrayList<BluetoothDevice> = ArrayList()
+        val scannedDevicesNameList: ArrayList<String> = ArrayList()
+        val pairedDevicesNameList: ArrayList<String> = ArrayList()
 
         private const val REQUEST_CODE_ENABLE_BT: Int = 1
         private const val TAG = "BluetoothActivity"
@@ -81,15 +83,15 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                     Utils.UtilsObject.showUpdatedToast("Please wait, still scanning...", this)
                 }
                 else{
-                    clearScannedList()
-                    clearPairedList()
+                    clearBothScannedLists()
+                    clearBothPairedList()
                     updatePairedDevicesList()
                     discoverBluetoothDevices()
                 }
             }
             else
                 //Clear list to show that even if there were BT-devices, you shouldnt be able to connect to them
-                clearScannedList()
+                clearBothScannedLists()
         }
     }
 
@@ -98,7 +100,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         pairedDevicesNameListViewAdapter = ArrayAdapter(
             this,
             android.R.layout.simple_list_item_1,
-            getDevicesNameArray(pairedDevicesList)
+            pairedDevicesNameList
         )
         selectPairedDeviceList.adapter = pairedDevicesNameListViewAdapter
 
@@ -117,7 +119,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         scannedDevicesNameListViewAdapter = ArrayAdapter(
             this,
             android.R.layout.simple_list_item_1,
-            getDevicesNameArray(scannedDevicesList)
+            scannedDevicesNameList
         )
         selectScannedDeviceList.adapter = scannedDevicesNameListViewAdapter
 
@@ -152,8 +154,8 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         //Check permissions
         checkBluetoothAvailability()
         if(btAdapter.isEnabled && checkFineLocationAllowed()){
-            clearPairedList()
-            clearScannedList()
+            clearBothPairedList()
+            clearBothScannedLists()
             discoverBluetoothDevices()
             updatePairedDevicesList()
         }
@@ -165,48 +167,27 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         if(devices != null){
             for(device : BluetoothDevice in devices){
                 pairedDevicesList.add(device)
+                if(device.name != null)
+                    pairedDevicesNameList.add(device.name)
+                else
+                    pairedDevicesNameList.add(device.address)
             }
             selectPairedDeviceList.invalidateViews()
             pairedDevicesNameListViewAdapter.notifyDataSetChanged()
         }
         else
             Utils.UtilsObject.showUpdatedToast("There are no paired devices on this device", this)
-
-
-
-
-
-
-
-
-
-
-        //OBS! DOES NOT UPDATE IF REMOVED EVEN IF IT EXISTS IN onCreate!!!!!
-        pairedDevicesNameListViewAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_list_item_1,
-            getDevicesNameArray(pairedDevicesList)
-        )
-        selectPairedDeviceList.adapter = pairedDevicesNameListViewAdapter
-
-
-
-
-
-
-
-
-
-
     }
 
-    private fun clearScannedList(){
+    private fun clearBothScannedLists(){
         scannedDevicesList.clear()
+        scannedDevicesNameList.clear()
         selectScannedDeviceList.invalidateViews()
     }
 
-    private fun clearPairedList(){
+    private fun clearBothPairedList(){
         pairedDevicesList.clear()
+        pairedDevicesNameList.clear()
         selectPairedDeviceList.invalidateViews()
     }
 
@@ -237,7 +218,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
             return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         }
-        //If version is lower than Q, dont need to check. Will always alow in that case
+        //If version is lower than Q, dont need to check. Will always allow in that case
         return true
     }
 
@@ -246,12 +227,9 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             REQUEST_CODE_ENABLE_BT ->
                 if (resultCode == Activity.RESULT_OK) {
                     Utils.UtilsObject.showUpdatedToast("Bluetooth is enabled", this)
-
                     //Needed to show paired devices after allowing BT permission on view open
                     updatePairedDevicesList()
                     discoverBluetoothDevices()
-
-
                 }
                 else
                     Utils.UtilsObject.showUpdatedToast("Bluetooth is not enabled, please try again", this)
@@ -299,10 +277,15 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         registerReceiver(discoverReceiver, discoverDevicesIntent)
     }
 
-    private fun addDeviceToScannedList(btDevice: BluetoothDevice){
+    private fun addDeviceToScannedList(device: BluetoothDevice){
         //If a device is found, add it to the scannedDevicesList
-        scannedDevicesList.add(btDevice)
-        selectScannedDeviceList.adapter = scannedDevicesNameListViewAdapter
+        scannedDevicesList.add(device)
+
+        if(device.name != null)
+            scannedDevicesNameList.add(device.name)
+        else
+            scannedDevicesNameList.add(device.address)
+
         scannedDevicesNameListViewAdapter.notifyDataSetChanged()
 
 
@@ -315,12 +298,12 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
 
 
-        //OBS! THIS DOES NOT UPDATE IF REMOVED EVEN IF IT EXISTS IN onCreate!!!!!
+        /*//OBS! THIS DOES NOT UPDATE IF REMOVED EVEN IF IT EXISTS IN onCreate!!!!!
         scannedDevicesNameListViewAdapter = ArrayAdapter(
             this,
             android.R.layout.simple_list_item_1,
             getDevicesNameArray(scannedDevicesList)
-        )
+        )*/
 
 
 
