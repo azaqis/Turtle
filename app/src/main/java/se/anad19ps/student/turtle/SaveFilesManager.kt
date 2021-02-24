@@ -13,10 +13,19 @@ import kotlin.collections.ArrayList
 class SaveFilesManager(con : Context) {
 
     companion object{
-        private val projectNamesFile = "projectNames.txt"
+        private const val projectNamesFile = "projectNames.txt"
         private lateinit var context : Context
         private var arrayWithProjectNames = arrayListOf<String>()
     }
+
+    /*
+   TODO IN THIS FILE
+    - Look over what should be private and not private
+    - Delete test code
+    - Check if names is logical
+    - Comment code
+    - Remove static strings and link to strings file instead
+    */
 
     init {
         context = con
@@ -145,6 +154,7 @@ class SaveFilesManager(con : Context) {
     }
 
     fun loadNamesOfProjects() {
+        arrayWithProjectNames.clear()
         Log.e("FILE_LOG", "Loading names requested")
         if(File(context.filesDir, projectNamesFile).isFile) {
             File(context.filesDir, projectNamesFile).useLines { lines ->
@@ -158,6 +168,9 @@ class SaveFilesManager(con : Context) {
     }
 
     fun getArrayWithNames() : ArrayList<String>{
+        for(name : String in arrayWithProjectNames){
+            Log.e("FILE_LOG", "Returning array with names, array contaned name: $name")
+        }
         return arrayWithProjectNames
     }
 
