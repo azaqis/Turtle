@@ -18,14 +18,10 @@ RecyclerView.Adapter<ManageCustomDragDropBlocksRecyclerAdapter.ViewHolder>(){
         val itemPicture: ImageView = itemView.findViewById(R.id.image_view)
 
         init {
-<<<<<<< HEAD:app/src/main/java/se/anad19ps/student/turtle/ManageCustomCommandsRecyclerAdapter.kt
-            itemView.setOnClickListener {
-                val intent = Intent(itemView.context, EditCustomCommandActivity::class.java)
-=======
             itemView.setOnClickListener { v : View ->
                 val position: Int = adapterPosition
                 val intent = Intent(itemView.context, EditCustomDragDropBlocksActivity::class.java)
->>>>>>> 8818f34d6982c5419c3b23f1cfa4a2db1d86a0b1:app/src/main/java/se/anad19ps/student/turtle/ManageCustomDragDropBlocksRecyclerAdapter.kt
+
                 itemView.context.startActivity(intent)
 
             }
