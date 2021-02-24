@@ -14,13 +14,24 @@ import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
 import java.io.FileWriter
 import java.util.*
+import kotlin.collections.ArrayList
 
 class SavedProjectsActivity : AppCompatActivity() {
 
     companion object {
         private lateinit var savedProjectsListViewAdapter : ArrayAdapter<String>
         private lateinit var savedFilesManager : SaveFilesManager
+        private lateinit var listWithNames : ArrayList<String>
     }
+
+    /*
+    TODO IN THIS FILE
+     - Look over what should be private and not private
+     - Delete test code
+     - Check if names is logical
+     - Comment code
+     - Remove static strings and link to strings file instead
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,8 +39,20 @@ class SavedProjectsActivity : AppCompatActivity() {
 
         savedFilesManager = SaveFilesManager(this)
 
-        savedProjectsListViewAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, savedFilesManager.getArrayWithNames())
+        listWithNames = savedFilesManager.getArrayWithNames()
+
+        savedProjectsListViewAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listWithNames)
         savedProjectsListView.adapter = savedProjectsListViewAdapter
+
+        for(name : String in listWithNames){
+            Log.e("FILE_LOG","Array with names contaned name: $name")
+        }
+
+        /*
+        savedFilesManager.getArrayWithNames()
+        savedFilesManager.getArrayWithNames()
+        savedFilesManager.getArrayWithNames()
+        */
 
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
