@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
+import androidx.core.content.ContextCompat
 import kotlin.math.pow
 
 
@@ -58,11 +59,14 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback,
         if (holder.surface.isValid) {
             val canvas = holder.lockCanvas()
             val paint = Paint()
-            paint.setARGB(255, 50, 50, 50);
-            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-            canvas.drawCircle(originX, originY, radius, paint)
 
-            paint.setARGB(255, 0, 0, 255)
+            //Background color
+            canvas.drawColor(ContextCompat.getColor(this.context, R.color.PrimaryLight))
+            //Background circle (big)
+            paint.color = ContextCompat.getColor(this.context, R.color.PrimaryDark)
+            canvas.drawCircle(originX, originY, radius, paint)
+            //Joystick circle (small)
+            paint.color = ContextCompat.getColor(this.context, R.color.PrimaryLight)
             canvas.drawCircle(newX, newY, joyRadius, paint)
             holder.unlockCanvasAndPost(canvas)
         }
