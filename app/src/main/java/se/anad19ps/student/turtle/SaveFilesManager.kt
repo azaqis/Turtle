@@ -51,13 +51,13 @@ class SaveFilesManager(con : Context) {
                     itemList.add(item)
                 }
 
-                saveProject("MyProject1:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList)
-                saveProject("MyProject2:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList)
-                saveProject("MyProject3:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList)
-                saveProject("MyProject4:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList)
-                saveProject("MyProject5:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList)
-                saveProject("MyProject6:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList)
-                saveProject("MyProject7:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList)
+                saveProject("MyProject1:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList, false)
+                saveProject("MyProject2:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList, false)
+                saveProject("MyProject3:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList, false)
+                saveProject("MyProject4:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList, false)
+                saveProject("MyProject5:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList, false)
+                saveProject("MyProject6:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList, false)
+                saveProject("MyProject7:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList, false)
                 //TEST CODE END
             }
             else{
@@ -70,33 +70,15 @@ class SaveFilesManager(con : Context) {
         }
     }
 
-    fun saveProject(projectName: String, saveDataList: MutableList<DragDropBlock>){
+    fun saveProject(projectName: String, saveDataList: MutableList<DragDropBlock>, allowOverWriting : Boolean) : Boolean{
         Log.e("FILE_LOG", "Request to save: $projectName")
-        if(!addNewName(projectName)){
-            Log.e("FILE_LOG", "Response that name exists, asking user for overwriting $projectName")
-            var dialog = AlertDialog.Builder(context)
-            dialog.setTitle("Project name exist already")
-            dialog.setMessage("Do you want to override the existing save file?")
-            val dialogClickListener = DialogInterface.OnClickListener{_, which ->
-                when(which){
-                    DialogInterface.BUTTON_NEGATIVE ->{
-                        Toast.makeText(context, "Did not overwrite save file", Toast.LENGTH_SHORT).show()
-                    }
-                    DialogInterface.BUTTON_POSITIVE ->{
-                        Toast.makeText(context, "Overwrite save file", Toast.LENGTH_SHORT).show()
-                        Log.e("FILE_LOG", "Overwriting: $projectName")
-                        saveProjectToFile(projectName, saveDataList)
-                    }
+        if(!addNewName(projectName) && !allowOverWriting){
+            Log.e("FILE_LOG", "Response that name exists $projectName")
+            return false
+        }
 
-                }
-            }
-            dialog.setPositiveButton("Yes", dialogClickListener)
-            dialog.setNegativeButton("No", dialogClickListener)
-            dialog.create().show()
-        }
-        else{
-            saveProjectToFile(projectName, saveDataList)
-        }
+        saveProjectToFile(projectName, saveDataList)
+        return true
     }
 
     private fun saveProjectToFile(projectName: String, saveDataList: MutableList<DragDropBlock>){

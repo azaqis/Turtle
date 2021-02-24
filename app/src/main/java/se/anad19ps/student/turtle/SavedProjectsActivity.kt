@@ -81,6 +81,7 @@ class SavedProjectsActivity : AppCompatActivity() {
             intent.putExtra("PROJECT_NAME", savedFilesManager.getArrayWithNames()[position])
             intent.putExtra("PROJECT_DATA", newArray)
             startActivity(intent)
+            finish()
         }
     }
 }
