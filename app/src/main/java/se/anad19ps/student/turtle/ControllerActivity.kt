@@ -1,6 +1,7 @@
 package se.anad19ps.student.turtle
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -10,7 +11,7 @@ import kotlinx.android.synthetic.main.fragment_controller_debug.*
 import kotlinx.android.synthetic.main.top_bar.*
 
 
-class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, JoystickView.JoystickListener {
 
     companion object{
         private lateinit var bottomFragment : Fragment
@@ -102,5 +103,8 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
             }
 
         }
+    }
+    override fun onJoystickMoved(xPercentageMoved: Float, yPercentageMoved: Float, source: Int) {
+        Log.d("TAG", "X: $xPercentageMoved Y: $yPercentageMoved")
     }
 }
