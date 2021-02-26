@@ -1,10 +1,7 @@
 package se.anad19ps.student.turtle
 
-import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.util.Log
-import android.widget.Toast
 import java.io.File
 import java.io.FileWriter
 import java.util.*
@@ -14,6 +11,8 @@ class SaveFilesManager(con : Context) {
 
     companion object{
         private const val projectNamesFile = "projectNames.txt"
+        private const val lastOpenProjectFile = "lastOpenProject.txt"
+        private var  lastOpenProject : String ?= null
         private lateinit var context : Context
         private var arrayWithProjectNames = arrayListOf<String>()
     }
@@ -25,6 +24,8 @@ class SaveFilesManager(con : Context) {
     - Check if names is logical
     - Comment code
     - Remove static strings and link to strings file instead
+    - Maybe it's dumb to send context in this way? Might send it as a parameter to each function? In that case, it would be possible to use the same instance of SaveFileManager in different activities
+    - arrayWithProjectNames should be null if no name is available
     */
 
     init {
@@ -76,6 +77,19 @@ class SaveFilesManager(con : Context) {
         else{
             Log.e("FILE_LOG", "projectNames.txt was already created")
             loadNamesOfProjects()
+        }
+
+        if(!File(context.filesDir, lastOpenProjectFile).isFile){
+            File(context.filesDir, lastOpenProjectFile).writeText("")
+            if(File(context.filesDir, lastOpenProjectFile).isFile){
+                Log.e("FILE_LOG", "lastOpenProject.txt was successfully created")
+            }
+            else{
+                Log.e("FILE_LOG", "lastOpenProject.txt could not be created")
+            }
+        }
+        else{
+            setLastOpenedProject(loadLastOpenedProjectFromFile())
         }
     }
 
@@ -174,7 +188,7 @@ class SaveFilesManager(con : Context) {
         return arrayWithProjectNames
     }
 
-    fun loadProject(projectName: String): ArrayList<DragDropBlock>? {
+    fun loadProject(projectName: String): ArrayList<DragDropBlock> {
         var count = 0;
         var projectItemsList = ArrayList<DragDropBlock>()
 
@@ -218,5 +232,33 @@ class SaveFilesManager(con : Context) {
             }
             return projectItemsList
         }
+    }
+
+    private fun setLastOpenedProject(projectName : String?){
+        val fwLastOpenedProject = FileWriter(File(context.filesDir, lastOpenProjectFile), false)
+
+        if(projectName == null){
+            fwLastOpenedProject.write("")
+        }
+        else if(projectNameExist(projectName!!)){
+            fwLastOpenedProject.write(projectName)
+        }
+
+        lastOpenProject = projectName
+        fwLastOpenedProject.flush()
+        fwLastOpenedProject.close()
+    }
+
+    private fun loadLastOpenedProjectFromFile() : String?{
+        if(File(context.filesDir, lastOpenProjectFile).isFile) {
+            File(context.filesDir, lastOpenProjectFile).bufferedReader().use {
+                return it.readLine()
+            }
+        }
+        return null
+    }
+
+    fun getNameOfLastOpenedProject() : String?{
+        return lastOpenProject
     }
 }

@@ -96,13 +96,13 @@ class SavedProjectsActivity : AppCompatActivity() {
 
             val intent = Intent(this, ProgrammingActivity::class.java)
 
-            val arrayWithDragAndDropBlocks = savedFilesManager.loadProject(savedFilesManager.getArrayWithNames()[position])
+            //val arrayWithDragAndDropBlocks = savedFilesManager.loadProject(savedFilesManager.getArrayWithNames()[position])
 
-            val newArray : Array<DragDropBlock>
-            newArray = arrayWithDragAndDropBlocks!!.toTypedArray()
+            //val newArray : Array<DragDropBlock>
+            //newArray = arrayWithDragAndDropBlocks!!.toTypedArray()
 
             intent.putExtra("PROJECT_NAME", savedFilesManager.getArrayWithNames()[position])
-            intent.putExtra("PROJECT_DATA", newArray)
+            //intent.putExtra("PROJECT_DATA", newArray)
             startActivity(intent)
             finish()
         }
