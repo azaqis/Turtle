@@ -109,7 +109,21 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
         }
     }
-    override fun onJoystickMoved(xPercentageMoved: Float, yPercentageMoved: Float) {
-        Log.d("TAG", "X: $xPercentageMoved Y: $yPercentageMoved")
+    override fun onJoystickMoved(xPercentageMoved: Int, yPercentageMoved: Int) {
+        var xMovedString : String = xPercentageMoved.toString()
+        var yMovedString : String = yPercentageMoved.toString()
+
+        if(xMovedString.length == 1)
+            xMovedString = "00$xMovedString"
+        else if(xMovedString.length == 2)
+            xMovedString = "0$xMovedString"
+
+        if(yMovedString.length == 1)
+            yMovedString = "00$yMovedString"
+        else if(yMovedString.length == 2)
+            yMovedString = "0$yMovedString"
+
+        Utils.UtilsObject.bluetoothSendString("9$xPercentageMoved$yPercentageMoved", this)
+        Log.d("TAG", "9,$xMovedString,$yMovedString")
     }
 }
