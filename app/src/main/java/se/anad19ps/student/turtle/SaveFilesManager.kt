@@ -100,6 +100,7 @@ class SaveFilesManager(con : Context) {
             return false
         }
 
+        setLastOpenedProject(projectName)
         saveProjectToFile(projectName, saveDataList)
         return true
     }
@@ -160,6 +161,7 @@ class SaveFilesManager(con : Context) {
                 arrayWithProjectNames.remove(projectName)
                 Log.e("FILE_LOG", "Deleted: " + projectName)
                 updateNameFile()
+                setLastOpenedProject(null)
                 return true
             }
         }
@@ -230,11 +232,17 @@ class SaveFilesManager(con : Context) {
                     )
                 }
             }
+
+            setLastOpenedProject(projectName)
             return projectItemsList
         }
     }
 
-    private fun setLastOpenedProject(projectName : String?){
+    private fun setLastOpenedProject(projectName : String?) : Boolean{
+        if(!getArrayWithNames().contains(projectName)){
+            return false
+        }
+
         val fwLastOpenedProject = FileWriter(File(context.filesDir, lastOpenProjectFile), false)
 
         if(projectName == null){
@@ -247,12 +255,17 @@ class SaveFilesManager(con : Context) {
         lastOpenProject = projectName
         fwLastOpenedProject.flush()
         fwLastOpenedProject.close()
+        return true
     }
 
     private fun loadLastOpenedProjectFromFile() : String?{
         if(File(context.filesDir, lastOpenProjectFile).isFile) {
             File(context.filesDir, lastOpenProjectFile).bufferedReader().use {
-                return it.readLine()
+                val projectName =  it.readLine()
+                if(getArrayWithNames().contains(projectName)){
+                    Log.e("FILE_LOG", "Last opened project was: $projectName")
+                    return projectName
+                }
             }
         }
         return null

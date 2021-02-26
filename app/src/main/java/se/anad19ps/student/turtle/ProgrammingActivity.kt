@@ -69,15 +69,21 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         //I added code here start
         saveFilesManager = SaveFilesManager(this)
 
-        var intent = getIntent()
+        var intent = intent
 
-         if (intent.hasExtra("PROJECT_NAME")) {
-            projectName= intent.getSerializableExtra("PROJECT_NAME") as String
+        if (intent.hasExtra("PROJECT_NAME")) {
+            projectName = intent.getSerializableExtra("PROJECT_NAME") as String
             itemList = saveFilesManager.loadProject(projectName)
         } else {
-            projectName = "New Project"
-             //Should not be here, ether an empty itemList or load latest opened file
-            itemList = populateListGarbage(2, DragDropBlock.e_type.DRIVE)
+            val lastOpenProject = saveFilesManager.getNameOfLastOpenedProject()
+            if(lastOpenProject != null){
+                itemList = saveFilesManager.loadProject(lastOpenProject)
+                projectName = lastOpenProject
+            }
+            else{
+                projectName = "New Project"
+            }
+
         }
         //I added code here end
 
@@ -94,6 +100,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         itemTouchHelper.attachToRecyclerView(programming_recycle_view)
 
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        programming_text_view_current_project.text = projectName
     }
 
     private fun setupButtons(){
@@ -132,6 +143,30 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_load_button.setOnClickListener {
             val newIntent = Intent(this, SavedProjectsActivity::class.java)
             askUserForSavingProjectAndChangeActivity(newIntent)
+        }
+
+        //TODO You should be able to change name of save file here, currently only overwriting existing file
+        programming_save_button.setOnClickListener{
+            var dialogWantToSave = android.app.AlertDialog.Builder(this)
+            dialogWantToSave.setTitle("Do you want to save this project with the name $projectName?")
+            dialogWantToSave.setMessage("If you press yes the current save file will be overwritten!")
+
+
+            val dialogClickListener = DialogInterface.OnClickListener{_, which ->
+                when(which){
+                    DialogInterface.BUTTON_NEGATIVE ->{
+                        Toast.makeText(this, "Did not overwrite or save file", Toast.LENGTH_SHORT).show()
+                    }
+                    DialogInterface.BUTTON_POSITIVE ->{
+                        Toast.makeText(this, "Overwrite save file", Toast.LENGTH_SHORT).show()
+                        Log.e("FILE_LOG", "Overwriting: $projectName")
+                        saveFilesManager.saveProject(projectName, itemList, true)
+                    }
+                }
+            }
+            dialogWantToSave.setPositiveButton("Yes", dialogClickListener)
+            dialogWantToSave.setNegativeButton("No", dialogClickListener)
+            dialogWantToSave.create().show()
         }
     }
 
@@ -305,7 +340,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
             Collections.swap(itemList, startPosition, endPosition)
             recyclerView.adapter?.notifyItemMoved(startPosition, endPosition)
-            return true;
+            return true
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
