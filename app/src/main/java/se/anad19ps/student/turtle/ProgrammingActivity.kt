@@ -2,7 +2,7 @@ package se.anad19ps.student.turtle
 
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.drawable.Drawable
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -19,11 +19,13 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_programming.*
+import kotlinx.android.synthetic.main.card_drag_drop.view.*
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.input_text_dialog.view.*
 import kotlinx.android.synthetic.main.top_bar.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Semaphore
+import se.anad19ps.student.turtle.Utils
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -34,6 +36,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         PAUSE
     }
 
+    private var markForDeletion = false //Marks if a click should add to deleteList
+    private var deleteList = ArrayList<DragDropBlock>() //Items in this list will be deleted when delete button is pressed
+
     private var layoutManager: RecyclerView.LayoutManager? = null
     private lateinit var adapter: ProgrammingRecyclerAdapter
 
@@ -41,15 +46,15 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private lateinit var spinnerModulesAdapter : ProgrammingSpinnerAdapter
     private lateinit var spinnerCustomAdapter : ProgrammingSpinnerAdapter
 
-    private var itemList = ArrayList<DragDropBlock>()
-    private var driveBlocksSpinner = mutableListOf<DragDropBlock>()
+    private var itemList = ArrayList<DragDropBlock>()   //List for items in RecyclerView
+    private var driveBlocksSpinner = mutableListOf<DragDropBlock>() //Lists for items in spinners
     private var modulesBlocksSpinner = mutableListOf<DragDropBlock>()
     private var customBlocksSpinner = mutableListOf<DragDropBlock>()
 
     private lateinit var itemTouchHelper: ItemTouchHelper
-    private lateinit var state: RunState
 
-    private val sem = Semaphore(1)
+    private lateinit var state: RunState    //State for iteration through list. Needed for play, pause and stop
+    private val sem = Semaphore(1)  //Can force the state machine to halt coroutine when pausing
 
     private lateinit var saveFilesManager : SaveFilesManager
     private lateinit var projectName : String
@@ -127,7 +132,26 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         /*Delete button*/
         programming_delete_btn.setOnClickListener{
-            //Maby getParent from adapter? Probably not a good solution for some reason
+            if(deleteList.isNotEmpty()){
+                val indexes = ArrayList<Int>()  //To record indexed that should be deleted
+
+                itemList.forEachIndexed{index, dragDropBlock -> //Record indexes
+                    if(deleteList.contains(dragDropBlock)){
+                        indexes.add(index)
+                    }
+                }
+
+                indexes.sort()  //Sort indexes by size
+                indexes.reverse()   //So largest index is first. This way we don't need to change index after every removal
+
+                for(i in 0 until indexes.size){
+                    itemList.removeAt(indexes[i])
+                    adapter.notifyItemRemoved(indexes[i])
+                }
+
+                deleteList.clear()
+                markForDeletion = false //So clicks no longer marks for deletion
+            }
         }
 
         programming_load_button.setOnClickListener {
@@ -281,7 +305,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         return list
     }
 
-    private fun loadList(list: MutableList<DragDropBlock>){
+    public fun loadList(list: MutableList<DragDropBlock>){
         itemList.clear()
         itemList.addAll(list)
         adapter.notifyDataSetChanged()
@@ -307,18 +331,56 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            val position = viewHolder.adapterPosition
+            //No swipe
+        }
 
-            itemList.removeAt(position)
-            adapter.notifyItemRemoved(position)
+        /*Disable longPress so longClicks are reserved for hold to delete function. Move by calling startDrag()*/
+        override fun isLongPressDragEnabled(): Boolean {
+            return false
         }
     }
 
-    override fun onItemClick(position: Int, holder: View) {
-        changeItemParameterDialog(position, holder)
+    /*When touching dragDots*/
+    override fun onDragDots(view : RecyclerView.ViewHolder) {
+        itemTouchHelper.startDrag(view) //onMove from ItemTouchHelper.simpleCallback will be accessed through startDrag
     }
 
-    private fun changeItemParameterDialog(position: Int, holder: View) {
+    /*Used to mark item for deletion*/
+    override fun onItemClick(position: Int, holder: View) {
+        if(markForDeletion) {
+            /*If item is already added to deleteList we want to deselect it*/
+            if(deleteList.contains(itemList[position])){
+                holder.card_drag_drop.setCardBackgroundColor(Color.WHITE)
+                holder.card_image_drag_dots.setImageResource(R.drawable.ic_drag_dots)
+                deleteList.remove(itemList[position])
+                if(deleteList.isEmpty()){
+                    markForDeletion = false
+                }
+            }
+            else {
+                holder.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
+                holder.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
+                deleteList.add(itemList[position])
+            }
+        }
+    }
+
+    override fun onParameterButtonClicked(position: Int) {
+        changeItemParameterDialog(position)
+    }
+
+    /*LongClick activates selection for deletion*/
+    override fun onLongClick(position: Int, view : View) {
+        /*No need to activate if already activated*/
+        if(!markForDeletion) {
+            view.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
+            view.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
+            deleteList.add(itemList[position])
+            markForDeletion = true
+        }
+    }
+    
+    private fun changeItemParameterDialog(position: Int) {
         val builder = AlertDialog.Builder(this).create()
         val dialogLayout = LayoutInflater.from(this).inflate(R.layout.input_dialog_layout, null)
         val editText = dialogLayout.findViewById<EditText>(R.id.input_dialog_text_in)
@@ -373,6 +435,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     RunState.PAUSE -> {
                         sem.acquire()
                     }
+                    else -> {state = RunState.IDLE} //So we go to a known state if something would go wrong
                 }
             }
         }

@@ -6,8 +6,9 @@
     android:id="@+id/card_drag_drop"
     android:layout_margin="5dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="3dp">
-    <!--    app:cardBackgroundColor="#99AFD7"-->
+    app:cardElevation="3dp"
+    app:cardBackgroundColor="@color/SpinnerBackgroundTurquoise"
+>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
