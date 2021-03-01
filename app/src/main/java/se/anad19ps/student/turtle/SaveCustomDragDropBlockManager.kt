@@ -14,6 +14,19 @@ class SaveCustomDragDropBlockManager(con: Context) {
         private var arrayWithDragDropBlockImage = arrayListOf<Int>()
     }
 
+    /*
+      TODO IN THIS FILE
+       - Look over what should be private and not private
+       - Delete test code
+       - Check if names is logical
+       - Comment code
+       - Remove static strings and link to strings file instead
+       - Maybe it's dumb to send context in this way? Might send it as a parameter to each function? In that case, it would be possible to use the same instance of SaveFileManager in different activities, or is it even needed?
+       - arrayWithProjectNames should be null if no name is available
+       - Check if name already exist when saving, add parameter for overwriting
+       - Maybe add a fun for editing? Or is that needed?
+    */
+
     init {
         context = con
 
@@ -34,9 +47,19 @@ class SaveCustomDragDropBlockManager(con: Context) {
         }
     }
 
-    fun saveDragDropBlock(dragAndDropBlockName: String, dragDropBlock: DragDropBlock) {
-        addNewName(dragAndDropBlockName)
+    fun saveDragDropBlock(dragAndDropBlockName: String, dragDropBlock: DragDropBlock, allowOverwriting : Boolean) : Boolean{
+        Log.e("CUSTOM_LOG", "Request to save: $dragAndDropBlockName")
+        if(!addNewName(dragAndDropBlockName) && !allowOverwriting){
+            Log.e("CUSTOM_LOG", "Could not save: $dragAndDropBlockName, name already exists and overwriting was set to false")
+            return false
+        }
+        else{
+            saveDragDropBlock(dragAndDropBlockName, dragDropBlock)
+            return true
+        }
+    }
 
+    private fun saveDragDropBlockToFile(dragAndDropBlockName: String, dragDropBlock: DragDropBlock){
         File(context.filesDir, "$dragAndDropBlockName.txt").createNewFile()
         val fwProjectSaveFile =
             FileWriter(File(context.filesDir, "$dragAndDropBlockName.txt"), true)
@@ -48,7 +71,7 @@ class SaveCustomDragDropBlockManager(con: Context) {
         fwProjectSaveFile.write(dragDropBlock.parameter.toString() + "\n")
         fwProjectSaveFile.write(dragDropBlock.text + "\n")
         fwProjectSaveFile.write(dragDropBlock.type.toString() + "\n")
-        Log.e("CUSTOM_LOG", "Saved a DragDropBlock with name: $dragDropBlock")
+        Log.e("CUSTOM_LOG", "Saved a DragDropBlock with name: $dragAndDropBlockName")
 
         fwProjectSaveFile.flush()
         fwProjectSaveFile.close()
@@ -79,6 +102,8 @@ class SaveCustomDragDropBlockManager(con: Context) {
     }
 
     fun loadCustomDragDropBlock(dragDropBlockName: String): DragDropBlock? {
+        Log.e("CUSTOM_LOG", "Request to load DADB:  $dragDropBlockName")
+
         var dragDropBlock: DragDropBlock? = null
         var count = 0
 
@@ -105,7 +130,7 @@ class SaveCustomDragDropBlockManager(con: Context) {
                 if (count < 6) {
                     count++
                 } else {
-                    Log.e("CUSTOM_LOG", "Type read was: $type")
+                    Log.e("CUSTOM_LOG", "Loaded: $textReadFromFile")
                     count = 0
                     dragDropBlock = DragDropBlock(
                         dragImageReadFromFile,
@@ -116,6 +141,7 @@ class SaveCustomDragDropBlockManager(con: Context) {
                         displayParameterReadFromFile,
                         type
                     )
+                    return dragDropBlock
                 }
             }
             return dragDropBlock

@@ -41,18 +41,12 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity() {
         //postToList()
         testCode()
 
-        titlesList = customDragDropBlockManager.getArrayWithNamesOfCustomDragDropBlocks()
-        descriptionList.add(customDragDropBlockManager.loadCustomDragDropBlock("test1")!!.command)
-        descriptionList.add(customDragDropBlockManager.loadCustomDragDropBlock("test2")!!.command)
-        descriptionList.add(customDragDropBlockManager.loadCustomDragDropBlock("test3")!!.command)
-        descriptionList.add(customDragDropBlockManager.loadCustomDragDropBlock("test4")!!.command)
-        descriptionList.add(customDragDropBlockManager.loadCustomDragDropBlock("test5")!!.command)
+        addToList(customDragDropBlockManager.loadCustomDragDropBlock("test1")!!.text, "TEST", customDragDropBlockManager.loadCustomDragDropBlock("test1")!!.directionImage)
+        addToList(customDragDropBlockManager.loadCustomDragDropBlock("test2")!!.text, "TEST", customDragDropBlockManager.loadCustomDragDropBlock("test2")!!.directionImage)
+        addToList(customDragDropBlockManager.loadCustomDragDropBlock("test3")!!.text, "TEST", customDragDropBlockManager.loadCustomDragDropBlock("test3")!!.directionImage)
+        addToList(customDragDropBlockManager.loadCustomDragDropBlock("test4")!!.text, "TEST", customDragDropBlockManager.loadCustomDragDropBlock("test4")!!.directionImage)
 
-        imagesList.add(customDragDropBlockManager.loadCustomDragDropBlock("test1")!!.directionImage)
-        imagesList.add(customDragDropBlockManager.loadCustomDragDropBlock("test2")!!.directionImage)
-        imagesList.add(customDragDropBlockManager.loadCustomDragDropBlock("test3")!!.directionImage)
-        imagesList.add(customDragDropBlockManager.loadCustomDragDropBlock("test4")!!.directionImage)
-        imagesList.add(customDragDropBlockManager.loadCustomDragDropBlock("test5")!!.directionImage)
+
 
         //Should change name of recycler_view to follow naming convention
         recycler_view.layoutManager = LinearLayoutManager(this)
