@@ -54,7 +54,7 @@ class SaveCustomDragDropBlockManager(con: Context) {
             return false
         }
         else{
-            saveDragDropBlock(dragAndDropBlockName, dragDropBlock)
+            saveDragDropBlockToFile(dragAndDropBlockName, dragDropBlock)
             return true
         }
     }
