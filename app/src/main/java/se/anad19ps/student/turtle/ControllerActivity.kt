@@ -109,6 +109,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
         }
     }
+
     override fun onJoystickMoved(xPercentageMoved: Int, yPercentageMoved: Int) {
         var xMovedString : String = xPercentageMoved.toString()
         var yMovedString : String = yPercentageMoved.toString()

@@ -115,8 +115,6 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback,
     }
 
     interface JoystickListener {
-        fun onJoystickMoved(xPercentageMoved: Float, yPercentageMoved: Float)
-        /*Source is useful if multiple joysticks will be used*/
         fun onJoystickMoved(xPercentageMoved: Int, yPercentageMoved: Int)
     }
 }
