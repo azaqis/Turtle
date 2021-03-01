@@ -57,6 +57,18 @@
         app:layout_constraintBottom_toTopOf="@+id/programming_button_area"
         tools:listitem="@layout/card_drag_drop"/>
 
+    <TextView
+        android:id="@+id/programming_text_view_current_project"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PLACEHOLDER TEXT"
+        android:background="@color/cardview_dark_background"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/programming_button_area"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <LinearLayout
         android:id="@+id/programming_button_area"
         android:layout_width="match_parent"
@@ -113,6 +125,7 @@
             android:layout_margin="10dp"/>
 
         <ImageButton
+            android:id="@+id/programming_save_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/ic_baseline_save_alt_24"

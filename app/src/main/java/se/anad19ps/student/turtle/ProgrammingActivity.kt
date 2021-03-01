@@ -75,18 +75,24 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         //I added code here start
         saveFilesManager = SaveFilesManager(this)
 
-        //Should change so that i send project name to this activity and then load the data via the savedFilesManager here instead
-        var intent = getIntent()
-        val a : Array<DragDropBlock> = intent.getSerializableExtra("PROJECT_DATA") as Array<DragDropBlock>
-        itemList = a.toCollection(ArrayList())
+        var intent = intent
 
-        projectName = intent.getSerializableExtra("PROJECT_NAME") as String
-        //notifyDataSetChanged don't do anything
-        //adapter.notifyDataSetChanged()
+        if (intent.hasExtra("PROJECT_NAME")) {
+            projectName = intent.getSerializableExtra("PROJECT_NAME") as String
+            itemList = saveFilesManager.loadProject(projectName)
+        } else {
+            val lastOpenProject = saveFilesManager.getNameOfLastOpenedProject()
+            if(lastOpenProject != null){
+                itemList = saveFilesManager.loadProject(lastOpenProject)
+                projectName = lastOpenProject
+            }
+            else{
+                projectName = "New Project"
+            }
+
+        }
         //I added code here end
-		
-		//Commented out to be able to populate from file
-        //itemList = populateListGarbage(2, DragDropBlock.e_type.DRIVE)
+
 
         state = RunState.IDLE
 
@@ -100,6 +106,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         itemTouchHelper.attachToRecyclerView(programming_recycle_view)
 
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        programming_text_view_current_project.text = projectName
     }
 
     private fun setupButtons(){
@@ -155,84 +166,111 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
 
         programming_load_button.setOnClickListener {
-            //loadList(populateListGarbage(20, DragDropBlock.e_type.DRIVE))
+            val newIntent = Intent(this, SavedProjectsActivity::class.java)
+            askUserForSavingProjectAndChangeActivity(newIntent)
+        }
 
-            //I know it looks like a mess below, i will clean up the code later
-            var dialog = android.app.AlertDialog.Builder(this)
-            dialog.setTitle("Do you want to save this project before opening a new project?")
-            dialog.setMessage("If you don't save, all progress in the current project will be lost")
-            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
-                when (which) {
-                    DialogInterface.BUTTON_NEGATIVE -> {
-                        Toast.makeText(
-                            this,
-                            "Did not save project",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        startActivity(Intent(this, SavedProjectsActivity::class.java))
+        //TODO You should be able to change name of save file here, currently only overwriting existing file
+        programming_save_button.setOnClickListener{
+            var dialogWantToSave = android.app.AlertDialog.Builder(this)
+            dialogWantToSave.setTitle("Do you want to save this project with the name $projectName?")
+            dialogWantToSave.setMessage("If you press yes the current save file will be overwritten!")
+
+
+            val dialogClickListener = DialogInterface.OnClickListener{_, which ->
+                when(which){
+                    DialogInterface.BUTTON_NEGATIVE ->{
+                        Toast.makeText(this, "Did not overwrite or save file", Toast.LENGTH_SHORT).show()
                     }
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        Toast.makeText(
-                            this,
-                            "Saving project...",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    DialogInterface.BUTTON_POSITIVE ->{
+                        Toast.makeText(this, "Overwrite save file", Toast.LENGTH_SHORT).show()
+                        Log.e("FILE_LOG", "Overwriting: $projectName")
+                        saveFilesManager.saveProject(projectName, itemList, true)
+                    }
+                }
+            }
+            dialogWantToSave.setPositiveButton("Yes", dialogClickListener)
+            dialogWantToSave.setNegativeButton("No", dialogClickListener)
+            dialogWantToSave.create().show()
+        }
+    }
 
-                        val inputNameDialog = LayoutInflater.from(this).inflate(R.layout.input_text_dialog, null)
-                        val inputNameDialogBuilder = AlertDialog.Builder(this).setView(inputNameDialog)
-                        inputNameDialogBuilder.setTitle("Title from code")
-                        inputNameDialogBuilder.setMessage("Message from code")
-                        inputNameDialog.dialogTextFieldName.setText(projectName)
+    //Asking user if it wants to save project, and then changes activity.
+    private fun askUserForSavingProjectAndChangeActivity(intent : Intent){
+        var dialogWantToSave = android.app.AlertDialog.Builder(this)
+        dialogWantToSave.setTitle("Do you want to save this project before opening a new project?")
+        dialogWantToSave.setMessage("If you don't save, all progress in the current project will be lost")
+        val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+            when (which) {
+                DialogInterface.BUTTON_NEGATIVE -> {
+                    Toast.makeText(
+                        this,
+                        "Did not save project",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    startActivity(intent)
+                }
+                DialogInterface.BUTTON_POSITIVE -> {
+                    saveProjectAndChangeActivity(intent)
+                }
+            }
+        }
+        dialogWantToSave.setPositiveButton("Yes", dialogClickListener)
+        dialogWantToSave.setNegativeButton("No", dialogClickListener)
+        dialogWantToSave.create().show()
+    }
 
-                        val inputNameDialogClickListener = DialogInterface.OnClickListener{_, which ->
+    //Asking user for a name, saving project with that name and cahnging activity. If name exist, asking user for a overwriting. Otherwise asking user for a new name
+    private fun saveProjectAndChangeActivity(intent: Intent){
+        val dialogInputName = LayoutInflater.from(this).inflate(R.layout.input_text_dialog, null)
+        val dialogInputNameBuilder = AlertDialog.Builder(this).setView(dialogInputName)
+        dialogInputNameBuilder.setTitle("Enter a project name")
+        dialogInputNameBuilder.setMessage("Please enter a project name. If you don't want to overwrite, please enter a unique name")
+        dialogInputName.dialogTextFieldName.setText(projectName)
+
+        val inputNameDialogClickListener = DialogInterface.OnClickListener{_, which ->
+            when(which){
+                DialogInterface.BUTTON_NEUTRAL ->{
+                    Toast.makeText(this, "Cancel clicked", Toast.LENGTH_SHORT).show()
+                }
+                DialogInterface.BUTTON_POSITIVE ->{
+                    if(saveFilesManager.saveProject(dialogInputName.dialogTextFieldName.text.toString(), itemList, false)){
+                        Toast.makeText(this, "Saved project", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this, SavedProjectsActivity::class.java))
+                        finish()
+                    }
+                    else{
+                        var dialogRenaming = android.app.AlertDialog.Builder(this)
+                        dialogRenaming.setTitle("Project name exist already")
+                        dialogRenaming.setMessage("Do you want to override the existing save file?")
+
+                        val dialogClickListener = DialogInterface.OnClickListener{_, which ->
                             when(which){
-                                DialogInterface.BUTTON_NEUTRAL ->{
-                                    Toast.makeText(this, "Cancel clicked", Toast.LENGTH_SHORT).show()
+                                DialogInterface.BUTTON_NEGATIVE ->{
+                                    Toast.makeText(this, "Did not overwrite save file", Toast.LENGTH_SHORT).show()
+                                    saveProjectAndChangeActivity(intent)
                                 }
                                 DialogInterface.BUTTON_POSITIVE ->{
-                                    if(saveFilesManager.saveProject(inputNameDialog.dialogTextFieldName.text.toString(), itemList, false)){
-                                        Toast.makeText(this, "Saved project", Toast.LENGTH_SHORT).show()
-                                        startActivity(Intent(this, SavedProjectsActivity::class.java))
+                                    Toast.makeText(this, "Overwrite save file", Toast.LENGTH_SHORT).show()
+                                    Log.e("FILE_LOG", "Overwriting: $projectName")
+                                    if(saveFilesManager.saveProject(dialogInputName.dialogTextFieldName.text.toString(), itemList, true)){
+                                        startActivity(intent)
                                         finish()
-                                    }
-                                    else{
-                                        var dialogRenaming = android.app.AlertDialog.Builder(this)
-                                        dialogRenaming.setTitle("Project name exist already")
-                                        dialogRenaming.setMessage("Do you want to override the existing save file?")
-
-                                        val dialogClickListener = DialogInterface.OnClickListener{_, which ->
-                                            when(which){
-                                                DialogInterface.BUTTON_NEGATIVE ->{
-                                                    Toast.makeText(this, "Did not overwrite save file", Toast.LENGTH_SHORT).show()
-                                                }
-                                                DialogInterface.BUTTON_POSITIVE ->{
-                                                    Toast.makeText(this, "Overwrite save file", Toast.LENGTH_SHORT).show()
-                                                    Log.e("FILE_LOG", "Overwriting: $projectName")
-                                                    if(saveFilesManager.saveProject(inputNameDialog.dialogTextFieldName.text.toString(), itemList, true)){
-                                                        startActivity(Intent(this, SavedProjectsActivity::class.java))
-                                                        finish()
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        dialogRenaming.setPositiveButton("Yes", dialogClickListener)
-                                        dialogRenaming.setNegativeButton("No", dialogClickListener)
-                                        dialogRenaming.create().show()
                                     }
                                 }
                             }
                         }
-
-                        inputNameDialogBuilder.setPositiveButton("Save", inputNameDialogClickListener)
-                        inputNameDialogBuilder.setNeutralButton("Cancel", inputNameDialogClickListener)
-                        inputNameDialogBuilder.show()
+                        dialogRenaming.setPositiveButton("Yes", dialogClickListener)
+                        dialogRenaming.setNegativeButton("No", dialogClickListener)
+                        dialogRenaming.create().show()
                     }
                 }
             }
-            dialog.setPositiveButton("Yes", dialogClickListener)
-            dialog.setNegativeButton("No", dialogClickListener)
-            dialog.create().show()
         }
+
+        dialogInputNameBuilder.setPositiveButton("Save", inputNameDialogClickListener)
+        dialogInputNameBuilder.setNeutralButton("Cancel", inputNameDialogClickListener)
+        dialogInputNameBuilder.show()
     }
 
     /*May want to limit number of chars in each spinner item. Affects the size of the spinners*/
@@ -327,7 +365,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
             Collections.swap(itemList, startPosition, endPosition)
             recyclerView.adapter?.notifyItemMoved(startPosition, endPosition)
-            return true;
+            return true
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -419,16 +457,20 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private suspend fun traverseList() {
         val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
-        val delayTimeMillis : Long = 100
+        val delayTimeMillis : Long = 1000
 
         itemList.forEachIndexed{ index, item ->
             recycler.scrollToPosition(index) //Scrolls list so that current item is on screen
+            var parameter : Int = item.displayParameter
 
-            while (item.displayParameter > 0) {
+            while (parameter > 0) {
                 when (state) {  //State machine
                     RunState.RUNNING -> {
                         /*ADD COMMAND TO BLUETOOTH HERE?*/
+                        Utils.UtilsObject.bluetoothSendString("72$parameter", this.baseContext)
+                        //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
                         delay(delayTimeMillis) //Will finish current 'delayTimeMillis' period before pause
+                        parameter--
                         item.displayParameter--
                         adapter.notifyDataSetChanged()
                     }
