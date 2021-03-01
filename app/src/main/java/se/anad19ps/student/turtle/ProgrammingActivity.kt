@@ -394,16 +394,20 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private suspend fun traverseList() {
         val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
-        val delayTimeMillis : Long = 100
+        val delayTimeMillis : Long = 1000
 
         itemList.forEachIndexed{ index, item ->
             recycler.scrollToPosition(index) //Scrolls list so that current item is on screen
+            var parameter : Int = item.displayParameter
 
-            while (item.displayParameter > 0) {
+            while (parameter > 0) {
                 when (state) {  //State machine
                     RunState.RUNNING -> {
                         /*ADD COMMAND TO BLUETOOTH HERE?*/
+                        Utils.UtilsObject.bluetoothSendString("72$parameter", this.baseContext)
+                        //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
                         delay(delayTimeMillis) //Will finish current 'delayTimeMillis' period before pause
+                        parameter--
                         item.displayParameter--
                         adapter.notifyDataSetChanged()
                     }

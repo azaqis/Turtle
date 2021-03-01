@@ -32,7 +32,7 @@ class ControllerDebugFragment : Fragment() {
 
     companion object {
         var debugList = mutableListOf<String>()
-        lateinit var recyclerViewDebugList : RecyclerView
+        var recyclerViewDebugList : RecyclerView? = null
         var operationsDone = 0
 
         /**
@@ -89,8 +89,8 @@ class ControllerDebugFragment : Fragment() {
         }*/
 
         recyclerViewDebugList = root.recyclerViewDebug
-        recyclerViewDebugList.layoutManager = LinearLayoutManager(activity)
-        recyclerViewDebugList.adapter = ControllerDebugRecyclerViewAdapter(debugList)
+        recyclerViewDebugList!!.layoutManager = LinearLayoutManager(activity)
+        recyclerViewDebugList!!.adapter = ControllerDebugRecyclerViewAdapter(debugList)
 
         /*var nonsenseString = "blablabla"
         var i = 0
@@ -104,12 +104,14 @@ class ControllerDebugFragment : Fragment() {
     }
 
     fun addStringToDebugList(incomingString : String){
-        operationsDone+=1
-        debugList.add("$operationsDone: $incomingString")
-        updateList()
+        if(recyclerViewDebugList != null){
+            operationsDone+=1
+            debugList.add("$operationsDone: $incomingString")
+            updateList()
+        }
     }
 
-    fun clearDebugList(){
+    private fun clearDebugList(){
         operationsDone = 0
         debugList.clear()
         updateList()
@@ -117,8 +119,10 @@ class ControllerDebugFragment : Fragment() {
 
     private fun updateList(){
         Handler(Looper.getMainLooper()).post {
-            recyclerViewDebugList.adapter!!.notifyDataSetChanged()
-            recyclerViewDebugList.smoothScrollToPosition(debugList.size);
+            if(recyclerViewDebugList != null){
+                recyclerViewDebugList!!.adapter!!.notifyDataSetChanged()
+                recyclerViewDebugList!!.smoothScrollToPosition(debugList.size);
+            }
         }
     }
 }
