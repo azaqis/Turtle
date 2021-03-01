@@ -68,12 +68,12 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity() {
                 drawable,
                 "Insert text test $i",
                 "Garbage command",
-                1,
-                1,
+                1.0,
+                1.0,
                 DragDropBlock.e_type.DRIVE
             )
             Log.e("CUSTOM_LOG", "TEST CODE ADDED A NEW DRAGDROPBLOCK WITH NAME: " + "test" + 1);
-            customDragDropBlockManager.saveDragDropBlock("test$i", item)
+            customDragDropBlockManager.saveDragDropBlock("test$i", item, false)
         }
     }
 
