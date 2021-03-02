@@ -22,10 +22,10 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
             val name = editTextDragDropBlockName.text.toString()
             val parameterEnabled = checkBox.isEnabled
             val command = editTextDragDropBlockCommand.text.toString()
-            var dragDropBlock = DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_arrow_up, name, command, 1, parameterEnabled.compareTo(false), DragDropBlock.e_type.CUSTOM)
+            var dragDropBlock = DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_user_created_dragdropblock, name, command, 1.0, 1.0, DragDropBlock.e_type.CUSTOM)
             var saveCustomDragDropBlockManager = SaveCustomDragDropBlockManager(this)
 
-            if(saveCustomDragDropBlockManager.saveDragDropBlock(name, dragDropBlock, false)){
+            if(saveCustomDragDropBlockManager.saveDragDropBlock(dragDropBlock, false)){
                 finish()
             }
             else{
