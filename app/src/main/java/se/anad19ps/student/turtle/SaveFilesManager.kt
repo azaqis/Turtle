@@ -54,8 +54,8 @@ class SaveFilesManager(con : Context) {
                         drawable,
                         "Insert text test $i",
                         "Garbage command",
-                        1,
-                        1,
+                        1.0,
+                        1.0,
                         DragDropBlock.e_type.DRIVE
                     )
                     itemList.add(item)
@@ -197,9 +197,9 @@ class SaveFilesManager(con : Context) {
         //null would be a better init, but don't know if i can change DragDropBlock to accept null?
         var commandReadFromFile: String = ""
         var directionImageReadFromFile: Int = -1
-        var displayParameterReadFromFile: Int = -1
+        var displayParameterReadFromFile: Double = -1.0
         var dragImageReadFromFile: Int = -1
-        var parameterReadFromFile: Int = -1
+        var parameterReadFromFile: Double = -1.0
         var textReadFromFile: String = ""
         var type: DragDropBlock.e_type = DragDropBlock.e_type.CUSTOM
 
@@ -208,9 +208,9 @@ class SaveFilesManager(con : Context) {
                 when (count) {
                     0 -> commandReadFromFile = it
                     1 -> directionImageReadFromFile = it.toInt()
-                    2 -> displayParameterReadFromFile = it.toInt()
+                    2 -> displayParameterReadFromFile = it.toDouble()
                     3 -> dragImageReadFromFile = it.toInt()
-                    4 -> parameterReadFromFile = it.toInt()
+                    4 -> parameterReadFromFile = it.toDouble()
                     5 -> textReadFromFile = it
                     6 -> type = DragDropBlock.e_type.valueOf(it.toString())
                 }

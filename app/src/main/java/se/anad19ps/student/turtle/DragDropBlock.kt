@@ -8,8 +8,8 @@ data class DragDropBlock(
     val directionImage: Int,
     val text: String,
     val command: String,
-    var parameter: Int,
-    var displayParameter: Int,
+    var parameter: Double,
+    var displayParameter: Double,
     val type: e_type
 ) : Serializable{
     enum class e_type{
