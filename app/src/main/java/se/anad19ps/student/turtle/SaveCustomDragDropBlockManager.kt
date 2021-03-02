@@ -5,13 +5,12 @@ import android.util.Log
 import java.io.File
 import java.io.FileWriter
 
-class SaveCustomDragDropBlockManager(con: Context) {
+class SaveCustomDragDropBlockManager(con : Context) {
     companion object {
-        private val customDragDropBlockSaveFile = "customDragDropBlockSaveFile.txt"
-        private lateinit var context: Context
+        private const val customDragDropBlockSaveFile = "customDragDropBlockSaveFile.txt"
+        private lateinit var context : Context
+        private var arrayWithDragDropBlock = arrayListOf<DragDropBlock>()
         private var arrayWithDragDropBlockNames = arrayListOf<String>()
-        private var arrayWithDragDropBlockDescription = arrayListOf<String>()
-        private var arrayWithDragDropBlockImage = arrayListOf<Int>()
     }
 
     /*
@@ -43,68 +42,36 @@ class SaveCustomDragDropBlockManager(con: Context) {
         }
         else{
             Log.e("CUSTOM_LOG", "customDragDropBlockSaveFile.txt was already created")
+            loadCustomDragDropBlocks()
             loadNamesOfCustomDragDropBlocks()
         }
     }
 
-    fun saveDragDropBlock(dragAndDropBlockName: String, dragDropBlock: DragDropBlock, allowOverwriting : Boolean) : Boolean{
+    fun saveDragDropBlock(dragAndDropBlockName: String, dragDropBlock: DragDropBlock, allowOverwriting: Boolean) : Boolean{
         Log.e("CUSTOM_LOG", "Request to save: $dragAndDropBlockName")
-        if(!addNewName(dragAndDropBlockName) && !allowOverwriting){
+        if(!dragAndDropBlockNameExist(dragAndDropBlockName) && !allowOverwriting){
             Log.e("CUSTOM_LOG", "Could not save: $dragAndDropBlockName, name already exists and overwriting was set to false")
             return false
         }
-        else{
-            saveDragDropBlockToFile(dragAndDropBlockName, dragDropBlock)
+        else if(dragAndDropBlockNameExist(dragAndDropBlockName)){
+            var index = arrayWithDragDropBlockNames.indexOf(dragAndDropBlockName)
+            arrayWithDragDropBlock[index] = dragDropBlock
             return true
         }
-    }
-
-    private fun saveDragDropBlockToFile(dragAndDropBlockName: String, dragDropBlock: DragDropBlock){
-        File(context.filesDir, "$dragAndDropBlockName.txt").createNewFile()
-        val fwProjectSaveFile =
-            FileWriter(File(context.filesDir, "$dragAndDropBlockName.txt"), true)
-
-        fwProjectSaveFile.write(dragDropBlock.command + "\n")
-        fwProjectSaveFile.write(dragDropBlock.directionImage.toString() + "\n")
-        fwProjectSaveFile.write(dragDropBlock.displayParameter.toString() + "\n")
-        fwProjectSaveFile.write(dragDropBlock.dragImage.toString() + "\n")
-        fwProjectSaveFile.write(dragDropBlock.parameter.toString() + "\n")
-        fwProjectSaveFile.write(dragDropBlock.text + "\n")
-        fwProjectSaveFile.write(dragDropBlock.type.toString() + "\n")
-        Log.e("CUSTOM_LOG", "Saved a DragDropBlock with name: $dragAndDropBlockName")
-
-        fwProjectSaveFile.flush()
-        fwProjectSaveFile.close()
-    }
-
-    fun addNewName(name: String): Boolean {
-        if (!dragAndDropBlockNameExist(name)) {
-            arrayWithDragDropBlockNames.add(name)
-            updateFileWithDragDropBlockNames()
-            return false
+        else{
+            arrayWithDragDropBlockNames.add(dragAndDropBlockName)
+            arrayWithDragDropBlock.add(dragDropBlock)
+            return true
         }
-        return false
     }
 
     fun dragAndDropBlockNameExist(name: String): Boolean {
         return arrayWithDragDropBlockNames.contains(name)
     }
 
-    fun updateFileWithDragDropBlockNames() {
-        for (dragDropBlockName: String in arrayWithDragDropBlockNames) {
-            //Add new name to projectNamesFile.txt, should check if name already exists
-            val fwProjectsNamesFile = FileWriter(File(context.filesDir, customDragDropBlockSaveFile), true)
-            fwProjectsNamesFile.write(dragDropBlockName + "\n")
-            Log.e("CUSTOM_LOG", "Saved name:  $dragDropBlockName")
-            fwProjectsNamesFile.flush()
-            fwProjectsNamesFile.close()
-        }
-    }
+    fun loadCustomDragDropBlocks(){
+        Log.e("CUSTOM_LOG", "Request to load all DADB")
 
-    fun loadCustomDragDropBlock(dragDropBlockName: String): DragDropBlock? {
-        Log.e("CUSTOM_LOG", "Request to load DADB:  $dragDropBlockName")
-
-        var dragDropBlock: DragDropBlock? = null
         var count = 0
 
         //null would be a better init, but don't know if i can change DragDropBlock to accept null?
@@ -116,7 +83,7 @@ class SaveCustomDragDropBlockManager(con: Context) {
         var textReadFromFile: String = ""
         var type: DragDropBlock.e_type = DragDropBlock.e_type.CUSTOM
 
-        File(context.filesDir, "$dragDropBlockName.txt").useLines { lines ->
+        File(context.filesDir, customDragDropBlockSaveFile).useLines { lines ->
             lines.forEach {
                 when (count) {
                     0 -> commandReadFromFile = it
@@ -132,27 +99,18 @@ class SaveCustomDragDropBlockManager(con: Context) {
                 } else {
                     Log.e("CUSTOM_LOG", "Loaded: $textReadFromFile")
                     count = 0
-                    dragDropBlock = DragDropBlock(
-                        dragImageReadFromFile,
-                        directionImageReadFromFile,
-                        textReadFromFile,
-                        commandReadFromFile,
-                        parameterReadFromFile,
-                        displayParameterReadFromFile,
-                        type
-                    )
-                    return dragDropBlock
+                    arrayWithDragDropBlock.add(DragDropBlock(dragImageReadFromFile, directionImageReadFromFile, textReadFromFile, commandReadFromFile, parameterReadFromFile, displayParameterReadFromFile, type))
                 }
             }
-            return dragDropBlock
         }
     }
 
+    //Could merge into the same function as loadImagesOfCustomDragDropBlocks and have file and array as parameter
     fun loadNamesOfCustomDragDropBlocks() {
-        if(File(context.filesDir, customDragDropBlockSaveFile).isFile){
-            File(context.filesDir, customDragDropBlockSaveFile).bufferedReader().forEachLine {
-                arrayWithDragDropBlockNames.add(it)
-            }
+        var index = 0;
+        for(dragDropBlock : DragDropBlock in arrayWithDragDropBlock){
+            arrayWithDragDropBlockNames.add(arrayWithDragDropBlock[index].text)
+            index++;
         }
     }
 
@@ -160,5 +118,7 @@ class SaveCustomDragDropBlockManager(con: Context) {
         return arrayWithDragDropBlockNames
     }
 
-
+    fun getArrayWithCustomDragDropBlocks() : ArrayList<DragDropBlock>{
+        return arrayWithDragDropBlock
+    }
 }

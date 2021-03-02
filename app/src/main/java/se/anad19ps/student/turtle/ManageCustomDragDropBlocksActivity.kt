@@ -25,7 +25,6 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity() {
         setContentView(R.layout.activity_manage_custom_dragdropblocks)
 
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
-        customDragDropBlockManager = SaveCustomDragDropBlockManager(this)
 
         val buttonCreate = findViewById<Button>(R.id.buttonCreate)
         buttonCreate.setBackgroundColor(getResources().getColor(R.color.PrimaryColor))
@@ -38,15 +37,10 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity() {
         val buttonDelete = findViewById<Button>(R.id.buttonDelete)
         buttonDelete.setBackgroundColor(getResources().getColor(R.color.PrimaryComplement))
 
-        //postToList()
+        customDragDropBlockManager = SaveCustomDragDropBlockManager(this)
         testCode()
 
-        addToList(customDragDropBlockManager.loadCustomDragDropBlock("test1")!!.text, "TEST", customDragDropBlockManager.loadCustomDragDropBlock("test1")!!.directionImage)
-        addToList(customDragDropBlockManager.loadCustomDragDropBlock("test2")!!.text, "TEST", customDragDropBlockManager.loadCustomDragDropBlock("test2")!!.directionImage)
-        addToList(customDragDropBlockManager.loadCustomDragDropBlock("test3")!!.text, "TEST", customDragDropBlockManager.loadCustomDragDropBlock("test3")!!.directionImage)
-        addToList(customDragDropBlockManager.loadCustomDragDropBlock("test4")!!.text, "TEST", customDragDropBlockManager.loadCustomDragDropBlock("test4")!!.directionImage)
-
-
+        addToList("test0", "TEST", R.drawable.ic_arrow_up)
 
         //Should change name of recycler_view to follow naming convention
         recycler_view.layoutManager = LinearLayoutManager(this)
@@ -73,7 +67,7 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity() {
                 DragDropBlock.e_type.DRIVE
             )
             Log.e("CUSTOM_LOG", "TEST CODE ADDED A NEW DRAGDROPBLOCK WITH NAME: " + "test" + 1);
-            customDragDropBlockManager.saveDragDropBlock("test$i", item)
+            //customDragDropBlockManager.saveDragDropBlock("test$i", item, false)
         }
     }
 
@@ -81,6 +75,7 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity() {
         titlesList.add(title)
         descriptionList.add(description)
         imagesList.add(image)
+        recycler_view.adapter?.notifyDataSetChanged()
     }
 
     private fun postToList() {

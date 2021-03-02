@@ -47,7 +47,7 @@
                         android:text="Name:" />
 
                     <EditText
-                        android:id="@+id/editTextTextPersonName"
+                        android:id="@+id/editTextDragDropBlockName"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
@@ -102,7 +102,7 @@
                     android:text="Command:" />
 
                 <EditText
-                    android:id="@+id/editTextTextPersonName2"
+                    android:id="@+id/editTextDragDropBlockCommand"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="5"
