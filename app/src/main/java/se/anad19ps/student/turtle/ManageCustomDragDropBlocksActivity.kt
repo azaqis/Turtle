@@ -68,7 +68,7 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity(){
                 DragDropBlock.e_type.DRIVE
             )
             Log.e("CUSTOM_LOG", "TEST CODE ADDED A NEW DRAGDROPBLOCK WITH NAME: " + "test" + 1);
-            customDragDropBlockManager.saveDragDropBlock("test$i", item, false)
+            customDragDropBlockManager.saveDragDropBlock(item, false)
         }
     }
 

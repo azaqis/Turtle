@@ -298,8 +298,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drive,
                 "Drive blocks",
                 "Null",
-                1,
-                1,
+                1.0,
+                1.0,
                 DragDropBlock.e_type.DRIVE
             )
         )
@@ -316,8 +316,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_modules,
                 "Module blocks",
                 "Null",
-                1,
-                1,
+                1.0,
+                1.0,
                 DragDropBlock.e_type.MODULE
             )
         )
@@ -333,8 +333,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_custom,
                 "Custom blocks",
                 "Null",
-                1,
-                1,
+                1.0,
+                1.0,
                 DragDropBlock.e_type.CUSTOM
             )
         )
