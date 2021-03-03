@@ -69,6 +69,16 @@ class SaveCustomDragDropBlockManager(con : Context){
         }
     }
 
+    fun editDragDropBlock(oldNName : String, updatedDragDropBlock : DragDropBlock){
+        val index = arrayWithDragDropBlockNames.indexOf(oldNName)
+
+        if(index != -1){
+            arrayWithDragDropBlockNames[index] = updatedDragDropBlock.text
+            arrayWithDragDropBlock[index] = updatedDragDropBlock
+        }
+        saveToFile()
+    }
+
     private fun saveToFile(){
         File(context.filesDir, customDragDropBlockSaveFile).createNewFile()
         val fwCustomDragDropBlockSaveFile = FileWriter(File(context.filesDir, customDragDropBlockSaveFile), false)
@@ -144,6 +154,16 @@ class SaveCustomDragDropBlockManager(con : Context){
 
     fun getArrayWithCustomDragDropBlocks() : ArrayList<DragDropBlock>{
         return arrayWithDragDropBlock
+    }
+
+    fun getDragDropBlockByName(name : String) : DragDropBlock?{
+        if(dragAndDropBlockNameExist(name)){
+            val index = arrayWithDragDropBlockNames.indexOf(name)
+            return arrayWithDragDropBlock[index]
+        }
+        else{
+            return null
+        }
     }
 
     fun deleteCustomDragDropBlock(name : String) : Boolean{

@@ -30,8 +30,8 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
             }
             else{
                 var dialogNameExists = android.app.AlertDialog.Builder(this)
-                dialogNameExists.setTitle("Do you want to save this project before opening a new project?")
-                dialogNameExists.setMessage("If you don't save, all progress in the current project will be lost")
+                dialogNameExists.setTitle("Title already exists")
+                dialogNameExists.setMessage("Please choose a unique title")
                 val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                     when (which) {
                         DialogInterface.BUTTON_NEUTRAL -> {

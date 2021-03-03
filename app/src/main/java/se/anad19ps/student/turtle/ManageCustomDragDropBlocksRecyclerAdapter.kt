@@ -1,6 +1,7 @@
 package se.anad19ps.student.turtle
 
 import android.content.Intent
+import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,9 +22,8 @@ RecyclerView.Adapter<ManageCustomDragDropBlocksRecyclerAdapter.ViewHolder>(){
         init {
             itemView.setOnClickListener { v : View ->
                 val position: Int = adapterPosition
-                val customDragDropBlockName = v.findViewById<View>(R.id.text_view_title).toString()
                 val intent = Intent(itemView.context, EditCustomDragDropBlocksActivity::class.java)
-                intent.putExtra("NAME_DRAGDDROPBLOCK", customDragDropBlockName)
+                intent.putExtra("NAME_DRAGDDROPBLOCK", itemTitle.text)
                 itemView.context.startActivity(intent)
             }
         }

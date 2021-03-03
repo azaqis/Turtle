@@ -37,10 +37,6 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity(){
         val buttonCreate = findViewById<Button>(R.id.buttonCreate)
         buttonCreate.setBackgroundColor(getResources().getColor(R.color.PrimaryColor))
 
-        recycler_view.setOnClickListener{
-
-        }
-
         buttonCreate.setOnClickListener{
             val intent = Intent(this, CreateCustomDragDropBlocksActivity::class.java)
             startActivity(intent)
