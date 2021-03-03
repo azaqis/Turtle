@@ -298,7 +298,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             DragDropBlock(
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_drive,
-                "Drive blocks",
+                "Driving",
                 "Null",
                 1.0,
                 1.0,
@@ -316,7 +316,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             DragDropBlock(
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_modules,
-                "Module blocks",
+                "Modules",
                 "Null",
                 1.0,
                 1.0,
@@ -333,7 +333,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             DragDropBlock(
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_custom,
-                "Custom blocks",
+                "Custom",
                 "Null",
                 1.0,
                 1.0,
