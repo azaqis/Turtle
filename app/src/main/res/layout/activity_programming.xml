@@ -27,7 +27,8 @@
             android:layout_weight="1"
             android:background="@color/SpinnerBackgroundTurquoise"
             android:entries="@array/list"
-            android:layout_marginEnd="2dp" />
+            android:layout_marginEnd="2dp"
+            android:textAlignment="center"/>
 
         <Spinner
             android:layout_width="wrap_content"
@@ -35,7 +36,8 @@
             android:id="@+id/programming_spinner_modules"
             android:layout_weight="1"
             android:background="@color/SpinnerBackgroundPink"
-            android:entries="@array/list"/>
+            android:entries="@array/list"
+            android:textAlignment="center"/>
 
         <Spinner
             android:layout_width="wrap_content"
@@ -44,7 +46,8 @@
             android:layout_weight="1"
             android:background="@color/SpinnerBackgroundOrange"
             android:entries="@array/list"
-            android:layout_marginStart="2dp"/>
+            android:layout_marginStart="2dp"
+            android:textAlignment="center"/>
 
     </LinearLayout>
 
