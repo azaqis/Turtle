@@ -354,7 +354,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 id: Long
             ) {
                 if(position != 0) { //We shouldn't add the title block
-                    itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
+                    val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
+                    itemList.add(block)
                     adapter.notifyDataSetChanged()
                     programming_spinner_driving.setSelection(0, false)  //Always make title block stay on top
                 }
@@ -372,7 +373,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 id: Long
             ) {
                 if(position != 0) {
-                    itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
+                    val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
+                    itemList.add(block)
                     adapter.notifyDataSetChanged()
                     programming_spinner_modules.setSelection(0, false)
                 }
@@ -390,7 +392,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 id: Long
             ) {
                 if(position != 0) {
-                    itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
+                    val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
+                    itemList.add(block)
                     adapter.notifyDataSetChanged()
                     programming_spinner_custom.setSelection(0, false)
                 }
@@ -549,7 +552,13 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
                         delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
                         parameter--
-                        item.displayParameter = String.format("%.1f", item.displayParameter - 0.1).toDouble()
+
+
+                        /*Works with Locale but crashes without? Only for Andreas*/
+                        item.displayParameter = String.format(Locale.ENGLISH, "%.1f", item.displayParameter - 0.1).toDouble()
+
+
+
                         adapter.notifyDataSetChanged()
                     }
                     RunState.PAUSE -> {
