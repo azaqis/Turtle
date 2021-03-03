@@ -27,7 +27,7 @@
             android:layout_weight="1"
             android:background="@color/SpinnerBackgroundTurquoise"
             android:entries="@array/list"
-            android:layout_marginEnd="2dp"/>
+            android:layout_marginEnd="2dp" />
 
         <Spinner
             android:layout_width="wrap_content"

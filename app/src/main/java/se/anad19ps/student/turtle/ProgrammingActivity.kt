@@ -37,16 +37,18 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     private var markForDeletion = false //Marks if a click should add to deleteList
-    private var deleteList = ArrayList<DragDropBlock>() //Items in this list will be deleted when delete button is pressed
+    private var deleteList =
+        ArrayList<DragDropBlock>() //Items in this list will be deleted when delete button is pressed
 
     private var layoutManager: RecyclerView.LayoutManager? = null
     private lateinit var adapter: ProgrammingRecyclerAdapter
 
-    private lateinit var spinnerDriveAdapter : ProgrammingSpinnerAdapter
-    private lateinit var spinnerModulesAdapter : ProgrammingSpinnerAdapter
-    private lateinit var spinnerCustomAdapter : ProgrammingSpinnerAdapter
+    private lateinit var spinnerDriveAdapter: ProgrammingSpinnerAdapter
+    private lateinit var spinnerModulesAdapter: ProgrammingSpinnerAdapter
+    private lateinit var spinnerCustomAdapter: ProgrammingSpinnerAdapter
 
     private var itemList = ArrayList<DragDropBlock>()   //List for items in RecyclerView
+
     private var driveBlocksSpinner = mutableListOf<DragDropBlock>() //Lists for items in spinners
     private var modulesBlocksSpinner = mutableListOf<DragDropBlock>()
     private var customBlocksSpinner = mutableListOf<DragDropBlock>()
@@ -56,8 +58,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private lateinit var state: RunState    //State for iteration through list. Needed for play, pause and stop
     private val sem = Semaphore(1)  //Can force the state machine to halt coroutine when pausing
 
-    private lateinit var saveFilesManager : SaveFilesManager
-    private lateinit var projectName : String
+    private lateinit var saveFilesManager: SaveFilesManager
+    private lateinit var projectName: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,18 +77,17 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         //I added code here start
         saveFilesManager = SaveFilesManager(this)
 
-        var intent = intent
+        val intent = intent
 
         if (intent.hasExtra("PROJECT_NAME")) {
             projectName = intent.getSerializableExtra("PROJECT_NAME") as String
             itemList = saveFilesManager.loadProject(projectName)
         } else {
             val lastOpenProject = saveFilesManager.getNameOfLastOpenedProject()
-            if(lastOpenProject != null){
+            if (lastOpenProject != null) {
                 itemList = saveFilesManager.loadProject(lastOpenProject)
                 projectName = lastOpenProject
-            }
-            else{
+            } else {
                 projectName = "New Project"
             }
 
@@ -113,41 +114,39 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_text_view_current_project.text = projectName
     }
 
-    private fun setupButtons(){
+    private fun setupButtons() {
         /*Start coroutine from button click. Traverse list*/
         var job: Job? = null
         programming_play_button.setOnClickListener {
-            if(state == RunState.IDLE){
+            if (state == RunState.IDLE) {
                 job = GlobalScope.launch(Dispatchers.Main) {
                     state = RunState.RUNNING
                     programming_play_button.setImageResource(R.drawable.ic_pause)
                     traverseList()
                 }
-            }
-            else if (state == RunState.PAUSE) {
-                if(sem.availablePermits == 0) {
+            } else if (state == RunState.PAUSE) {
+                if (sem.availablePermits == 0) {
                     sem.release()   //Used to avoid idle wait in traverseList
                 }
                 programming_play_button.setImageResource(R.drawable.ic_pause)
                 state = RunState.RUNNING
-            }
-            else if(state == RunState.RUNNING){
+            } else if (state == RunState.RUNNING) {
                 programming_play_button.setImageResource(R.drawable.ic_play_arrow)
                 state = RunState.PAUSE
             }
         }
-        programming_reset_btn.setOnClickListener{
+        programming_reset_btn.setOnClickListener {
             job?.cancel()
             resetListTraverse()
         }
 
         /*Delete button*/
-        programming_delete_btn.setOnClickListener{
-            if(deleteList.isNotEmpty()){
+        programming_delete_btn.setOnClickListener {
+            if (deleteList.isNotEmpty()) {
                 val indexes = ArrayList<Int>()  //To record indexed that should be deleted
 
-                itemList.forEachIndexed{index, dragDropBlock -> //Record indexes
-                    if(deleteList.contains(dragDropBlock)){
+                itemList.forEachIndexed { index, dragDropBlock -> //Record indexes
+                    if (deleteList.contains(dragDropBlock)) {
                         indexes.add(index)
                     }
                 }
@@ -155,7 +154,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 indexes.sort()  //Sort indexes by size
                 indexes.reverse()   //So largest index is first. This way we don't need to change index after every removal
 
-                for(i in 0 until indexes.size){
+                for (i in 0 until indexes.size) {
                     itemList.removeAt(indexes[i])
                     adapter.notifyItemRemoved(indexes[i])
                 }
@@ -171,18 +170,19 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
 
         //TODO You should be able to change name of save file here, currently only overwriting existing file
-        programming_save_button.setOnClickListener{
-            var dialogWantToSave = android.app.AlertDialog.Builder(this)
+        programming_save_button.setOnClickListener {
+            val dialogWantToSave = android.app.AlertDialog.Builder(this)
             dialogWantToSave.setTitle("Do you want to save this project with the name $projectName?")
             dialogWantToSave.setMessage("If you press yes the current save file will be overwritten!")
 
 
-            val dialogClickListener = DialogInterface.OnClickListener{_, which ->
-                when(which){
-                    DialogInterface.BUTTON_NEGATIVE ->{
-                        Toast.makeText(this, "Did not overwrite or save file", Toast.LENGTH_SHORT).show()
+            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_NEGATIVE -> {
+                        Toast.makeText(this, "Did not overwrite or save file", Toast.LENGTH_SHORT)
+                            .show()
                     }
-                    DialogInterface.BUTTON_POSITIVE ->{
+                    DialogInterface.BUTTON_POSITIVE -> {
                         Toast.makeText(this, "Overwrite save file", Toast.LENGTH_SHORT).show()
                         Log.e("FILE_LOG", "Overwriting: $projectName")
                         saveFilesManager.saveProject(projectName, itemList, true)
@@ -196,8 +196,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     //Asking user if it wants to save project, and then changes activity.
-    private fun askUserForSavingProjectAndChangeActivity(intent : Intent){
-        var dialogWantToSave = android.app.AlertDialog.Builder(this)
+    private fun askUserForSavingProjectAndChangeActivity(intent: Intent) {
+        val dialogWantToSave = android.app.AlertDialog.Builder(this)
         dialogWantToSave.setTitle("Do you want to save this project before opening a new project?")
         dialogWantToSave.setMessage("If you don't save, all progress in the current project will be lost")
         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
@@ -221,39 +221,53 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     //Asking user for a name, saving project with that name and cahnging activity. If name exist, asking user for a overwriting. Otherwise asking user for a new name
-    private fun saveProjectAndChangeActivity(intent: Intent){
+    private fun saveProjectAndChangeActivity(intent: Intent) {
         val dialogInputName = LayoutInflater.from(this).inflate(R.layout.input_text_dialog, null)
         val dialogInputNameBuilder = AlertDialog.Builder(this).setView(dialogInputName)
         dialogInputNameBuilder.setTitle("Enter a project name")
         dialogInputNameBuilder.setMessage("Please enter a project name. If you don't want to overwrite, please enter a unique name")
         dialogInputName.dialogTextFieldName.setText(projectName)
 
-        val inputNameDialogClickListener = DialogInterface.OnClickListener{_, which ->
-            when(which){
-                DialogInterface.BUTTON_NEUTRAL ->{
+        val inputNameDialogClickListener = DialogInterface.OnClickListener { _, which ->
+            when (which) {
+                DialogInterface.BUTTON_NEUTRAL -> {
                     Toast.makeText(this, "Cancel clicked", Toast.LENGTH_SHORT).show()
                 }
-                DialogInterface.BUTTON_POSITIVE ->{
-                    if(saveFilesManager.saveProject(dialogInputName.dialogTextFieldName.text.toString(), itemList, false)){
+                DialogInterface.BUTTON_POSITIVE -> {
+                    if (saveFilesManager.saveProject(
+                            dialogInputName.dialogTextFieldName.text.toString(),
+                            itemList,
+                            false
+                        )
+                    ) {
                         Toast.makeText(this, "Saved project", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this, SavedProjectsActivity::class.java))
                         finish()
-                    }
-                    else{
-                        var dialogRenaming = android.app.AlertDialog.Builder(this)
+                    } else {
+                        val dialogRenaming = android.app.AlertDialog.Builder(this)
                         dialogRenaming.setTitle("Project name exist already")
                         dialogRenaming.setMessage("Do you want to override the existing save file?")
 
-                        val dialogClickListener = DialogInterface.OnClickListener{_, which ->
-                            when(which){
-                                DialogInterface.BUTTON_NEGATIVE ->{
-                                    Toast.makeText(this, "Did not overwrite save file", Toast.LENGTH_SHORT).show()
+                        val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                            when (which) {
+                                DialogInterface.BUTTON_NEGATIVE -> {
+                                    Toast.makeText(
+                                        this,
+                                        "Did not overwrite save file",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                     saveProjectAndChangeActivity(intent)
                                 }
-                                DialogInterface.BUTTON_POSITIVE ->{
-                                    Toast.makeText(this, "Overwrite save file", Toast.LENGTH_SHORT).show()
+                                DialogInterface.BUTTON_POSITIVE -> {
+                                    Toast.makeText(this, "Overwrite save file", Toast.LENGTH_SHORT)
+                                        .show()
                                     Log.e("FILE_LOG", "Overwriting: $projectName")
-                                    if(saveFilesManager.saveProject(dialogInputName.dialogTextFieldName.text.toString(), itemList, true)){
+                                    if (saveFilesManager.saveProject(
+                                            dialogInputName.dialogTextFieldName.text.toString(),
+                                            itemList,
+                                            true
+                                        )
+                                    ) {
                                         startActivity(intent)
                                         finish()
                                     }
@@ -278,51 +292,117 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         driveBlocksSpinner = populateListGarbage(5, DragDropBlock.e_type.DRIVE)
         spinnerDriveAdapter = ProgrammingSpinnerAdapter(driveBlocksSpinner, this)
         spinnerDriveAdapter.setDropDownViewResource(R.layout.programming_spinner_driving_dropdown_layout)
+        driveBlocksSpinner.add(0,   //Unused object. Shown only in title. Cannot be added to itemList
+            DragDropBlock(
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_drive,
+                "Drive blocks",
+                "Null",
+                1,
+                1,
+                DragDropBlock.e_type.DRIVE
+            )
+        )
         programming_spinner_driving.adapter = spinnerDriveAdapter
+        programming_spinner_driving.setSelection(0, false)
+
 
         modulesBlocksSpinner = populateListGarbage(4, DragDropBlock.e_type.MODULE)
         spinnerModulesAdapter = ProgrammingSpinnerAdapter(modulesBlocksSpinner, this)
         spinnerModulesAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
+        modulesBlocksSpinner.add(0,
+            DragDropBlock(
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_modules,
+                "Module blocks",
+                "Null",
+                1,
+                1,
+                DragDropBlock.e_type.MODULE
+            )
+        )
         programming_spinner_modules.adapter = spinnerModulesAdapter
+        programming_spinner_modules.setSelection(0, false)
 
         customBlocksSpinner = populateListGarbage(5, DragDropBlock.e_type.CUSTOM)
         spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinner, this)
         spinnerCustomAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
+        customBlocksSpinner.add(0,
+            DragDropBlock(
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_custom,
+                "Custom blocks",
+                "Null",
+                1,
+                1,
+                DragDropBlock.e_type.CUSTOM
+            )
+        )
         programming_spinner_custom.adapter = spinnerCustomAdapter
+        programming_spinner_custom.setSelection(0, false)
 
-        programming_spinner_driving.onItemSelectedListener = object: OnItemSelectedListener{
+        programming_spinner_driving.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                //Found a bug? One item of each kind (driving, module, custom gets automatically added in the programming view even if you dont click on an item in the spinner)
-                //itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
-                adapter.notifyDataSetChanged()
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if(position != 0) { //We shouldn't add the title block
+                    itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
+                    adapter.notifyDataSetChanged()
+                    programming_spinner_driving.setSelection(0, false)  //Always make title block stay on top
+                }
             }
         }
 
-        programming_spinner_modules.onItemSelectedListener = object: OnItemSelectedListener{
+        programming_spinner_modules.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                //itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
-                adapter.notifyDataSetChanged()
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if(position != 0) {
+                    itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
+                    adapter.notifyDataSetChanged()
+                    programming_spinner_modules.setSelection(0, false)
+                }
             }
         }
 
-        programming_spinner_custom.onItemSelectedListener = object: OnItemSelectedListener{
+        programming_spinner_custom.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                //itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
-                adapter.notifyDataSetChanged()
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if(position != 0) {
+                    itemList.add(parent?.getItemAtPosition(position) as DragDropBlock)
+                    adapter.notifyDataSetChanged()
+                    programming_spinner_custom.setSelection(0, false)
+                }
             }
         }
     }
 
-    private fun populateListGarbage(num: Int, type: DragDropBlock.e_type): ArrayList<DragDropBlock> {
+    private fun populateListGarbage(
+        num: Int,
+        type: DragDropBlock.e_type
+    ): ArrayList<DragDropBlock> {
         val list = ArrayList<DragDropBlock>()
 
-        for (i in 0 until num){
+        for (i in 0 until num) {
             val drawable = when (i % 4) {
                 0 -> R.drawable.ic_arrow_up
                 1 -> R.drawable.ic_arrow_down
@@ -341,12 +421,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             list.add(item)
         }
         return list
-    }
-
-    public fun loadList(list: MutableList<DragDropBlock>){
-        itemList.clear()
-        itemList.addAll(list)
-        adapter.notifyDataSetChanged()
     }
 
     /*For rearranging recyclerview*/
@@ -379,23 +453,22 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     /*When touching dragDots*/
-    override fun onDragDots(view : RecyclerView.ViewHolder) {
+    override fun onDragDots(view: RecyclerView.ViewHolder) {
         itemTouchHelper.startDrag(view) //onMove from ItemTouchHelper.simpleCallback will be accessed through startDrag
     }
 
     /*Used to mark item for deletion*/
     override fun onItemClick(position: Int, holder: View) {
-        if(markForDeletion) {
+        if (markForDeletion) {
             /*If item is already added to deleteList we want to deselect it*/
-            if(deleteList.contains(itemList[position])){
+            if (deleteList.contains(itemList[position])) {
                 holder.card_drag_drop.setCardBackgroundColor(Color.WHITE)
                 holder.card_image_drag_dots.setImageResource(R.drawable.ic_drag_dots)
                 deleteList.remove(itemList[position])
-                if(deleteList.isEmpty()){
+                if (deleteList.isEmpty()) {
                     markForDeletion = false
                 }
-            }
-            else {
+            } else {
                 holder.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
                 holder.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
                 deleteList.add(itemList[position])
@@ -408,16 +481,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     /*LongClick activates selection for deletion*/
-    override fun onLongClick(position: Int, view : View) {
+    override fun onLongClick(position: Int, view: View) {
         /*No need to activate if already activated*/
-        if(!markForDeletion) {
+        if (!markForDeletion) {
             view.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
             view.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
             deleteList.add(itemList[position])
             markForDeletion = true
         }
     }
-    
+
     private fun changeItemParameterDialog(position: Int) {
         val builder = AlertDialog.Builder(this).create()
         val dialogLayout = LayoutInflater.from(this).inflate(R.layout.input_dialog_layout, null)
@@ -457,11 +530,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private suspend fun traverseList() {
         val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
-        val delayTimeMillis : Long = 1000
+        val delayTimeMillis: Long = 1000
 
-        itemList.forEachIndexed{ index, item ->
+        itemList.forEachIndexed { index, item ->
             recycler.scrollToPosition(index) //Scrolls list so that current item is on screen
-            var parameter : Int = item.displayParameter
+            var parameter: Int = item.displayParameter
 
             while (parameter > 0) {
                 when (state) {  //State machine
@@ -477,15 +550,17 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     RunState.PAUSE -> {
                         sem.acquire()
                     }
-                    else -> {state = RunState.IDLE} //So we go to a known state if something would go wrong
+                    else -> {
+                        state = RunState.IDLE
+                    } //So we go to a known state if something would go wrong
                 }
             }
         }
         resetListTraverse()
     }
 
-    private fun resetListTraverse(){
-        if(sem.availablePermits == 0) {  //Must keep this check
+    private fun resetListTraverse() {
+        if (sem.availablePermits == 0) {  //Must keep this check
             sem.release()
         }
         state = RunState.IDLE
