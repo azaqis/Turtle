@@ -117,6 +117,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private fun setupButtons() {
         /*Start coroutine from button click. Traverse list*/
         var job: Job? = null
+
+        /*Play button*/
         programming_play_button.setOnClickListener {
             if (state == RunState.IDLE) {
                 job = GlobalScope.launch(Dispatchers.Main) {
@@ -135,7 +137,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 state = RunState.PAUSE
             }
         }
-        programming_reset_btn.setOnClickListener {
+
+        /*Reset button*/
+        programming_reset_btn.setOnClickListener {  //Stop coroutine and reset list traversal
             job?.cancel()
             resetListTraverse()
         }
@@ -164,6 +168,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             }
         }
 
+        /*Load button*/
         programming_load_button.setOnClickListener {
             val newIntent = Intent(this, SavedProjectsActivity::class.java)
             askUserForSavingProjectAndChangeActivity(newIntent)
