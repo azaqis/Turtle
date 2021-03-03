@@ -69,14 +69,21 @@ class SaveCustomDragDropBlockManager(con : Context){
         }
     }
 
-    fun editDragDropBlock(oldNName : String, updatedDragDropBlock : DragDropBlock){
-        val index = arrayWithDragDropBlockNames.indexOf(oldNName)
+    fun editDragDropBlock(oldName: String, updatedDragDropBlock: DragDropBlock): Boolean {
+        val newName = updatedDragDropBlock.text
+        if (dragAndDropBlockNameExist(newName) && oldName != newName) {
+            return false
+        } else {
+            val index = arrayWithDragDropBlockNames.indexOf(oldName)
 
-        if(index != -1){
-            arrayWithDragDropBlockNames[index] = updatedDragDropBlock.text
-            arrayWithDragDropBlock[index] = updatedDragDropBlock
+            if (index != -1) {
+                arrayWithDragDropBlockNames[index] = updatedDragDropBlock.text
+                arrayWithDragDropBlock[index] = updatedDragDropBlock
+            }
+
+            saveToFile()
+            return true
         }
-        saveToFile()
     }
 
     private fun saveToFile(){
@@ -137,7 +144,6 @@ class SaveCustomDragDropBlockManager(con : Context){
         }
     }
 
-    //Could merge into the same function as loadImagesOfCustomDragDropBlocks and have file and array as parameter
     fun loadNamesOfCustomDragDropBlocks() {
         arrayWithDragDropBlockNames.clear()
         var index = 0;

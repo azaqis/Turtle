@@ -98,6 +98,7 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity(){
 
     override fun onResume() {
         super.onResume()
+        //This solution slows down the app, should use some shared instance of saveDragDropBlocksManager and only write to local storage when exit the app or read when open app
         customDragDropBlockManager.loadCustomDragDropBlocks()
         customDragDropBlockManager.loadNamesOfCustomDragDropBlocks()
         populateLists()
