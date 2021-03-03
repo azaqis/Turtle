@@ -13,7 +13,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="40dp"
         android:id="@+id/programming_spinner_linear_layout"
         app:layout_constraintTop_toBottomOf="@+id/top_bar"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,17 +22,16 @@
 
         <Spinner
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/programming_spinner_driving"
             android:layout_weight="1"
             android:background="@color/SpinnerBackgroundTurquoise"
             android:entries="@array/list"
-            android:layout_marginEnd="2dp"
             android:textAlignment="center"/>
 
         <Spinner
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/programming_spinner_modules"
             android:layout_weight="1"
             android:background="@color/SpinnerBackgroundPink"
@@ -41,12 +40,11 @@
 
         <Spinner
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/programming_spinner_custom"
             android:layout_weight="1"
             android:background="@color/SpinnerBackgroundOrange"
             android:entries="@array/list"
-            android:layout_marginStart="2dp"
             android:textAlignment="center"/>
 
     </LinearLayout>
