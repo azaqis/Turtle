@@ -37,10 +37,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     private var markForDeletion = false //Marks if a click should add to deleteList
-    private var deleteList =
-        ArrayList<DragDropBlock>() //Items in this list will be deleted when delete button is pressed
+    private var deleteList = ArrayList<DragDropBlock>() //Items in this list will be deleted when delete button is pressed
 
-    private var layoutManager: RecyclerView.LayoutManager? = null
     private lateinit var adapter: ProgrammingRecyclerAdapter
 
     private lateinit var spinnerDriveAdapter: ProgrammingSpinnerAdapter
@@ -49,11 +47,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private var itemList = ArrayList<DragDropBlock>()   //List for items in RecyclerView
 
-    private var driveBlocksSpinner = mutableListOf<DragDropBlock>() //Lists for items in spinners
-    private var modulesBlocksSpinner = mutableListOf<DragDropBlock>()
-    private var customBlocksSpinner = mutableListOf<DragDropBlock>()
+    private var driveBlocksSpinnerList = mutableListOf<DragDropBlock>() //Lists for items in spinners
+    private var modulesBlocksSpinnerList = mutableListOf<DragDropBlock>()
+    private var customBlocksSpinnerList = mutableListOf<DragDropBlock>()
 
-    private lateinit var itemTouchHelper: ItemTouchHelper
+    private lateinit var itemTouchHelper: ItemTouchHelper   //For RecyclerView drag and drop. Receives events from RecyclerView
 
     private lateinit var state: RunState    //State for iteration through list. Needed for play, pause and stop
     private val sem = Semaphore(1)  //Can force the state machine to halt coroutine when pausing
@@ -71,8 +69,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         setupSpinners()
 
         setupButtons()
-
-        //populateListGarbage(100)
 
         //I added code here start
         saveFilesManager = SaveFilesManager(this)
@@ -97,7 +93,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         state = RunState.IDLE
 
-        layoutManager = LinearLayoutManager(this)
+        /*Setting RecyclerView layout to linear*/
+        val layoutManager = LinearLayoutManager(this)
         programming_recycle_view.layoutManager = layoutManager
 
         adapter = ProgrammingRecyclerAdapter(itemList, this)
@@ -294,10 +291,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     /*May want to limit number of chars in each spinner item. Affects the size of the spinners*/
     private fun setupSpinners() {
-        driveBlocksSpinner = populateListGarbage(5, DragDropBlock.e_type.DRIVE)
-        spinnerDriveAdapter = ProgrammingSpinnerAdapter(driveBlocksSpinner, this)
+        driveBlocksSpinnerList = populateListGarbage(5, DragDropBlock.e_type.DRIVE)
+        spinnerDriveAdapter = ProgrammingSpinnerAdapter(driveBlocksSpinnerList, this)
         spinnerDriveAdapter.setDropDownViewResource(R.layout.programming_spinner_driving_dropdown_layout)
-        driveBlocksSpinner.add(0,   //Unused object. Shown only in title. Cannot be added to itemList
+        driveBlocksSpinnerList.add(0,   //Unused object. Shown only in title. Cannot be added to itemList
             DragDropBlock(
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_drive,
@@ -312,10 +309,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_driving.setSelection(0, false)
 
 
-        modulesBlocksSpinner = populateListGarbage(4, DragDropBlock.e_type.MODULE)
-        spinnerModulesAdapter = ProgrammingSpinnerAdapter(modulesBlocksSpinner, this)
+        modulesBlocksSpinnerList = populateListGarbage(4, DragDropBlock.e_type.MODULE)
+        spinnerModulesAdapter = ProgrammingSpinnerAdapter(modulesBlocksSpinnerList, this)
         spinnerModulesAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
-        modulesBlocksSpinner.add(0,
+        modulesBlocksSpinnerList.add(0,
             DragDropBlock(
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_modules,
@@ -329,10 +326,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_modules.adapter = spinnerModulesAdapter
         programming_spinner_modules.setSelection(0, false)
 
-        customBlocksSpinner = populateListGarbage(5, DragDropBlock.e_type.CUSTOM)
-        spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinner, this)
+        customBlocksSpinnerList = populateListGarbage(5, DragDropBlock.e_type.CUSTOM)
+        spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinnerList, this)
         spinnerCustomAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
-        customBlocksSpinner.add(0,
+        customBlocksSpinnerList.add(0,
             DragDropBlock(
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_custom,
