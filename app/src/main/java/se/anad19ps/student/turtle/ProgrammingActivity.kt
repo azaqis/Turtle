@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.input_text_dialog.view.*
 import kotlinx.android.synthetic.main.top_bar.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Semaphore
-import se.anad19ps.student.turtle.Utils
+import java.lang.String.format
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -414,8 +414,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 drawable,
                 "Insert text $i",
                 "Garbage command",
-                1,
-                1,
+                1.0,
+                1.0,
                 type
             )
             list.add(item)
@@ -500,7 +500,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         builder.setTitle("Change parameter")
         builder.setButton(AlertDialog.BUTTON_POSITIVE, "Ok") { dialog, which ->
-            updateItemValue(position, editText.text.toString().toInt())
+            updateItemValue(position, editText.text.toString().toDouble())
         }
         builder.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { dialog, which ->
             //Nothing
@@ -522,7 +522,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         })
     }
 
-    private fun updateItemValue(position: Int, value: Int) {
+    private fun updateItemValue(position: Int, value: Double) {
         itemList[position].parameter = value
         itemList[position].displayParameter = value
         adapter.notifyDataSetChanged()
@@ -530,21 +530,25 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private suspend fun traverseList() {
         val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
-        val delayTimeMillis: Long = 1000
+        val tenthOfSecondInMS : Long = 100
+        val secondInMS : Long = 1000
+
+
 
         itemList.forEachIndexed { index, item ->
             recycler.scrollToPosition(index) //Scrolls list so that current item is on screen
-            var parameter: Int = item.displayParameter
 
-            while (parameter > 0) {
+            var parameter : Int = item.displayParameter.toInt()
+
+            while (item.displayParameter > 0) {
                 when (state) {  //State machine
                     RunState.RUNNING -> {
                         /*ADD COMMAND TO BLUETOOTH HERE?*/
                         Utils.UtilsObject.bluetoothSendString("72$parameter", this.baseContext)
                         //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
-                        delay(delayTimeMillis) //Will finish current 'delayTimeMillis' period before pause
+                        delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
                         parameter--
-                        item.displayParameter--
+                        item.displayParameter = format("%.1f", item.displayParameter - 0.1).toDouble()
                         adapter.notifyDataSetChanged()
                     }
                     RunState.PAUSE -> {
@@ -556,6 +560,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 }
             }
         }
+
+        Utils.UtilsObject.showUpdatedToast("Project has run through completely!", this)
+        delay(secondInMS * 3)
+
         resetListTraverse()
     }
 
