@@ -545,12 +545,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             while (item.displayParameter > 0) {
                 when (state) {  //State machine
                     RunState.RUNNING -> {
-                        /*ADD COMMAND TO BLUETOOTH HERE?*/
                         Utils.UtilsObject.bluetoothSendString("72$parameter", this.baseContext)
                         //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
                         delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
                         parameter--
-                        item.displayParameter = format("%.1f", item.displayParameter - 0.1).toDouble()
+                        item.displayParameter = String.format("%.1f", item.displayParameter - 0.1).toDouble()
                         adapter.notifyDataSetChanged()
                     }
                     RunState.PAUSE -> {
