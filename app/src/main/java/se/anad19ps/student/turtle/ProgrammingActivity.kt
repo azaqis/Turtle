@@ -37,7 +37,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     private var markForDeletion = false //Marks if a click should add to deleteList
-    private var deleteList = ArrayList<DragDropBlock>() //Items in this list will be deleted when delete button is pressed
+    //private var deleteList = ArrayList<DragDropBlock>() //Items in this list will be deleted when delete button is pressed
+    private var deleteList = mutableMapOf<DragDropBlock, View>()
 
     private lateinit var adapter: ProgrammingRecyclerAdapter
 
@@ -156,6 +157,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 indexes.reverse()   //So largest index is first. This way we don't need to change index after every removal
 
                 for (i in 0 until indexes.size) {
+                    deleteList[itemList[indexes[i]]]?.card_drag_drop?.setCardBackgroundColor(Color.WHITE)
                     itemList.removeAt(indexes[i])
                     adapter.notifyItemRemoved(indexes[i])
                 }
@@ -298,7 +300,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             DragDropBlock(
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_drive,
-                "Drive blocks",
+                "Drive",
                 "Null",
                 1.0,
                 1.0,
@@ -476,7 +478,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             } else {
                 holder.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
                 holder.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
-                deleteList.add(itemList[position])
+                deleteList[itemList[position]] = holder
             }
         }
     }
@@ -491,7 +493,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         if (!markForDeletion) {
             view.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
             view.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
-            deleteList.add(itemList[position])
+            deleteList[itemList[position]] = view
             markForDeletion = true
         }
     }

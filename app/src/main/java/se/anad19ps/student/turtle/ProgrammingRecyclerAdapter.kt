@@ -1,6 +1,7 @@
 package se.anad19ps.student.turtle
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -98,6 +99,10 @@ class ProgrammingRecyclerAdapter(
     fun resetDragDropBlockParameters(){
         for(i in itemList)
             i.displayParameter = i.parameter
+    }
+
+    fun setHolderColors(color: Color){
+
     }
 
     /*These have to be implemented by calling class*/
