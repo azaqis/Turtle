@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_spinner_item"
->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/card_spinner_item">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:id="@+id/card_spinner_constraint"
-        android:background="@color/SpinnerBackgroundTurquoise">
+        android:background="@color/SpinnerBackgroundTurquoise"
+        android:gravity="center">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -30,8 +30,9 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:textAlignment="center"
             app:layout_constraintStart_toEndOf="@id/card_spinner_image"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

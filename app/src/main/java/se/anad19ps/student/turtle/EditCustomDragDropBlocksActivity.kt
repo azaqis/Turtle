@@ -1,6 +1,6 @@
 package se.anad19ps.student.turtle
 
-import android.content.Intent
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -32,12 +32,16 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                 //PARAMETER ENABLED OR NOT SHOULD BE SET HERE
                 editTextDragDropBlockCommand.setText(dragDropBlock!!.command)
             }
+            else{
+                //If dragDropBlock is null here the dragDropBlock does not exists. Therefore it is not possible to edit it and therefore finishing this activity. This should not be able to happen
+                finish()
+            }
         }
 
         val buttonUpdate = findViewById<Button>(R.id.editCustomCommandsButtonUpdate)
         buttonUpdate.setBackgroundColor(getResources().getColor(R.color.PrimaryColor))
         buttonUpdate.setOnClickListener{
-
+            //TODO SHOULD CHECK IF NEW NAME EXISTS
             if(dragDropBlock != null){
                 //MIGHT DELETE ALL THESE VALS
                 val dragImage = dragDropBlock!!.dragImage
@@ -49,19 +53,52 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                 val type = dragDropBlock!!.type
 
                 val updatedDragDropBlock = DragDropBlock(dragImage, directionImage, text, command, parameter, displayParameter, type)
-                saveCustomDragDropBlockManager.editDragDropBlock(dragDropBlock!!.text, updatedDragDropBlock)
 
-                finish()
+               if(saveCustomDragDropBlockManager.editDragDropBlock(dragDropBlock!!.text, updatedDragDropBlock)){
+                   finish()
+               }
+                else{
+                   val dialogNameExists = android.app.AlertDialog.Builder(this)
+                   dialogNameExists.setTitle("Name already exists")
+                   dialogNameExists.setMessage("Please choose a unique name")
+                   val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                       when (which) {
+                           DialogInterface.BUTTON_NEUTRAL -> {
+                           }
+                       }
+                   }
+                   dialogNameExists.setNeutralButton("OK", dialogClickListener)
+                   dialogNameExists.create().show()
+               }
             }
 
         }
 
-
         val buttonDelete = findViewById<Button>(R.id.editCustomCommandsButtonDelete)
         buttonDelete.setBackgroundColor(getResources().getColor(R.color.PrimaryComplement))
         buttonDelete.setOnClickListener{
-            val intent = Intent(this, ManageCustomDragDropBlocksActivity::class.java)
-            startActivity(intent)
+            val dialogConfirmDelete = android.app.AlertDialog.Builder(this)
+            dialogConfirmDelete.setTitle("Confirm deletion")
+            dialogConfirmDelete.setMessage("Are you sure you want to delete this custom command?")
+            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        saveCustomDragDropBlockManager.deleteCustomDragDropBlock(dragDropBlock!!.text)
+                        finish()
+                    }
+                    DialogInterface.BUTTON_NEGATIVE -> {
+                    }
+                }
+            }
+            dialogConfirmDelete.setPositiveButton("Yes", dialogClickListener)
+            dialogConfirmDelete.setNegativeButton("No", dialogClickListener)
+            dialogConfirmDelete.create().show()
+        }
+
+        val buttonCancel = findViewById<Button>(R.id.editCustomCommandsButtonCancel)
+        buttonCancel.setBackgroundColor(getResources().getColor(R.color.PrimaryColor))
+        buttonCancel.setOnClickListener{
+            finish()
         }
     }
 }
