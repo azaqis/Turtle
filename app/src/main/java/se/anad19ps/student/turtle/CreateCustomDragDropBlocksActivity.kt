@@ -22,25 +22,43 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
             val name = editTextDragDropBlockName.text.toString()
             val parameterEnabled = checkBox.isEnabled
             val command = editTextDragDropBlockCommand.text.toString()
-            var dragDropBlock = DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_user_created_dragdropblock, name, command, 1.0, 1.0, DragDropBlock.e_type.CUSTOM)
-            var saveCustomDragDropBlockManager = SaveCustomDragDropBlockManager(this)
 
-            if(saveCustomDragDropBlockManager.saveDragDropBlock(dragDropBlock, false)){
-                finish()
+            if(name.isNotBlank()){
+                var dragDropBlock = DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_custom, name, command, 1.0, 1.0, DragDropBlock.e_type.CUSTOM)
+                var saveCustomDragDropBlockManager = SaveCustomDragDropBlockManager(this)
+
+                if(saveCustomDragDropBlockManager.saveDragDropBlock(dragDropBlock, false)){
+                  finish()
+                }
+                else{
+                    var dialogNameExists = android.app.AlertDialog.Builder(this)
+                    dialogNameExists.setTitle("Title already exists")
+                    dialogNameExists.setMessage("Please choose a unique title")
+                    val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                        when (which) {
+                            DialogInterface.BUTTON_NEUTRAL -> {
+                            }
+                        }
+                    }
+                    dialogNameExists.setNeutralButton("OK", dialogClickListener)
+                    dialogNameExists.create().show()
+                }
             }
             else{
-                var dialogNameExists = android.app.AlertDialog.Builder(this)
-                dialogNameExists.setTitle("Title already exists")
-                dialogNameExists.setMessage("Please choose a unique title")
+                val dialogNameIsBlank = android.app.AlertDialog.Builder(this)
+                dialogNameIsBlank.setTitle("Name is empty")
+                dialogNameIsBlank.setMessage("Please enter a name. Name can not be empty")
+                //Might delete this click listener
                 val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                     when (which) {
                         DialogInterface.BUTTON_NEUTRAL -> {
                         }
                     }
                 }
-                dialogNameExists.setNeutralButton("OK", dialogClickListener)
-                dialogNameExists.create().show()
+                dialogNameIsBlank.setNeutralButton("OK", dialogClickListener)
+                dialogNameIsBlank.create().show()
             }
+
         }
 
         val buttonCancel = findViewById<Button>(R.id.createCustomCommandsButtonCancel)

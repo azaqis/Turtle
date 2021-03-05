@@ -333,8 +333,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             DragDropBlock(
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_drive,
-                "Some text",
-                "Command",
+                "Driving",
+                "Null",
                 1.0,
                 1.0,
                 DragDropBlock.e_type.DRIVE
@@ -352,8 +352,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             DragDropBlock(
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_modules,
-                "Some text",
-                "Command",
+                "Modules",
+                "Null",
                 1.0,
                 1.0,
                 DragDropBlock.e_type.MODULE
@@ -370,8 +370,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             DragDropBlock(
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_custom,
-                "Some text",
-                "Command",
+                "Custom",
+                "Null",
                 1.0,
                 1.0,
                 DragDropBlock.e_type.CUSTOM
