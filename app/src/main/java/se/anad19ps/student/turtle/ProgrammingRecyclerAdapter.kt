@@ -96,15 +96,6 @@ class ProgrammingRecyclerAdapter(
         }
     }
 
-    fun resetDragDropBlockParameters(){
-        for(i in itemList)
-            i.displayParameter = i.parameter
-    }
-
-    fun setHolderColors(color: Color){
-
-    }
-
     /*These have to be implemented by calling class*/
     interface ItemClickListener {
         fun onItemClick(position: Int, holder: View)

@@ -37,8 +37,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     private var markForDeletion = false //Marks if a click should add to deleteList
-    //private var deleteList = ArrayList<DragDropBlock>() //Items in this list will be deleted when delete button is pressed
-    private var deleteList = mutableMapOf<DragDropBlock, View>()
+    private var deleteList =
+        mutableMapOf<DragDropBlock, View>()    //Also holds View for individual recycler item to reset colors
 
     private lateinit var adapter: ProgrammingRecyclerAdapter
 
@@ -48,7 +48,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private var itemList = ArrayList<DragDropBlock>()   //List for items in RecyclerView
 
-    private var driveBlocksSpinnerList = mutableListOf<DragDropBlock>() //Lists for items in spinners
+    private var driveBlocksSpinnerList =
+        mutableListOf<DragDropBlock>() //Lists for items in spinners
     private var modulesBlocksSpinnerList = mutableListOf<DragDropBlock>()
     private var customBlocksSpinnerList = mutableListOf<DragDropBlock>()
 
@@ -67,9 +68,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
-        setupSpinners()
+        Thread(Runnable{    //Setting up spinners and buttons slowed down startup of entire activity
+            setupSpinners()
+            setupButtons()
+        }).start()
 
-        setupButtons()
+
 
         //I added code here start
         saveFilesManager = SaveFilesManager(this)
@@ -157,7 +161,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 indexes.reverse()   //So largest index is first. This way we don't need to change index after every removal
 
                 for (i in 0 until indexes.size) {
-                    deleteList[itemList[indexes[i]]]?.card_drag_drop?.setCardBackgroundColor(Color.WHITE)
+                    deleteList[itemList[indexes[i]]]?.card_drag_drop?.setCardBackgroundColor(Color.WHITE)   //Reset holders to standard color
                     itemList.removeAt(indexes[i])
                     adapter.notifyItemRemoved(indexes[i])
                 }
@@ -291,17 +295,46 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogInputNameBuilder.show()
     }
 
+    private fun populateList(
+        num: Int,
+        type: DragDropBlock.e_type
+    ): ArrayList<DragDropBlock> {
+        val list = ArrayList<DragDropBlock>()
+
+        for (i in 0 until num) {
+            val drawable = when (i % 4) {
+                0 -> R.drawable.ic_arrow_up
+                1 -> R.drawable.ic_arrow_down
+                2 -> R.drawable.ic_arrow_right
+                else -> R.drawable.ic_arrow_left
+            }
+            val item = DragDropBlock(
+                R.drawable.ic_drag_dots,
+                drawable,
+                "Some text",
+                "Command",
+                1.0,
+                1.0,
+                type
+            )
+            list.add(item)
+        }
+        return list
+    }
+
+
     /*May want to limit number of chars in each spinner item. Affects the size of the spinners*/
     private fun setupSpinners() {
-        driveBlocksSpinnerList = populateListGarbage(5, DragDropBlock.e_type.DRIVE)
+        driveBlocksSpinnerList = populateList(5, DragDropBlock.e_type.DRIVE)
         spinnerDriveAdapter = ProgrammingSpinnerAdapter(driveBlocksSpinnerList, this)
-        spinnerDriveAdapter.setDropDownViewResource(R.layout.programming_spinner_driving_dropdown_layout)
-        driveBlocksSpinnerList.add(0,   //Unused object. Shown only in title. Cannot be added to itemList
+        //spinnerDriveAdapter.setDropDownViewResource(R.layout.programming_spinner_driving_dropdown_layout)
+        driveBlocksSpinnerList.add(
+            0,   //Unused object. Shown only in title. Cannot be added to itemList
             DragDropBlock(
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_drive,
-                "Drive",
-                "Null",
+                "Some text",
+                "Command",
                 1.0,
                 1.0,
                 DragDropBlock.e_type.DRIVE
@@ -311,15 +344,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_driving.setSelection(0, false)
 
 
-        modulesBlocksSpinnerList = populateListGarbage(4, DragDropBlock.e_type.MODULE)
+        modulesBlocksSpinnerList = populateList(5, DragDropBlock.e_type.MODULE)
         spinnerModulesAdapter = ProgrammingSpinnerAdapter(modulesBlocksSpinnerList, this)
-        spinnerModulesAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
-        modulesBlocksSpinnerList.add(0,
+        //spinnerModulesAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
+        modulesBlocksSpinnerList.add(
+            0,
             DragDropBlock(
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_modules,
-                "Module blocks",
-                "Null",
+                "Some text",
+                "Command",
                 1.0,
                 1.0,
                 DragDropBlock.e_type.MODULE
@@ -328,15 +362,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_modules.adapter = spinnerModulesAdapter
         programming_spinner_modules.setSelection(0, false)
 
-        customBlocksSpinnerList = populateListGarbage(5, DragDropBlock.e_type.CUSTOM)
+        customBlocksSpinnerList = populateList(5, DragDropBlock.e_type.CUSTOM)
         spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinnerList, this)
         spinnerCustomAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
-        customBlocksSpinnerList.add(0,
+        customBlocksSpinnerList.add(
+            0,
             DragDropBlock(
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_custom,
-                "Custom blocks",
-                "Null",
+                "Some text",
+                "Command",
                 1.0,
                 1.0,
                 DragDropBlock.e_type.CUSTOM
@@ -355,11 +390,14 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 position: Int,
                 id: Long
             ) {
-                if(position != 0) { //We shouldn't add the title block
+                if (position != 0) { //We shouldn't add the title block
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
                     itemList.add(block)
                     adapter.notifyDataSetChanged()
-                    programming_spinner_driving.setSelection(0, false)  //Always make title block stay on top
+                    programming_spinner_driving.setSelection(//Always make title block stay on top
+                        0,
+                        false
+                    )
                 }
             }
         }
@@ -374,7 +412,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 position: Int,
                 id: Long
             ) {
-                if(position != 0) {
+                if (position != 0) {
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
                     itemList.add(block)
                     adapter.notifyDataSetChanged()
@@ -393,7 +431,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 position: Int,
                 id: Long
             ) {
-                if(position != 0) {
+                if (position != 0) {
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
                     itemList.add(block)
                     adapter.notifyDataSetChanged()
@@ -403,40 +441,13 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
     }
 
-    private fun populateListGarbage(
-        num: Int,
-        type: DragDropBlock.e_type
-    ): ArrayList<DragDropBlock> {
-        val list = ArrayList<DragDropBlock>()
-
-        for (i in 0 until num) {
-            val drawable = when (i % 4) {
-                0 -> R.drawable.ic_arrow_up
-                1 -> R.drawable.ic_arrow_down
-                2 -> R.drawable.ic_arrow_right
-                else -> R.drawable.ic_arrow_left
-            }
-            val item = DragDropBlock(
-                R.drawable.ic_drag_dots,
-                drawable,
-                "Insert text $i",
-                "Garbage command",
-                1.0,
-                1.0,
-                type
-            )
-            list.add(item)
-        }
-        return list
-    }
-
     /*For rearranging recyclerview*/
     private var simpleCallback = object : ItemTouchHelper.SimpleCallback(
         ItemTouchHelper.UP.or(
             ItemTouchHelper.DOWN
         ), ItemTouchHelper.RIGHT
     ) {
-        override fun onMove(
+        override fun onMove(    //Handles reordering and movement in recyclerview
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
@@ -493,11 +504,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         if (!markForDeletion) {
             view.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
             view.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
-            deleteList[itemList[position]] = view
+            deleteList[itemList[position]] = view   //Map (DragDropBlock at position) with accompanying recycler item view
             markForDeletion = true
         }
     }
 
+    /*Shows an input dialog for changing an items parameter.*/
     private fun changeItemParameterDialog(position: Int) {
         val builder = AlertDialog.Builder(this).create()
         val dialogLayout = LayoutInflater.from(this).inflate(R.layout.input_dialog_layout, null)
@@ -537,15 +549,15 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private suspend fun traverseList() {
         val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
-        val tenthOfSecondInMS : Long = 100
-        val secondInMS : Long = 1000
+        val tenthOfSecondInMS: Long = 100
+        val secondInMS: Long = 1000
 
 
 
         itemList.forEachIndexed { index, item ->
             recycler.scrollToPosition(index) //Scrolls list so that current item is on screen
 
-            var parameter : Int = item.displayParameter.toInt()
+            var parameter: Int = item.displayParameter.toInt()
 
             while (item.displayParameter > 0) {
                 when (state) {  //State machine
@@ -557,7 +569,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
 
                         /*Works with Locale but crashes without? Only for Andreas*/
-                        item.displayParameter = String.format(Locale.ENGLISH, "%.1f", item.displayParameter - 0.1).toDouble()
+                        item.displayParameter =
+                            String.format(Locale.ENGLISH, "%.1f", item.displayParameter - 0.1)
+                                .toDouble()
 
 
 
@@ -579,12 +593,14 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         resetListTraverse()
     }
 
+    /*Resetting list to its original state*/
     private fun resetListTraverse() {
-        if (sem.availablePermits == 0) {  //Must keep this check
+        if (sem.availablePermits == 0) {
             sem.release()
         }
         state = RunState.IDLE
-        adapter.resetDragDropBlockParameters()
+        for(i in itemList)
+            i.displayParameter = i.parameter
         adapter.notifyDataSetChanged()
         programming_play_button.setImageResource(R.drawable.ic_play_arrow)
     }

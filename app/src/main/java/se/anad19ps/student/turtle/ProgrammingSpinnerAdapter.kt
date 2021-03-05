@@ -35,7 +35,6 @@ class ProgrammingSpinnerAdapter(
                 view.card_spinner_constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.SpinnerBackgroundPink))
             DragDropBlock.e_type.CUSTOM ->
                 view.card_spinner_constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.SpinnerBackgroundOrange))
-            else -> -1
         }
         if (item != null) {
             view.card_spinner_image.setImageResource(item.directionImage)
