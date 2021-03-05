@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.card_spinner_block.view.*
 
 class ProgrammingSpinnerAdapter(
-    private val contentList: List<DragDropBlock>,
+    contentList: List<DragDropBlock>,
     context: Context
 ) : ArrayAdapter<DragDropBlock>(context, 0, contentList){
 
