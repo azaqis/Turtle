@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.card_spinner_block.view.*
 
 class ProgrammingSpinnerAdapter(
-    private val contentList: List<DragDropBlock>,
+    contentList: List<DragDropBlock>,
     context: Context
 ) : ArrayAdapter<DragDropBlock>(context, 0, contentList){
 
@@ -35,7 +35,6 @@ class ProgrammingSpinnerAdapter(
                 view.card_spinner_constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.SpinnerBackgroundPink))
             DragDropBlock.e_type.CUSTOM ->
                 view.card_spinner_constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.SpinnerBackgroundOrange))
-            else -> -1
         }
         if (item != null) {
             view.card_spinner_image.setImageResource(item.directionImage)

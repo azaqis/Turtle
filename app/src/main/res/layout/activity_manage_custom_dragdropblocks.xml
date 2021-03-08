@@ -31,14 +31,6 @@
                 android:textColor="@color/PrimaryLight"
                 android:text="Create" />
 
-            <Button
-                android:id="@+id/buttonDelete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:textColor="@color/PrimaryLight"
-                android:text="Delete" />
         </LinearLayout>
 
         <RelativeLayout

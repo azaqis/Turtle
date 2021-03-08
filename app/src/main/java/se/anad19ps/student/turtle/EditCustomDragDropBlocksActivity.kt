@@ -40,9 +40,8 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
 
         val buttonUpdate = findViewById<Button>(R.id.editCustomCommandsButtonUpdate)
         buttonUpdate.setBackgroundColor(getResources().getColor(R.color.PrimaryColor))
-        buttonUpdate.setOnClickListener{
-            //TODO SHOULD CHECK IF NEW NAME EXISTS
-            if(dragDropBlock != null){
+        buttonUpdate.setOnClickListener {
+            if (dragDropBlock != null) {
                 //MIGHT DELETE ALL THESE VALS
                 val dragImage = dragDropBlock!!.dragImage
                 val directionImage = dragDropBlock!!.directionImage
@@ -52,27 +51,44 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                 val displayParameter = dragDropBlock!!.displayParameter
                 val type = dragDropBlock!!.type
 
-                val updatedDragDropBlock = DragDropBlock(dragImage, directionImage, text, command, parameter, displayParameter, type)
+                if(text.isNotBlank()){
+                    val updatedDragDropBlock = DragDropBlock(dragImage, directionImage, text, command, parameter, displayParameter, type)
 
-               if(saveCustomDragDropBlockManager.editDragDropBlock(dragDropBlock!!.text, updatedDragDropBlock)){
-                   finish()
-               }
+                    if (saveCustomDragDropBlockManager.editDragDropBlock(dragDropBlock!!.text, updatedDragDropBlock)){
+                        finish()
+                    }
+                    else {
+                       val dialogNameExists = android.app.AlertDialog.Builder(this)
+                        dialogNameExists.setTitle("Name already exists")
+                        dialogNameExists.setMessage("Please choose a unique name")
+                        //Might delete this click listener
+                        val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                           when (which) {
+                             DialogInterface.BUTTON_NEUTRAL -> {
+                            }
+                        }
+                    }
+                    dialogNameExists.setNeutralButton("OK", dialogClickListener)
+                    dialogNameExists.create().show()
+                    }
+                }
                 else{
-                   val dialogNameExists = android.app.AlertDialog.Builder(this)
-                   dialogNameExists.setTitle("Name already exists")
-                   dialogNameExists.setMessage("Please choose a unique name")
-                   val dialogClickListener = DialogInterface.OnClickListener { _, which ->
-                       when (which) {
-                           DialogInterface.BUTTON_NEUTRAL -> {
-                           }
-                       }
-                   }
-                   dialogNameExists.setNeutralButton("OK", dialogClickListener)
-                   dialogNameExists.create().show()
-               }
+                    val dialogNameIsBlank = android.app.AlertDialog.Builder(this)
+                    dialogNameIsBlank.setTitle("Name is empty")
+                    dialogNameIsBlank.setMessage("Please enter a name. Name can not be empty")
+                    //Might delete this click listener
+                    val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                        when (which) {
+                            DialogInterface.BUTTON_NEUTRAL -> {
+                            }
+                        }
+                    }
+                    dialogNameIsBlank.setNeutralButton("OK", dialogClickListener)
+                    dialogNameIsBlank.create().show()
+                }
             }
-
         }
+
 
         val buttonDelete = findViewById<Button>(R.id.editCustomCommandsButtonDelete)
         buttonDelete.setBackgroundColor(getResources().getColor(R.color.PrimaryComplement))

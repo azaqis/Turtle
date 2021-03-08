@@ -42,9 +42,6 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity(){
             startActivity(intent)
         }
 
-        val buttonDelete = findViewById<Button>(R.id.buttonDelete)
-        buttonDelete.setBackgroundColor(getResources().getColor(R.color.PrimaryComplement))
-
         customDragDropBlockManager = SaveCustomDragDropBlockManager(this)
         testCode()
         populateLists()
@@ -56,7 +53,7 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity(){
         for (i in 0 until num) {
             val item = DragDropBlock(
                 R.drawable.ic_drag_dots,
-                R.drawable.ic_user_created_dragdropblock,
+                R.drawable.ic_custom,
                 "Insert text test $i",
                 "Garbage command",
                 1.0,
