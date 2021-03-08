@@ -26,7 +26,7 @@ class Utils() {
             return SelectBluetoothDeviceActivity.bluetoothConnectionThreadActive
         }
 
-        fun bluetoothRecieveStringReady(recievedString : String){
+        fun bluetoothReceiveStringReady(recievedString : String){
             ControllerDebugFragment().addStringToDebugList(recievedString)
         }
 

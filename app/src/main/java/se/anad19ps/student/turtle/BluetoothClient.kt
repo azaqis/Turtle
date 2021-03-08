@@ -38,7 +38,7 @@ class BluetoothClient(device: BluetoothDevice, uiactivity : Activity): Thread() 
                     bytes = inputStream.read(SelectBluetoothDeviceActivity.inputBuffer)
                     SelectBluetoothDeviceActivity.messageRecieved = String(
                         SelectBluetoothDeviceActivity.inputBuffer, 0, bytes)
-                    Utils.UtilsObject.bluetoothRecieveStringReady(SelectBluetoothDeviceActivity.messageRecieved!!)
+                    Utils.UtilsObject.bluetoothReceiveStringReady(SelectBluetoothDeviceActivity.messageRecieved!!)
                 } catch (e : IOException){
                     Log.e("BT.Client", "Error reading Input Stream. ", e)
                 }
