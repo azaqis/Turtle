@@ -1,16 +1,20 @@
 package se.anad19ps.student.turtle
 
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import java.io.File
 import kotlinx.android.synthetic.main.activity_saved_projects.*
 import kotlinx.android.synthetic.main.activity_select_bluetooth_device.*
 import kotlinx.android.synthetic.main.drawer_layout.*
+import kotlinx.android.synthetic.main.input_text_dialog.view.*
 import kotlinx.android.synthetic.main.top_bar.*
 import java.io.FileWriter
 import java.util.*
@@ -44,67 +48,99 @@ class SavedProjectsActivity : AppCompatActivity() {
         savedProjectsListViewAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listWithNames)
         savedProjectsListView.adapter = savedProjectsListViewAdapter
 
-        for(name : String in listWithNames){
-            Log.e("FILE_LOG","Array with names contaned name: $name")
+        savedProjectsCreateButton.setBackgroundColor(getResources().getColor(R.color.PrimaryColor))
+
+        savedProjectsCreateButton.setOnClickListener {
+            createNewProject()
         }
 
-        /*
-        savedFilesManager.getArrayWithNames()
-        savedFilesManager.getArrayWithNames()
-        savedFilesManager.getArrayWithNames()
-        */
+        for(name : String in listWithNames){
+            Log.e("FILE_LOG","Array with names contained name: $name")
+        }
 
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
-
-        //TEST CODE
-        /*
-        var itemList = mutableListOf<DragDropBlock>()
-        val num = 5
-
-        for (i in 0 until num) {
-            val drawable = when (i % 4) {
-                0 -> R.drawable.ic_arrow_up
-                1 -> R.drawable.ic_arrow_down
-                2 -> R.drawable.ic_arrow_right
-                else -> R.drawable.ic_arrow_left
-            }
-            val item = DragDropBlock(
-                R.drawable.ic_drag_dots,
-                drawable,
-                "Insert text test $i",
-                "Garbage command",
-                1,
-                1,
-                DragDropBlock.e_type.DRIVE
-            )
-            itemList.add(item)
-        }
-
-        savedFilesManager.saveProject("MyProject1", itemList)
-        savedFilesManager.saveProject("MyProject2", itemList)
-        savedFilesManager.saveProject("MyProject3", itemList)
-        savedFilesManager.saveProject("MyProject4", itemList)
-        savedFilesManager.saveProject("MyProject5", itemList)
-        savedFilesManager.saveProject("MyProject6", itemList)
-        savedFilesManager.saveProject("MyProject7", itemList)
-        savedProjectsListViewAdapter.notifyDataSetChanged()
-        */
-        //TEST CODE END
 
         savedProjectsListView.onItemClickListener = AdapterView.OnItemClickListener { _, v, position, _ ->
             Toast.makeText(this, "Clicked on: " + savedFilesManager.getArrayWithNames()[position], Toast.LENGTH_SHORT).show()
 
             val intent = Intent(this, ProgrammingActivity::class.java)
 
-            //val arrayWithDragAndDropBlocks = savedFilesManager.loadProject(savedFilesManager.getArrayWithNames()[position])
-
-            //val newArray : Array<DragDropBlock>
-            //newArray = arrayWithDragAndDropBlocks!!.toTypedArray()
-
             intent.putExtra("PROJECT_NAME", savedFilesManager.getArrayWithNames()[position])
-            //intent.putExtra("PROJECT_DATA", newArray)
             startActivity(intent)
             finish()
         }
+    }
+
+    private fun createNewProject(){
+        val dialogInputName = LayoutInflater.from(this).inflate(R.layout.input_text_dialog, null)
+        val dialogInputNameBuilder = AlertDialog.Builder(this).setView(dialogInputName)
+        dialogInputNameBuilder.setTitle("Enter a project name")
+        dialogInputNameBuilder.setMessage("Please enter a project name.")
+
+        val inputNameDialogClickListener = DialogInterface.OnClickListener { _, which ->
+            when (which) {
+                DialogInterface.BUTTON_NEUTRAL -> {
+                    //Do nothing, just close dialog
+                }
+                DialogInterface.BUTTON_POSITIVE -> {
+                    if(dialogInputName.dialogTextFieldName.text.toString().isBlank()){
+                        val dialogNameBlankWarning = android.app.AlertDialog.Builder(this)
+                        dialogNameBlankWarning.setTitle("Name can not be blank")
+                        dialogNameBlankWarning.setMessage("Please enter a name that is not blank or only containing spaces!")
+                        val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                            when (which) {
+                                DialogInterface.BUTTON_NEUTRAL -> {
+                                    createNewProject()
+                                }
+                            }
+                        }
+                        dialogNameBlankWarning.setNeutralButton("OK", dialogClickListener)
+                        dialogNameBlankWarning.create().show()
+                    }
+                    else if (savedFilesManager.createNewEmptyProject(
+                            dialogInputName.dialogTextFieldName.text.toString(),
+                            false
+                        )
+                    ) {
+                        val intent = Intent(this, ProgrammingActivity::class.java)
+
+                        intent.putExtra("PROJECT_NAME", dialogInputName.dialogTextFieldName.text.toString())
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        val dialogRenaming = android.app.AlertDialog.Builder(this)
+                        dialogRenaming.setTitle("Project name exist already")
+                        dialogRenaming.setMessage("Do you want to override the existing save file?")
+
+                        val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                            when (which) {
+                                DialogInterface.BUTTON_NEGATIVE -> {
+                                    createNewProject()
+                                }
+                                DialogInterface.BUTTON_POSITIVE -> {
+                                    if (savedFilesManager.createNewEmptyProject(
+                                            dialogInputName.dialogTextFieldName.text.toString(),
+                                            true
+                                        )
+                                    ) {
+                                        val intent = Intent(this, ProgrammingActivity::class.java)
+
+                                        intent.putExtra("PROJECT_NAME", dialogInputName.dialogTextFieldName.text.toString())
+                                        startActivity(intent)
+                                        finish()
+                                    }
+                                }
+                            }
+                        }
+                        dialogRenaming.setPositiveButton("Yes", dialogClickListener)
+                        dialogRenaming.setNegativeButton("No", dialogClickListener)
+                        dialogRenaming.create().show()
+                    }
+                }
+            }
+        }
+        dialogInputNameBuilder.setPositiveButton("Save", inputNameDialogClickListener)
+        dialogInputNameBuilder.setNeutralButton("Cancel", inputNameDialogClickListener)
+        dialogInputNameBuilder.show()
     }
 }

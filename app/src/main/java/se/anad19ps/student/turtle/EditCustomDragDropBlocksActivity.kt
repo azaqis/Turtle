@@ -51,7 +51,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                 val displayParameter = dragDropBlock!!.displayParameter
                 val type = dragDropBlock!!.type
 
-                if(text.isNotBlank()){
+                if(text.isNotBlank() && command.isNotBlank()){
                     val updatedDragDropBlock = DragDropBlock(dragImage, directionImage, text, command, parameter, displayParameter, type)
 
                     if (saveCustomDragDropBlockManager.editDragDropBlock(dragDropBlock!!.text, updatedDragDropBlock)){
@@ -74,8 +74,8 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                 }
                 else{
                     val dialogNameIsBlank = android.app.AlertDialog.Builder(this)
-                    dialogNameIsBlank.setTitle("Name is empty")
-                    dialogNameIsBlank.setMessage("Please enter a name. Name can not be empty")
+                    dialogNameIsBlank.setTitle("Name or command field is empty")
+                    dialogNameIsBlank.setMessage("Please make sure that neither name or command field is empty or only containing spaces!")
                     //Might delete this click listener
                     val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                         when (which) {
