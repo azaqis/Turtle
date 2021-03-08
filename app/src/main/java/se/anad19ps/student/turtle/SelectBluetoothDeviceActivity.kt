@@ -54,12 +54,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_bluetooth_device)
-        refreshBluetoothDevicesButton.setBackgroundColor(
-            ContextCompat.getColor(
-                applicationContext,
-                R.color.PrimaryComplement
-            )
-        )
+
 
 
         hideProgressShowButton()

@@ -51,10 +51,10 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback,
             val paint = Paint()
 
             /*Color of the background area behind the joystick and joysticks bounded area*/
-            canvas.drawColor(ContextCompat.getColor(this.context, R.color.PrimaryLight))
+            canvas.drawColor(ContextCompat.getColor(this.context, R.color.PrimaryDark))
 
             /*Drawing shapes require paint object*/
-            paint.color = ContextCompat.getColor(this.context, R.color.PrimaryDark)
+            paint.color = ContextCompat.getColor(this.context, R.color.PrimaryColor)
 
             canvas.drawCircle(
                 originX,
