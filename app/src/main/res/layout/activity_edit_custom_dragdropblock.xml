@@ -43,7 +43,6 @@
                         android:gravity="center_vertical"
                         android:paddingLeft="20dp"
                         android:layout_weight="2"
-                        android:textColor="@color/PrimaryDark"
                         android:text="Name:" />
 
                     <EditText
@@ -53,8 +52,6 @@
                         android:layout_gravity="right"
                         android:layout_weight="5"
                         android:inputType="textPersonName"
-                        android:textColor="@color/PrimaryDark"
-                        android:alpha="0.5"
                         android:text="" />
 
                 </LinearLayout>
@@ -98,7 +95,6 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical"
                     android:paddingLeft="20dp"
-                    android:textColor="@color/PrimaryDark"
                     android:text="Command:" />
 
                 <EditText
@@ -106,7 +102,6 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="5"
-                    android:alpha="0.5"
                     android:inputType="textPersonName"
                     android:text="" />
             </LinearLayout>

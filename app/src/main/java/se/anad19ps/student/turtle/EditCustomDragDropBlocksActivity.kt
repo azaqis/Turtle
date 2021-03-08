@@ -112,7 +112,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         }
 
         val buttonCancel = findViewById<Button>(R.id.editCustomCommandsButtonCancel)
-        buttonCancel.setBackgroundColor(getResources().getColor(R.color.PrimaryColor))
+        buttonCancel.setBackgroundColor(getResources().getColor(R.color.GreyedButton))
         buttonCancel.setOnClickListener{
             finish()
         }

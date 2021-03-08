@@ -55,9 +55,13 @@ class ControllerArrowButtonsFragment : Fragment() {
         val btnDown = root.findViewById<View>(R.id.buttonDown) as Button
         val btnLeft = root.findViewById<View>(R.id.buttonLeft) as Button
         val btnRight = root.findViewById<View>(R.id.buttonRight) as Button
+
         val btnAvoidObstacles = root.findViewById<View>(R.id.buttonAvoidObstacles) as Button
         val btnLineFollow = root.findViewById<View>(R.id.buttonLineFollower) as Button
         val btnStop = root.findViewById<View>(R.id.buttonStop) as Button
+
+        val btnGearUp = root.findViewById<View>(R.id.buttonGearUp) as Button
+        val btnGearDown = root.findViewById<View>(R.id.buttonGearDown) as Button
 
         btnAvoidObstacles.setBackgroundColor(
             getColor(
@@ -94,6 +98,7 @@ class ControllerArrowButtonsFragment : Fragment() {
             vibrate(requireView())
             Utils.UtilsObject.bluetoothSendString("6", root.context)
         }
+
         btnAvoidObstacles.setOnClickListener {
             vibrate(requireView())
             Utils.UtilsObject.bluetoothSendString("3", root.context)
@@ -105,6 +110,15 @@ class ControllerArrowButtonsFragment : Fragment() {
         btnStop.setOnClickListener {
             vibrate(requireView())
             Utils.UtilsObject.bluetoothSendString("5", root.context)
+        }
+
+        btnGearUp.setOnClickListener {
+            vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString("u", root.context)
+        }
+        btnGearDown.setOnClickListener {
+            vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString("d", root.context)
         }
     }
 

@@ -70,15 +70,6 @@ class ControllerDebugFragment : Fragment() {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_controller_debug, container, false)
 
-        Handler(Looper.getMainLooper()).post {
-            buttonClearList.setBackgroundColor(
-                ContextCompat.getColor(
-                    root.context,
-                    R.color.PrimaryComplement
-                )
-            )
-        }
-
         var btnClear = root.findViewById<Button>(R.id.buttonClearList)
         btnClear.setOnClickListener{
             clearDebugList()
@@ -113,7 +104,8 @@ class ControllerDebugFragment : Fragment() {
 
     private fun clearDebugList(){
         operationsDone = 0
-        debugList.clear()
+        if(debugList.isNotEmpty())
+            debugList.clear()
         updateList()
     }
 

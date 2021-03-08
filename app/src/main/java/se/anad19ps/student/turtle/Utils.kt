@@ -22,6 +22,10 @@ class Utils() {
                 showUpdatedToast("You are not connected to a bluetooth device", uicontext)
         }
 
+        fun isBluetoothConnectionThreadActive() : Boolean{
+            return SelectBluetoothDeviceActivity.bluetoothConnectionThreadActive
+        }
+
         fun bluetoothRecieveStringReady(recievedString : String){
             ControllerDebugFragment().addStringToDebugList(recievedString)
         }
