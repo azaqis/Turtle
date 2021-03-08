@@ -57,6 +57,13 @@
             android:gravity="center"
             android:layout_marginBottom="20sp">
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonGearUp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Gear up"
+                android:layout_weight="1"
+                android:layout_margin="4dp"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonUp"
@@ -65,6 +72,14 @@
                 android:background="@drawable/controller_arrow_button_up"
                 android:layout_marginLeft="20sp"
                 android:layout_marginRight="20sp"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonGearDown"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Gear Down"
+                android:layout_weight="1"
+                android:layout_margin="4dp"/>
 
         </LinearLayout>
 

@@ -469,6 +469,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             val action = intent.action
             if (action == BluetoothDevice.ACTION_ACL_DISCONNECTED) {
                 hideProgressShowButton()
+                bluetoothConnectionThreadActive = false
                 val mDevice = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
                 Utils.UtilsObject.showUpdatedToast("Disconnected: " + mDevice?.name, context)
             }
