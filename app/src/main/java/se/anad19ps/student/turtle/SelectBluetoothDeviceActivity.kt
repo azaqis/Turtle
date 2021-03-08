@@ -55,15 +55,11 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_bluetooth_device)
 
-
-
         hideProgressShowButton()
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
-
         initAdapters()
         initFilters()
-
 
         refreshBluetoothDevicesButton.setOnClickListener{
             //Check permissions if it is possible to scan
@@ -283,46 +279,6 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
         scannedDevicesNameListViewAdapter.notifyDataSetChanged()
 
-
-
-
-
-
-
-
-
-
-
-        /*//OBS! THIS DOES NOT UPDATE IF REMOVED EVEN IF IT EXISTS IN onCreate!!!!!
-        scannedDevicesNameListViewAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_list_item_1,
-            getDevicesNameArray(scannedDevicesList)
-        )*/
-
-
-
-
-
-
-
-
-
-
-
-
-    }
-
-    private fun getDevicesNameArray(array: ArrayList<BluetoothDevice>) : ArrayList<String>{
-        val devicesNameList: ArrayList<String> = ArrayList()
-        for(device : BluetoothDevice in array){
-            //Primarily, show device name, but some only have an address, then show the address
-            if(device.name != null)
-                devicesNameList.add(device.name)
-            else
-                devicesNameList.add(device.address)
-        }
-        return devicesNameList
     }
 
     private fun tryBonding(device: BluetoothDevice, v: View){
@@ -339,58 +295,6 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
             clientThread = BluetoothClient(device, this)
             clientThread.start()
-        }
-    }
-
-
-    class BluetoothClient(device: BluetoothDevice, uiactivity : Activity): Thread() {
-        private val socket = device.createRfcommSocketToServiceRecord(device.uuids?.get(0)!!.uuid)
-        private val activity = uiactivity
-        private lateinit var outputStream : OutputStream
-
-        override fun run() {
-            bluetoothConnectionThreadActive = true
-            try{
-                Log.d(TAG, "Connecting")
-                this.socket.connect()
-            } catch (e : IOException){
-                Log.d(TAG, "Connection failed")
-                Utils.UtilsObject.showUpdatedToast("Connection failed, device may be already connected or out of range", activity.applicationContext)
-                bluetoothConnectionThreadActive = false
-                this.activity.runOnUiThread {
-                    activity.progressBar.visibility = View.INVISIBLE
-                    activity.refreshBluetoothDevicesButton.visibility = View.VISIBLE
-                }
-            }
-
-            if(this.socket.isConnected){
-                outputStream = this.socket.outputStream
-                val inputStream = this.socket.inputStream
-                var bytes : Int
-
-                while(bluetoothConnectionThreadActive) {
-                    try{
-                        bytes = inputStream.read(inputBuffer)
-                        messageRecieved = String(inputBuffer, 0, bytes)
-                        Utils.UtilsObject.bluetoothRecieveStringReady(messageRecieved!!)
-                    } catch (e : IOException){
-                        Log.e(TAG, "Error reading Input Stream. ", e)
-                    }
-                }
-                outputStream.close()
-                inputStream.close()
-                this.socket.close()
-            }
-        }
-
-        fun write(stringToWrite : String){
-            try {
-                outputStream.write(stringToWrite!!.toByteArray())
-                outputStream.flush()
-                Log.d(TAG, "Sent")
-            } catch(e: IOException) {
-                Log.d(TAG, "Cannot send", e)
-            }
         }
     }
 
@@ -476,7 +380,6 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         }
     }
 
-
     private fun showLocationPrompt() {
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -535,5 +438,4 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         btAdapter.cancelDiscovery()
         unregisterReceiver(discoverReceiver)
     }
-
 }

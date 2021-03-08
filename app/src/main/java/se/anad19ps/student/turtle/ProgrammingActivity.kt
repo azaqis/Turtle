@@ -548,49 +548,52 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     private suspend fun traverseList() {
-        val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
-        val tenthOfSecondInMS: Long = 100
-        val secondInMS: Long = 1000
+
+        if(Utils.UtilsObject.isBluetoothConnectionThreadActive()){
+            val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
+            val tenthOfSecondInMS: Long = 100
+            val secondInMS: Long = 1000
 
 
 
-        itemList.forEachIndexed { index, item ->
-            recycler.scrollToPosition(index) //Scrolls list so that current item is on screen
+            itemList.forEachIndexed { index, item ->
+                recycler.scrollToPosition(index) //Scrolls list so that current item is on screen
 
-            var parameter: Int = item.displayParameter.toInt()
+                var parameter: Int = item.displayParameter.toInt()
 
-            while (item.displayParameter > 0) {
-                when (state) {  //State machine
-                    RunState.RUNNING -> {
-                        Utils.UtilsObject.bluetoothSendString("72$parameter", this.baseContext)
-                        //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
-                        delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
-                        parameter--
-
-
-                        /*Works with Locale but crashes without? Only for Andreas*/
-                        item.displayParameter =
-                            String.format(Locale.ENGLISH, "%.1f", item.displayParameter - 0.1)
-                                .toDouble()
+                while (item.displayParameter > 0) {
+                    when (state) {  //State machine
+                        RunState.RUNNING -> {
+                            Utils.UtilsObject.bluetoothSendString("72$parameter", this.baseContext)
+                            //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
+                            delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
+                            parameter--
 
 
+                            /*Works with Locale but crashes without? Only for Andreas*/
+                            item.displayParameter =
+                                String.format(Locale.ENGLISH, "%.1f", item.displayParameter - 0.1)
+                                    .toDouble()
 
-                        adapter.notifyDataSetChanged()
+
+
+                            adapter.notifyDataSetChanged()
+                        }
+                        RunState.PAUSE -> {
+                            sem.acquire()
+                        }
+                        else -> {
+                            state = RunState.IDLE
+                        } //So we go to a known state if something would go wrong
                     }
-                    RunState.PAUSE -> {
-                        sem.acquire()
-                    }
-                    else -> {
-                        state = RunState.IDLE
-                    } //So we go to a known state if something would go wrong
                 }
             }
+
+            Utils.UtilsObject.showUpdatedToast("Project has run through completely!", this)
+            delay(secondInMS * 3)
+
+            resetListTraverse()
         }
-
-        Utils.UtilsObject.showUpdatedToast("Project has run through completely!", this)
-        delay(secondInMS * 3)
-
-        resetListTraverse()
     }
 
     /*Resetting list to its original state*/

@@ -112,7 +112,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
         }
     }
-    
+
     override fun onJoystickMoved(xPercentageMoved: Int, yPercentageMoved: Int) {
         val tenthOfSecondInMS : Long = 100;
         GlobalScope.launch {
