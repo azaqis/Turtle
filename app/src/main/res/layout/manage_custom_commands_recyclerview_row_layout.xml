@@ -46,7 +46,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="Title"
-                android:textColor="@color/PrimaryDark"
                 android:textSize="20sp"/>
 
             <TextView
@@ -55,7 +54,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="This is the description."
-                android:textColor="@color/PrimaryDark"
                 android:textSize="20sp"/>
 
         </LinearLayout>

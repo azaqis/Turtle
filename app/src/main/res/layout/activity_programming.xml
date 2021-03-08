@@ -55,7 +55,7 @@
         android:layout_height="0dp"
         android:id="@+id/programming_recycle_view"
         app:layout_constraintTop_toBottomOf="@+id/programming_spinner_linear_layout"
-        app:layout_constraintBottom_toTopOf="@+id/programming_button_area"
+        app:layout_constraintBottom_toTopOf="@+id/programming_text_view_current_project"
         tools:listitem="@layout/card_drag_drop"/>
 
     <TextView
@@ -63,12 +63,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="PLACEHOLDER TEXT"
-        android:background="@color/cardview_dark_background"
-        android:textColor="@color/white"
         android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@id/programming_button_area"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/PrimaryDark"
+        android:textColor="@color/PrimaryLight"
+        android:textAlignment="center"/>
 
     <LinearLayout
         android:id="@+id/programming_button_area"
