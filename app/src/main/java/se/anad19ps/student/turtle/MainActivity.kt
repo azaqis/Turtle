@@ -12,6 +12,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val intent = startActivity(Intent(this, ProgrammingActivity::class.java))
+        finish()
         /*toggle = ActionBarDrawerToggle(
             this,
             findViewById(R.id.drawerLayout),

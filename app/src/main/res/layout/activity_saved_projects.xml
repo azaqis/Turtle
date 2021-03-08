@@ -6,14 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".SavedProjectsActivity">
 
-
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="5">
+        android:weightSum="1">
 
         <include
             android:id="@+id/topBar"
@@ -23,7 +20,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_weight="1">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -38,7 +36,17 @@
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
+
+        <Button
+            android:id="@+id/savedProjectsCreateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create new project"
+            android:layout_gravity="center"/>
+
     </LinearLayout>
+
+
 
 
     <include layout="@layout/drawer_layout" />

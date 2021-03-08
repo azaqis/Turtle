@@ -43,7 +43,7 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity(){
         }
 
         customDragDropBlockManager = SaveCustomDragDropBlockManager(this)
-        testCode()
+        //testCode()
         populateLists()
     }
 

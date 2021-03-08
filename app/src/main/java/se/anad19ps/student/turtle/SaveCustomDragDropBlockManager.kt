@@ -50,6 +50,7 @@ class SaveCustomDragDropBlockManager(con : Context){
 
     fun saveDragDropBlock(dragDropBlock: DragDropBlock, allowOverwriting: Boolean) : Boolean{
         val dragAndDropBlockName = dragDropBlock.text
+
         Log.e("CUSTOM_LOG", "Request to save: $dragAndDropBlockName")
         if(dragAndDropBlockNameExist(dragAndDropBlockName) && !allowOverwriting){
             Log.e("CUSTOM_LOG", "Could not save: $dragAndDropBlockName, name already exists and overwriting was set to false")

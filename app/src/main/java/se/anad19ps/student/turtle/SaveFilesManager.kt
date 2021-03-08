@@ -39,6 +39,7 @@ class SaveFilesManager(con : Context) {
                 Log.e("FILE_LOG", "projectNames.txt was successfully created")
 
                 //TEST CODE BEGIN, This code only adds test projects on first opening of the app, after first time opening, these projects should be opened by reading from the save file
+                /*
                 var itemList = mutableListOf<DragDropBlock>()
                 val num = 5
 
@@ -69,6 +70,8 @@ class SaveFilesManager(con : Context) {
                 saveProject("MyProject6:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList, false)
                 saveProject("MyProject7:::::" + (Calendar.getInstance().get((Calendar.SECOND)).toString()), itemList, false)
                 //TEST CODE END
+
+                 */
             }
             else{
                 Log.e("FILE_LOG", "projectNames.txt could not be created")
@@ -93,8 +96,13 @@ class SaveFilesManager(con : Context) {
         }
     }
 
+    fun createNewEmptyProject(name : String, allowOverWriting: Boolean) : Boolean{
+        return saveProject(name, ArrayList<DragDropBlock>(), allowOverWriting)
+    }
+
     fun saveProject(projectName: String, saveDataList: MutableList<DragDropBlock>, allowOverWriting : Boolean) : Boolean{
         Log.e("FILE_LOG", "Request to save: $projectName")
+
         if(!addNewName(projectName) && !allowOverWriting){
             Log.e("FILE_LOG", "Response that name exists $projectName")
             return false
@@ -239,16 +247,15 @@ class SaveFilesManager(con : Context) {
     }
 
     private fun setLastOpenedProject(projectName : String?) : Boolean{
-        if(!getArrayWithNames().contains(projectName)){
-            return false
-        }
-
         val fwLastOpenedProject = FileWriter(File(context.filesDir, lastOpenProjectFile), false)
 
         if(projectName == null){
             fwLastOpenedProject.write("")
         }
-        else if(projectNameExist(projectName!!)){
+        else if(!getArrayWithNames().contains(projectName)){
+            return false
+        }
+        else {
             fwLastOpenedProject.write(projectName)
         }
 
@@ -265,6 +272,9 @@ class SaveFilesManager(con : Context) {
                 if(getArrayWithNames().contains(projectName)){
                     Log.e("FILE_LOG", "Last opened project was: $projectName")
                     return projectName
+                }
+                else{
+                    return null
                 }
             }
         }
