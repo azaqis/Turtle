@@ -53,16 +53,8 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         spinnerSpinnerView.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
-                //This works JUST below for the other spinner, but this doesnt change the view or makes the current one working
-                /*when (position) {
-                    0 -> topFragment = ControllerDebugFragment()
-                    1 -> topFragment = ControllerSpeedometerFragment()
-                    2 -> topFragment = ControllerUltraSonicFragment()
-                }*/
                 when (position) {
                     0 -> topFragment = ControllerDebugFragment()
-                    1 -> topFragment = ControllerSpeedometerFragment()
-                    2 -> topFragment = ControllerUltraSonicFragment()
                 }
 
                 var managerTopFragment = supportFragmentManager

@@ -7,7 +7,7 @@
 
     <EditText
         android:id="@+id/dialogTextFieldName"
-        android:hint="Enter Text"
+        android:hint="@string/enter_text"
         android:inputType="textPersonName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

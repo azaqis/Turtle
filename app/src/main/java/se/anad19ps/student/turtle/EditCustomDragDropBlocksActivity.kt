@@ -68,8 +68,8 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                     }
                     else {
                        val dialogNameExists = android.app.AlertDialog.Builder(this)
-                        dialogNameExists.setTitle("Name already exists")
-                        dialogNameExists.setMessage("Please choose a unique name")
+                        dialogNameExists.setTitle(R.string.name_already_exists)
+                        dialogNameExists.setMessage(R.string.please_choose_a_unique_name)
                         //Might delete this click listener
                         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                            when (which) {
@@ -77,14 +77,14 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    dialogNameExists.setNeutralButton("OK", dialogClickListener)
+                    dialogNameExists.setNeutralButton(R.string.okay, dialogClickListener)
                     dialogNameExists.create().show()
                     }
                 }
                 else{
                     val dialogNameIsBlank = android.app.AlertDialog.Builder(this)
-                    dialogNameIsBlank.setTitle("Name or command field is empty")
-                    dialogNameIsBlank.setMessage("Please make sure that neither name or command field is empty or only containing spaces!")
+                    dialogNameIsBlank.setTitle(R.string.name_or_command_field_is_empty)
+                    dialogNameIsBlank.setMessage(R.string.name_or_command_field_is_empty_warning)
                     //Might delete this click listener
                     val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                         when (which) {
@@ -92,7 +92,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    dialogNameIsBlank.setNeutralButton("OK", dialogClickListener)
+                    dialogNameIsBlank.setNeutralButton(R.string.okay, dialogClickListener)
                     dialogNameIsBlank.create().show()
                 }
             }
@@ -103,8 +103,8 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         buttonDelete.setBackgroundColor(getResources().getColor(R.color.PrimaryComplement))
         buttonDelete.setOnClickListener{
             val dialogConfirmDelete = android.app.AlertDialog.Builder(this)
-            dialogConfirmDelete.setTitle("Confirm deletion")
-            dialogConfirmDelete.setMessage("Are you sure you want to delete this custom command?")
+            dialogConfirmDelete.setTitle(R.string.confirm_delete)
+            dialogConfirmDelete.setMessage(R.string.confirm_delete_custom_command_warning)
             val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
@@ -115,8 +115,8 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                     }
                 }
             }
-            dialogConfirmDelete.setPositiveButton("Yes", dialogClickListener)
-            dialogConfirmDelete.setNegativeButton("No", dialogClickListener)
+            dialogConfirmDelete.setPositiveButton(R.string.yes, dialogClickListener)
+            dialogConfirmDelete.setNegativeButton(R.string.no, dialogClickListener)
             dialogConfirmDelete.create().show()
         }
 

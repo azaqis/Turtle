@@ -71,7 +71,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             {
                 //If it is already scanning, dont cancel and scan again, just wait for it to finish scanning. If it is done, then scan again
                 if(btAdapter.isDiscovering) {
-                    Utils.UtilsObject.showUpdatedToast("Please wait, still scanning...", this)
+                    Utils.UtilsObject.showUpdatedToast(getString(R.string.please_wait_still_scanning), this)
                 }
                 else{
                     clearBothScannedLists()
@@ -98,7 +98,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         selectPairedDeviceList.onItemClickListener = AdapterView.OnItemClickListener { _, v, position, _ ->
             val device: BluetoothDevice = pairedDevicesList[position]
             //Here the app tries to connect with the device chosen in the listview
-            Utils.UtilsObject.showUpdatedToast("Connecting to: " + device.name + "...", this)
+            Utils.UtilsObject.showUpdatedToast(getString(R.string.connecting_to) + device.name + "...", this)
 
             showProgressHideButton()
             clientThread = BluetoothClient(device, this)
@@ -167,7 +167,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             pairedDevicesNameListViewAdapter.notifyDataSetChanged()
         }
         else
-            Utils.UtilsObject.showUpdatedToast("There are no paired devices on this device", this)
+            Utils.UtilsObject.showUpdatedToast(getString(R.string.no_paired_device_warning), this)
     }
 
     private fun clearBothScannedLists(){
@@ -217,13 +217,13 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         when(requestCode){
             REQUEST_CODE_ENABLE_BT ->
                 if (resultCode == Activity.RESULT_OK) {
-                    Utils.UtilsObject.showUpdatedToast("Bluetooth is enabled", this)
+                    Utils.UtilsObject.showUpdatedToast(getString(R.string.bluetooth_is_enabled), this)
                     //Needed to show paired devices after allowing BT permission on view open
                     updatePairedDevicesList()
                     discoverBluetoothDevices()
                 }
                 else
-                    Utils.UtilsObject.showUpdatedToast("Bluetooth is not enabled, please try again", this)
+                    Utils.UtilsObject.showUpdatedToast(getString(R.string.bluetooth_is_not_enabled_warning), this)
 
             LocationRequest.PRIORITY_HIGH_ACCURACY -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -252,7 +252,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             return listOfPairedDevices
         }
         else
-            Utils.UtilsObject.showUpdatedToast("No devices found", this)
+            Utils.UtilsObject.showUpdatedToast(getString(R.string.no_devices_found), this)
 
         return null
     }
@@ -284,13 +284,13 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
     private fun tryBonding(device: BluetoothDevice, v: View){
         //Dont bond if it is already bonded, then connect instead
         if(!pairedDevicesList.contains(device)){
-            Utils.UtilsObject.showUpdatedToast("Trying to bond to device: " + device.name, this)
+            Utils.UtilsObject.showUpdatedToast(getString(R.string.trying_to_bond_to_device)+": " + device.name, this)
             Log.d(TAG, "Trying to bond with " + device.name)
 
             device.createBond()
         }
         else{
-            Utils.UtilsObject.showUpdatedToast("Connecting to: " + device.name + "...", this)
+            Utils.UtilsObject.showUpdatedToast(getString(R.string.connecting_to) + device.name + "...", this)
             Log.d(TAG, "Trying to connect to: " + device.name)
 
             clientThread = BluetoothClient(device, this)
@@ -324,21 +324,21 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 //case1: bonded already
                 if (mDevice!!.bondState == BluetoothDevice.BOND_BONDED) {
                     hideProgressShowButton()
-                    Utils.UtilsObject.showUpdatedToast("Connected to: " + mDevice.name, context)
+                    Utils.UtilsObject.showUpdatedToast(getString(R.string.connected_to) + ": " + mDevice.name, context)
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDED.")
                     Log.e(TAG, "BroadcastReceiver: BOND_BONDED." + mDevice.name)
                     btAdapter.cancelDiscovery()
                 }
                 //case2: creating a bond
                 if (mDevice.bondState == BluetoothDevice.BOND_BONDING) {
-                    Utils.UtilsObject.showUpdatedToast("Connecting to: " + mDevice.name + "...", context)
+                    Utils.UtilsObject.showUpdatedToast(getString(R.string.connecting_to) + ": " + mDevice.name + "...", context)
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDING.")
                     Log.e(TAG, "BroadcastReceiver: BOND_BONDING." + mDevice.name)
                 }
                 //case3: breaking a bond
                 if (mDevice.bondState == BluetoothDevice.BOND_NONE) {
                     hideProgressShowButton()
-                    Utils.UtilsObject.showUpdatedToast("Connection failed", context)
+                    Utils.UtilsObject.showUpdatedToast(getString(R.string.connection_failed), context)
                     Log.d(TAG, "BroadcastReceiver: BOND_NONE.")
                     Log.e(TAG, "BroadcastReceiver: BOND_NONE." + mDevice.name)
                 }
@@ -352,7 +352,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             if (action == BluetoothDevice.ACTION_ACL_CONNECTED) {
                 hideProgressShowButton()
                 val mDevice = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-                Utils.UtilsObject.showUpdatedToast("Connected to: " + mDevice?.name, context)
+                Utils.UtilsObject.showUpdatedToast(getString(R.string.connected_to) + ": " + mDevice?.name, context)
             }
         }
     }
@@ -363,7 +363,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             if (action == BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED) {
                 hideProgressShowButton()
                 val mDevice = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-                Utils.UtilsObject.showUpdatedToast("Disconnected requested: " + mDevice?.name, context)
+                Utils.UtilsObject.showUpdatedToast(getString(R.string.disconnection_requested) + ": " + mDevice?.name, context)
             }
         }
     }
@@ -375,7 +375,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 hideProgressShowButton()
                 bluetoothConnectionThreadActive = false
                 val mDevice = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-                Utils.UtilsObject.showUpdatedToast("Disconnected: " + mDevice?.name, context)
+                Utils.UtilsObject.showUpdatedToast(getString(R.string.disconnected) + ": " + mDevice?.name, context)
             }
         }
     }
