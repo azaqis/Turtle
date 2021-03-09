@@ -3,9 +3,14 @@ package se.anad19ps.student.turtle
 import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.widget.Button
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_create_custom_dragdropblock.*
+import kotlinx.android.synthetic.main.activity_create_custom_dragdropblock.checkBox
+import kotlinx.android.synthetic.main.activity_create_custom_dragdropblock.editTextDragDropBlockCommand
+import kotlinx.android.synthetic.main.activity_create_custom_dragdropblock.editTextDragDropBlockName
+import kotlinx.android.synthetic.main.activity_edit_custom_dragdropblock.*
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
 
@@ -15,6 +20,12 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
         setContentView(R.layout.activity_create_custom_dragdropblock)
 
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
+
+        if(savedInstanceState != null){
+            editTextDragDropBlockName.setText(savedInstanceState.getString("inputName"))
+            checkBox.isChecked = savedInstanceState.getBoolean("parameterEnabled")
+            editTextDragDropBlockCommand.setText(savedInstanceState.getString("inputCommand"))
+        }
 
         val buttonSave = findViewById<Button>(R.id.createCustomCommandsButtonSave)
         buttonSave.setBackgroundColor(getResources().getColor(R.color.PrimaryColor))
@@ -66,5 +77,16 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
         buttonCancel.setOnClickListener{
             finish()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        val inputName : String = editTextDragDropBlockCommand.text.toString()
+        val parameterEnabled : Boolean = checkBox.isChecked
+        val inputCommand : String = editTextDragDropBlockCommand.text.toString()
+
+        outState.putString("inputName", inputName)
+        outState.putString("parameterEnabled", parameterEnabled.toString())
+        outState.putString("inputCommand", inputCommand)
     }
 }
