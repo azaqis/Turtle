@@ -35,7 +35,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         RUNNING,
         PAUSE
     }
-
+    //Should this be hardcoded?
     private val newProjectStandardName = "New Project"
 
     private var markForDeletion = false //Marks if a click should add to deleteList
@@ -198,7 +198,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 saveProject()
             }
             else{
-                Utils.UtilsObject.showUpdatedToast("This is an unsaved empty project. No need to save until changes has been made", this)
+                Utils.UtilsObject.showUpdatedToast(getString(R.string.save_project_when_empty), this)
             }
 
         }
@@ -206,16 +206,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private fun deleteProject(){
         val dialogWantToSave = android.app.AlertDialog.Builder(this)
-        dialogWantToSave.setTitle("Do you want to delete this project?")
-        dialogWantToSave.setMessage("All progress for this project will be lost.")
+        dialogWantToSave.setTitle(R.string.do_you_want_to_delete_this_project)
+        dialogWantToSave.setMessage(R.string.all_progress_for_this_project_will_be_lost)
         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
             when (which) {
                 DialogInterface.BUTTON_NEGATIVE -> {
-                    Utils.UtilsObject.showUpdatedToast("Project not deleted", this)
+                    Utils.UtilsObject.showUpdatedToast(getString(R.string.project_not_deleted), this)
                     Log.e("FILE_LOG", "No clicked, Project not deleted")
                 }
                 DialogInterface.BUTTON_POSITIVE -> {
-                    Utils.UtilsObject.showUpdatedToast("Project deleted", this)
+                    Utils.UtilsObject.showUpdatedToast(getString(R.string.project_deleted), this)
                     Log.e("FILE_LOG", "Yes clicked, project deleted")
 
                     saveFilesManager.deleteProject(projectName)
@@ -226,8 +226,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 }
             }
         }
-        dialogWantToSave.setPositiveButton("Yes", dialogClickListener)
-        dialogWantToSave.setNegativeButton("No", dialogClickListener)
+        dialogWantToSave.setPositiveButton(R.string.yes, dialogClickListener)
+        dialogWantToSave.setNegativeButton(R.string.no, dialogClickListener)
         dialogWantToSave.create().show()
 
 
@@ -237,21 +237,21 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private fun saveProject(){
         val dialogInputName = LayoutInflater.from(this).inflate(R.layout.input_text_dialog, null)
         val dialogInputNameBuilder = AlertDialog.Builder(this).setView(dialogInputName)
-        dialogInputNameBuilder.setTitle("Enter a project name")
-        dialogInputNameBuilder.setMessage("Please enter a project name. If you don't want to overwrite, please enter a unique name")
+        dialogInputNameBuilder.setTitle(R.string.enter_project_name)
+        dialogInputNameBuilder.setMessage(R.string.enter_project_name_warning)
         dialogInputName.dialogTextFieldName.setText(projectName)
 
         val inputNameDialogClickListener = DialogInterface.OnClickListener { _, which ->
             when (which) {
                 DialogInterface.BUTTON_NEUTRAL -> {
-                    Utils.UtilsObject.showUpdatedToast("Project not saved", this)
+                    Utils.UtilsObject.showUpdatedToast(getString(R.string.project_not_saved), this)
                     Log.e("FILE_LOG", "Cancel clicked, project not saves")
                 }
                 DialogInterface.BUTTON_POSITIVE -> {
                     if(dialogInputName.dialogTextFieldName.text.toString().isBlank()){
                         val dialogNameBlankWarning = android.app.AlertDialog.Builder(this)
-                        dialogNameBlankWarning.setTitle("Name can not be blank")
-                        dialogNameBlankWarning.setMessage("Please enter a name that is not blank or only containing spaces!")
+                        dialogNameBlankWarning.setTitle(R.string.name_can_not_be_blank)
+                        dialogNameBlankWarning.setMessage(R.string.name_can_not_be_blank_warning)
                         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                             when (which) {
                                 DialogInterface.BUTTON_NEUTRAL -> {
@@ -259,7 +259,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                 }
                             }
                         }
-                        dialogNameBlankWarning.setNeutralButton("OK", dialogClickListener)
+                        dialogNameBlankWarning.setNeutralButton(R.string.okay, dialogClickListener)
                         dialogNameBlankWarning.create().show()
                     }
                     else if (saveFilesManager.saveProject(
@@ -268,13 +268,13 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                             false
                         )
                     ) {
-                        Toast.makeText(this, "Saved project", Toast.LENGTH_SHORT).show()
+                        Utils.UtilsObject.showUpdatedToast(getString(R.string.project_saved), this)
                         projectName = dialogInputName.dialogTextFieldName.text.toString()
                         programming_text_view_current_project.text = projectName
                     } else {
                         val dialogRenaming = android.app.AlertDialog.Builder(this)
-                        dialogRenaming.setTitle("Project name exist already")
-                        dialogRenaming.setMessage("Do you want to override the existing save file?")
+                        dialogRenaming.setTitle(R.string.project_name_already_exists)
+                        dialogRenaming.setMessage(R.string.do_you_want_to_override_the_existing_save_file)
 
                         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                             when (which) {
@@ -288,7 +288,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                             true
                                         )
                                     ) {
-                                        Utils.UtilsObject.showUpdatedToast("Overwriting $projectName", this)
+                                        Utils.UtilsObject.showUpdatedToast(getString(R.string.overwriting) + ": $projectName", this)
                                         Log.e("FILE_LOG", "Overwriting: $projectName")
                                         projectName = dialogInputName.dialogTextFieldName.text.toString()
                                         programming_text_view_current_project.text = projectName
@@ -296,31 +296,27 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                 }
                             }
                         }
-                        dialogRenaming.setPositiveButton("Yes", dialogClickListener)
-                        dialogRenaming.setNegativeButton("No", dialogClickListener)
+                        dialogRenaming.setPositiveButton(R.string.yes, dialogClickListener)
+                        dialogRenaming.setNegativeButton(R.string.no, dialogClickListener)
                         dialogRenaming.create().show()
                     }
                 }
             }
         }
-        dialogInputNameBuilder.setPositiveButton("Save", inputNameDialogClickListener)
-        dialogInputNameBuilder.setNeutralButton("Cancel", inputNameDialogClickListener)
+        dialogInputNameBuilder.setPositiveButton(R.string.save, inputNameDialogClickListener)
+        dialogInputNameBuilder.setNeutralButton(R.string.cancel, inputNameDialogClickListener)
         dialogInputNameBuilder.show()
     }
 
     //Asking user if it wants to save project, and then changes activity.
     private fun askUserForSavingProjectAndChangeActivity(intent: Intent) {
         val dialogWantToSave = android.app.AlertDialog.Builder(this)
-        dialogWantToSave.setTitle("Do you want to save this project before opening a new project?")
-        dialogWantToSave.setMessage("If you don't save, all progress in the current project will be lost")
+        dialogWantToSave.setTitle(R.string.save_before_opening_new_project)
+        dialogWantToSave.setMessage(R.string.dont_save_progress_loss_warning)
         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
             when (which) {
                 DialogInterface.BUTTON_NEGATIVE -> {
-                    Toast.makeText(
-                        this,
-                        "Did not save project",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Utils.UtilsObject.showUpdatedToast(getString(R.string.project_not_saved), this)
                     startActivity(intent)
                 }
                 DialogInterface.BUTTON_POSITIVE -> {
@@ -328,8 +324,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 }
             }
         }
-        dialogWantToSave.setPositiveButton("Yes", dialogClickListener)
-        dialogWantToSave.setNegativeButton("No", dialogClickListener)
+        dialogWantToSave.setPositiveButton(R.string.yes, dialogClickListener)
+        dialogWantToSave.setNegativeButton(R.string.no, dialogClickListener)
         dialogWantToSave.create().show()
     }
 
@@ -337,20 +333,20 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private fun saveProjectAndChangeActivity(intent: Intent) {
         val dialogInputName = LayoutInflater.from(this).inflate(R.layout.input_text_dialog, null)
         val dialogInputNameBuilder = AlertDialog.Builder(this).setView(dialogInputName)
-        dialogInputNameBuilder.setTitle("Enter a project name")
-        dialogInputNameBuilder.setMessage("Please enter a project name. If you don't want to overwrite, please enter a unique name")
+        dialogInputNameBuilder.setTitle(R.string.enter_project_name)
+        dialogInputNameBuilder.setMessage(R.string.enter_project_name_warning)
         dialogInputName.dialogTextFieldName.setText(projectName)
 
         val inputNameDialogClickListener = DialogInterface.OnClickListener { _, which ->
             when (which) {
                 DialogInterface.BUTTON_NEUTRAL -> {
-                    Toast.makeText(this, "Cancel clicked", Toast.LENGTH_SHORT).show()
+                    Utils.UtilsObject.showUpdatedToast(getString(R.string.cancel_clicked), this)
                 }
                 DialogInterface.BUTTON_POSITIVE -> {
                     if(dialogInputName.dialogTextFieldName.text.toString().isBlank()){
                         val dialogNameBlankWarning = android.app.AlertDialog.Builder(this)
-                        dialogNameBlankWarning.setTitle("Name can not be blank")
-                        dialogNameBlankWarning.setMessage("Please enter a name that is not blank or only containing spaces!")
+                        dialogNameBlankWarning.setTitle(R.string.name_can_not_be_blank)
+                        dialogNameBlankWarning.setMessage(R.string.name_can_not_be_blank_warning)
                         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                             when (which) {
                                 DialogInterface.BUTTON_NEUTRAL -> {
@@ -358,7 +354,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                 }
                             }
                         }
-                        dialogNameBlankWarning.setNeutralButton("OK", dialogClickListener)
+                        dialogNameBlankWarning.setNeutralButton(R.string.okay, dialogClickListener)
                         dialogNameBlankWarning.create().show()
                     }
                     else if (saveFilesManager.saveProject(
@@ -367,27 +363,22 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                             false
                         )
                     ) {
-                        Toast.makeText(this, "Saved project", Toast.LENGTH_SHORT).show()
+                        Utils.UtilsObject.showUpdatedToast(getString(R.string.project_saved), this)
                         startActivity(Intent(this, SavedProjectsActivity::class.java))
                         finish()
                     } else {
                         val dialogRenaming = android.app.AlertDialog.Builder(this)
-                        dialogRenaming.setTitle("Project name exist already")
-                        dialogRenaming.setMessage("Do you want to override the existing save file?")
+                        dialogRenaming.setTitle(R.string.project_name_already_exists)
+                        dialogRenaming.setMessage(R.string.do_you_want_to_override_the_existing_save_file)
 
                         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                             when (which) {
                                 DialogInterface.BUTTON_NEGATIVE -> {
-                                    Toast.makeText(
-                                        this,
-                                        "Did not overwrite save file",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Utils.UtilsObject.showUpdatedToast(getString(R.string.did_not_override_save_file), this)
                                     saveProjectAndChangeActivity(intent)
                                 }
                                 DialogInterface.BUTTON_POSITIVE -> {
-                                    Toast.makeText(this, "Overwrite save file", Toast.LENGTH_SHORT)
-                                        .show()
+                                    Utils.UtilsObject.showUpdatedToast(getString(R.string.overwrite_save_file), this)
                                     Log.e("FILE_LOG", "Overwriting: $projectName")
                                     if (saveFilesManager.saveProject(
                                             dialogInputName.dialogTextFieldName.text.toString(),
@@ -401,15 +392,15 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                 }
                             }
                         }
-                        dialogRenaming.setPositiveButton("Yes", dialogClickListener)
-                        dialogRenaming.setNegativeButton("No", dialogClickListener)
+                        dialogRenaming.setPositiveButton(R.string.yes, dialogClickListener)
+                        dialogRenaming.setNegativeButton(R.string.no, dialogClickListener)
                         dialogRenaming.create().show()
                     }
                 }
             }
         }
-        dialogInputNameBuilder.setPositiveButton("Save", inputNameDialogClickListener)
-        dialogInputNameBuilder.setNeutralButton("Cancel", inputNameDialogClickListener)
+        dialogInputNameBuilder.setPositiveButton(R.string.save, inputNameDialogClickListener)
+        dialogInputNameBuilder.setNeutralButton(R.string.cancel, inputNameDialogClickListener)
         dialogInputNameBuilder.show()
     }
 
@@ -636,11 +627,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         editText.setText(itemList[position].parameter.toString())
 
-        builder.setTitle("Change parameter")
-        builder.setButton(AlertDialog.BUTTON_POSITIVE, "Ok") { dialog, which ->
+        builder.setTitle(getString(R.string.change_parameter))
+        builder.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.okay)) { dialog, which ->
             updateItemValue(position, editText.text.toString().toDouble())
         }
-        builder.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { dialog, which ->
+        builder.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel)) { dialog, which ->
             //Nothing
         }
         builder.setView(dialogLayout)
@@ -708,7 +699,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 }
             }
 
-            Utils.UtilsObject.showUpdatedToast("Project has run through completely!", this)
+            Utils.UtilsObject.showUpdatedToast(getString(R.string.project_has_run_through_completely), this)
             delay(secondInMS * 3)
 
             resetListTraverse()

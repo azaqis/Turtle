@@ -43,7 +43,7 @@
                         android:gravity="center_vertical"
                         android:paddingLeft="20dp"
                         android:layout_weight="2"
-                        android:text="Name:" />
+                        android:text="@string/name"/>
 
                     <EditText
                         android:id="@+id/editTextDragDropBlockName"
@@ -51,8 +51,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
                         android:layout_weight="5"
-                        android:inputType="textPersonName"
-                        android:text="" />
+                        android:inputType="textPersonName"/>
 
                 </LinearLayout>
 
@@ -74,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Enable parameter" />
+                android:text="@string/enable_parameter" />
         </LinearLayout>
 
         <androidx.cardview.widget.CardView
@@ -95,15 +94,14 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical"
                     android:paddingLeft="20dp"
-                    android:text="Command:" />
+                    android:text="@string/command" />
 
                 <EditText
                     android:id="@+id/editTextDragDropBlockCommand"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="5"
-                    android:inputType="textPersonName"
-                    android:text="" />
+                    android:inputType="textPersonName"/>
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
@@ -120,14 +118,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_margin="10dp"
-                android:text="Save"/>
+                android:text="@string/save"/>
             <Button
                 android:id="@+id/createCustomCommandsButtonCancel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_margin="10dp"
-                android:text="Cancel"/>
+                android:text="@string/cancel"/>
 
         </LinearLayout>
 
