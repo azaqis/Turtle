@@ -4,6 +4,8 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Parcelable
+import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -25,9 +27,10 @@ import kotlinx.android.synthetic.main.input_text_dialog.view.*
 import kotlinx.android.synthetic.main.top_bar.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Semaphore
-import java.lang.String.format
+import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.ItemClickListener {
     private enum class RunState {
@@ -39,8 +42,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private val newProjectStandardName = "New Project"
 
     private var markForDeletion = false //Marks if a click should add to deleteList
-    private var deleteList =
-        mutableMapOf<DragDropBlock, View>()    //Also holds View for individual recycler item to reset colors
+    private var deleteList = HashMap<DragDropBlock, View>()    //Also holds View for individual recycler item to reset colors
 
     private lateinit var adapter: ProgrammingRecyclerAdapter
 
@@ -62,7 +64,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private lateinit var saveFilesManager: SaveFilesManager
     private lateinit var projectName: String
-    private lateinit var customCommandManager : SaveCustomDragDropBlockManager
+    private lateinit var customCommandManager: SaveCustomDragDropBlockManager
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +73,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
-        Thread(Runnable{    //Setting up spinners and buttons slowed down startup of entire activity
+        Thread(Runnable {    //Setting up spinners and buttons slowed down startup of entire activity
             setupSpinners()
             setupButtons()
         }).start()
@@ -101,11 +103,23 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         val layoutManager = LinearLayoutManager(this)
         programming_recycle_view.layoutManager = layoutManager
 
+        /*Restore saved state if there is any. Affects runtime configuration changes*/
+        if (savedInstanceState != null) {
+            itemList =
+                savedInstanceState.getParcelableArrayList<DragDropBlock>("itemList") as ArrayList<DragDropBlock>
+        }
+
         adapter = ProgrammingRecyclerAdapter(itemList, this)
         programming_recycle_view.adapter = adapter
 
         itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(programming_recycle_view)
+    }
+
+    /*Save necessary states and variables for run time configuration changes*/
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelableArrayList("itemList", itemList)
     }
 
     override fun onStart() {
@@ -171,8 +185,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 deleteList.clear()
                 markForDeletion = false //So clicks no longer marks for deletion
             }
-            /* Causes a bug, don't know why. Code commented out should only run if no DragDropBlock is selected, but for some reason this code always runs when clicking trashcan even if items is selected.
-            else{
+            /* Should maybe make sure that marking blocks works fine before adding the code below. Code below deletes the hole project if nothing is selected
+            else if(markForDeletion == false){
                 if(projectName != newProjectStandardName || itemList.isNotEmpty()){
                     deleteProject()
                 }
@@ -181,7 +195,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 }
 
             }
-
              */
         }
 
@@ -189,19 +202,18 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_load_button.setOnClickListener {
             val newIntent = Intent(this, SavedProjectsActivity::class.java)
 
-            if(projectName != newProjectStandardName || itemList.isNotEmpty()){
+            if (projectName != newProjectStandardName || itemList.isNotEmpty()) {
                 askUserForSavingProjectAndChangeActivity(newIntent)
-            }
-            else{
+            } else {
                 startActivity(newIntent)
             }
 
         }
 
         programming_save_button.setOnClickListener {
-            if(projectName != newProjectStandardName || itemList.isNotEmpty()){
+            if (projectName != newProjectStandardName || itemList.isNotEmpty()) {
                 saveProject()
-            }
+            } 
             else{
                 Utils.UtilsObject.showUpdatedToast(getString(R.string.save_project_when_empty), this)
             }
@@ -209,7 +221,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
     }
 
-    private fun deleteProject(){
+    private fun deleteProject() {
         val dialogWantToSave = android.app.AlertDialog.Builder(this)
         dialogWantToSave.setTitle(R.string.do_you_want_to_delete_this_project)
         dialogWantToSave.setMessage(R.string.all_progress_for_this_project_will_be_lost)
@@ -239,7 +251,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     // This and saveProjectAndChangeActivity() are basically the same code, could reuse code if i could make a return inside the dialog click listeners, but that seems to not be possible
-    private fun saveProject(){
+    private fun saveProject() {
         val dialogInputName = LayoutInflater.from(this).inflate(R.layout.input_text_dialog, null)
         val dialogInputNameBuilder = AlertDialog.Builder(this).setView(dialogInputName)
         dialogInputNameBuilder.setTitle(R.string.enter_project_name)
@@ -253,7 +265,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     Log.e("FILE_LOG", "Cancel clicked, project not saves")
                 }
                 DialogInterface.BUTTON_POSITIVE -> {
-                    if(dialogInputName.dialogTextFieldName.text.toString().isBlank()){
+                    if (dialogInputName.dialogTextFieldName.text.toString().isBlank()) {
                         val dialogNameBlankWarning = android.app.AlertDialog.Builder(this)
                         dialogNameBlankWarning.setTitle(R.string.name_can_not_be_blank)
                         dialogNameBlankWarning.setMessage(R.string.name_can_not_be_blank_warning)
@@ -266,8 +278,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         }
                         dialogNameBlankWarning.setNeutralButton(R.string.okay, dialogClickListener)
                         dialogNameBlankWarning.create().show()
-                    }
-                    else if (saveFilesManager.saveProject(
+                    } else if (saveFilesManager.saveProject(
                             dialogInputName.dialogTextFieldName.text.toString(),
                             itemList,
                             false
@@ -293,9 +304,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                             true
                                         )
                                     ) {
+
                                         Utils.UtilsObject.showUpdatedToast(getString(R.string.overwriting) + ": $projectName", this)
                                         Log.e("FILE_LOG", "Overwriting: $projectName")
-                                        projectName = dialogInputName.dialogTextFieldName.text.toString()
+                                        projectName =
+                                            dialogInputName.dialogTextFieldName.text.toString()
                                         programming_text_view_current_project.text = projectName
                                     }
                                 }
@@ -348,7 +361,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     Utils.UtilsObject.showUpdatedToast(getString(R.string.cancel_clicked), this)
                 }
                 DialogInterface.BUTTON_POSITIVE -> {
-                    if(dialogInputName.dialogTextFieldName.text.toString().isBlank()){
+                    if (dialogInputName.dialogTextFieldName.text.toString().isBlank()) {
                         val dialogNameBlankWarning = android.app.AlertDialog.Builder(this)
                         dialogNameBlankWarning.setTitle(R.string.name_can_not_be_blank)
                         dialogNameBlankWarning.setMessage(R.string.name_can_not_be_blank_warning)
@@ -361,8 +374,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         }
                         dialogNameBlankWarning.setNeutralButton(R.string.okay, dialogClickListener)
                         dialogNameBlankWarning.create().show()
-                    }
-                    else if (saveFilesManager.saveProject(
+                    } else if (saveFilesManager.saveProject(
                             dialogInputName.dialogTextFieldName.text.toString(),
                             itemList,
                             false
@@ -480,7 +492,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_modules.setSelection(0, false)
 
         //Ugly way to do it, should not initialize a new SaveCustomDragDropBlockManager, rather use the one in the main thread
-        customBlocksSpinnerList = SaveCustomDragDropBlockManager(this).getArrayWithCustomDragDropBlocks()
+        customBlocksSpinnerList =
+            SaveCustomDragDropBlockManager(this).getArrayWithCustomDragDropBlocks()
         spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinnerList, this)
         spinnerCustomAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
         customBlocksSpinnerList.add(
@@ -623,7 +636,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         if (!markForDeletion) {
             view.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
             view.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
-            deleteList[itemList[position]] = view   //Map (DragDropBlock at position) with accompanying recycler item view
+            deleteList[itemList[position]] =
+                view   //Map (DragDropBlock at position) with accompanying recycler item view
             markForDeletion = true
         }
     }
@@ -668,7 +682,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private suspend fun traverseList() {
 
-        if(Utils.UtilsObject.isBluetoothConnectionThreadActive()){
+        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
             val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
             val tenthOfSecondInMS: Long = 100
             val secondInMS: Long = 1000
@@ -723,7 +737,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             sem.release()
         }
         state = RunState.IDLE
-        for(i in itemList)
+        for (i in itemList)
             i.displayParameter = i.parameter
         adapter.notifyDataSetChanged()
         programming_play_button.setImageResource(R.drawable.ic_play_arrow)

@@ -3,7 +3,10 @@ package se.anad19ps.student.turtle
 import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_edit_custom_dragdropblock.*
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
@@ -36,6 +39,11 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                 //If dragDropBlock is null here the dragDropBlock does not exists. Therefore it is not possible to edit it and therefore finishing this activity. This should not be able to happen
                 finish()
             }
+        }
+        else if(savedInstanceState != null){
+            editTextDragDropBlockName.setText(savedInstanceState.getString("inputName"))
+            checkBox.isChecked = savedInstanceState.getBoolean("parameterEnabled")
+            editTextDragDropBlockCommand.setText(savedInstanceState.getString("inputCommand"))
         }
 
         val buttonUpdate = findViewById<Button>(R.id.editCustomCommandsButtonUpdate)
@@ -117,5 +125,16 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         buttonCancel.setOnClickListener{
             finish()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        val inputName : String = editTextDragDropBlockName.text.toString()
+        val parameterEnabled : Boolean = checkBox.isChecked
+        val inputCommand : String = editTextDragDropBlockCommand.text.toString()
+
+        outState.putString("inputName", inputName)
+        outState.putString("parameterEnabled", parameterEnabled.toString())
+        outState.putString("inputCommand", inputCommand)
     }
 }
