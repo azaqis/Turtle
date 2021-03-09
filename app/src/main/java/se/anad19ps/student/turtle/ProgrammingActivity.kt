@@ -424,7 +424,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Command",
                 1.0,
                 1.0,
-                type
+                type,
+                true
             )
             list.add(item)
         }
@@ -446,7 +447,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Null",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.DRIVE
+                DragDropBlock.e_type.DRIVE,
+                false
             )
         )
         programming_spinner_driving.adapter = spinnerDriveAdapter
@@ -465,7 +467,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Null",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.MODULE
+                DragDropBlock.e_type.MODULE,
+                false
             )
         )
         programming_spinner_modules.adapter = spinnerModulesAdapter
@@ -484,7 +487,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Null",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.CUSTOM
+                DragDropBlock.e_type.CUSTOM,
+                false
             )
         )
         programming_spinner_custom.adapter = spinnerCustomAdapter
@@ -703,6 +707,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             delay(secondInMS * 3)
 
             resetListTraverse()
+        }
+        else{
+            Utils.UtilsObject.showUpdatedToast("You are not connected to a bluetooth device", this)
         }
     }
 

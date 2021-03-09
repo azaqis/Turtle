@@ -19,11 +19,11 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
         buttonSave.setBackgroundColor(getResources().getColor(R.color.PrimaryColor))
         buttonSave.setOnClickListener{
             val name = editTextDragDropBlockName.text.toString()
-            val parameterEnabled = checkBox.isEnabled
+            val parameterEnabled = checkBox.isChecked
             val command = editTextDragDropBlockCommand.text.toString()
 
             if(name.isNotBlank() && command.isNotBlank()){
-                var dragDropBlock = DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_custom, name, command, 1.0, 1.0, DragDropBlock.e_type.CUSTOM)
+                var dragDropBlock = DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_custom, name, command, 1.0, 1.0, DragDropBlock.e_type.CUSTOM,parameterEnabled)
                 var saveCustomDragDropBlockManager = SaveCustomDragDropBlockManager(this)
 
                 if(saveCustomDragDropBlockManager.saveDragDropBlock(dragDropBlock, false)){
