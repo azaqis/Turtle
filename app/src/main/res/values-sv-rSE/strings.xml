@@ -91,4 +91,8 @@
     <string name="clear_list">Töm listan</string>
     <string name="enter_text">Skriv in text</string>
     <string name="turtle">TURTLE</string>
+    <string name="bluetooth_connect">Bluetooth Ansluta</string>
+    <string name="programming">Programmering</string>
+    <string name="remote_controller">Fjärr-styrning</string>
+    <string name="manage_custom_commands">Hantera Custom Kommand</string>
 </resources>

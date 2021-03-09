@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/drawerItemBluetoothConnect"
-        android:title="Bluetooth Connect"/>
+        android:title="@string/bluetooth_connect"/>
     <item
         android:id="@+id/drawerItemProgramming"
-        android:title="Programming"/>
+        android:title="@string/programming"/>
     <item
         android:id="@+id/drawerItemRemoteController"
-        android:title="Remote Controller"/>
+        android:title="@string/remote_controller"/>
     <item
         android:id="@+id/drawerItemManageCommands"
-        android:title="Manage Commands"/>
+        android:title="@string/manage_custom_commands"/>
 </menu>
