@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import java.io.File
 import java.io.FileWriter
-import java.util.*
 import kotlin.collections.ArrayList
 
 class SaveFilesManager(con : Context) {
@@ -12,6 +11,7 @@ class SaveFilesManager(con : Context) {
     companion object{
         private const val projectNamesFile = "projectNames.txt"
         private const val lastOpenProjectFile = "lastOpenProject.txt"
+        private const val startOfProjectSaveFilesName = "save_project_file_"
         private var  lastOpenProject : String ?= null
         private lateinit var context : Context
         private var arrayWithProjectNames = arrayListOf<String>()
@@ -19,13 +19,9 @@ class SaveFilesManager(con : Context) {
 
     /*
    TODO IN THIS FILE
-    - Look over what should be private and not private
-    - Delete test code
     - Check if names is logical
-    - Comment code
     - Remove static strings and link to strings file instead
     - Maybe it's dumb to send context in this way? Might send it as a parameter to each function? In that case, it would be possible to use the same instance of SaveFileManager in different activities
-    - arrayWithProjectNames should be null if no name is available
     */
 
     init {
@@ -59,7 +55,7 @@ class SaveFilesManager(con : Context) {
             }
         }
         else{
-            setLastOpenedProject(loadLastOpenedProjectFromFile())
+            setLastOpenedProject(getNameOfLastOpenedProjectFromFile())
         }
     }
 
@@ -84,10 +80,10 @@ class SaveFilesManager(con : Context) {
     private fun saveProjectToFile(projectName: String, saveDataList: MutableList<DragDropBlock>){
         Log.e("FILE_LOG", "Saving: $projectName")
 
-        //Creates a file to save project in with the same name as the project
-        File(context.filesDir, "$projectName.txt").createNewFile()
+        //Creates a file to save project in with the standard start of name + same name as the project
+        File(context.filesDir, "$startOfProjectSaveFilesName$projectName.txt").createNewFile()
 
-        val fwProjectSaveFile = FileWriter(File(context.filesDir, "$projectName.txt"), false)
+        val fwProjectSaveFile = FileWriter(File(context.filesDir, "$startOfProjectSaveFilesName$projectName.txt"), false)
 
         //Loop through all blocks in saveDataList, on each line in the save file, save a attribute for a DragDropBlock
         for (data: DragDropBlock in saveDataList) {
@@ -130,7 +126,7 @@ class SaveFilesManager(con : Context) {
 
     fun deleteProject(projectName : String) : Boolean{
         if(projectNameExist(projectName)){
-            if(File(context.filesDir, "$projectName.txt").delete()){
+            if(File(context.filesDir, "$startOfProjectSaveFilesName$projectName.txt").delete()){
                 arrayWithProjectNames.remove(projectName)
                 Log.e("FILE_LOG", "Deleted: " + projectName)
                 updateNameFile()
@@ -177,7 +173,7 @@ class SaveFilesManager(con : Context) {
         //Loop through every line in the file. Reading in the same order as we are writing to file in saveProjectToFile.
         // We know that a DragDropBlock contains 8 attributes. Therefore we know on the 8th iteration that we have read a
         // complete DragDropBlock and can now add this block to the array
-        File(context.filesDir,"$projectName.txt").useLines { lines ->
+        File(context.filesDir,"$startOfProjectSaveFilesName$projectName.txt").useLines { lines ->
             lines.forEach {
                 when (count) {
                     0 -> commandReadFromFile = it
@@ -233,7 +229,7 @@ class SaveFilesManager(con : Context) {
         return true
     }
 
-    private fun loadLastOpenedProjectFromFile() : String?{
+    private fun getNameOfLastOpenedProjectFromFile() : String?{
         if(File(context.filesDir, lastOpenProjectFile).isFile) {
             File(context.filesDir, lastOpenProjectFile).bufferedReader().use {
                 val projectName =  it.readLine()

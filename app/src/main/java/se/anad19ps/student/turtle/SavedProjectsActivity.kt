@@ -30,8 +30,6 @@ class SavedProjectsActivity : AppCompatActivity() {
 
     /*
     TODO IN THIS FILE
-     - Look over what should be private and not private
-     - Delete test code
      - Check if names is logical
      - Comment code
      - Remove static strings and link to strings file instead
@@ -61,8 +59,6 @@ class SavedProjectsActivity : AppCompatActivity() {
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
         savedProjectsListView.onItemClickListener = AdapterView.OnItemClickListener { _, v, position, _ ->
-            Toast.makeText(this, "Clicked on: " + savedFilesManager.getArrayWithNames()[position], Toast.LENGTH_SHORT).show()
-
             val intent = Intent(this, ProgrammingActivity::class.java)
 
             intent.putExtra("PROJECT_NAME", savedFilesManager.getArrayWithNames()[position])
