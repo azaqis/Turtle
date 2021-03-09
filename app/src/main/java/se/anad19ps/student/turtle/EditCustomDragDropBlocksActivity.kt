@@ -29,7 +29,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
 
             if(dragDropBlock != null){
                 editTextDragDropBlockName.setText(dragDropBlock!!.text)
-                //PARAMETER ENABLED OR NOT SHOULD BE SET HERE
+                checkBox.isChecked = dragDropBlock!!.parameterEnabled
                 editTextDragDropBlockCommand.setText(dragDropBlock!!.command)
             }
             else{
@@ -50,9 +50,10 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                 val parameter = dragDropBlock!!.parameter
                 val displayParameter = dragDropBlock!!.displayParameter
                 val type = dragDropBlock!!.type
+                val parameterEnabled = checkBox.isChecked
 
                 if(text.isNotBlank() && command.isNotBlank()){
-                    val updatedDragDropBlock = DragDropBlock(dragImage, directionImage, text, command, parameter, displayParameter, type)
+                    val updatedDragDropBlock = DragDropBlock(dragImage, directionImage, text, command, parameter, displayParameter, type, parameterEnabled)
 
                     if (saveCustomDragDropBlockManager.editDragDropBlock(dragDropBlock!!.text, updatedDragDropBlock)){
                         finish()

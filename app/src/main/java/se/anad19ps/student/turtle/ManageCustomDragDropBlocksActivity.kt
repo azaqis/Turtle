@@ -58,7 +58,8 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity(){
                 "Garbage command",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.DRIVE
+                DragDropBlock.e_type.CUSTOM,
+                true
             )
             Log.e("CUSTOM_LOG", "TEST CODE ADDED A NEW DRAGDROPBLOCK WITH NAME: " + "test" + 1);
             customDragDropBlockManager.saveDragDropBlock(item, false)

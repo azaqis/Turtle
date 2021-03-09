@@ -98,6 +98,7 @@ class SaveCustomDragDropBlockManager(con : Context){
             fwCustomDragDropBlockSaveFile.write(dragDropBlock.parameter.toString() + "\n")
             fwCustomDragDropBlockSaveFile.write(dragDropBlock.text + "\n")
             fwCustomDragDropBlockSaveFile.write(dragDropBlock.type.toString() + "\n")
+            fwCustomDragDropBlockSaveFile.write(dragDropBlock.parameterEnabled.toString() + "\n")
             Log.e("CUSTOM_LOG", "Saved a DragDropBlock in: $customDragDropBlockSaveFile")
         }
         fwCustomDragDropBlockSaveFile.flush()
@@ -122,6 +123,7 @@ class SaveCustomDragDropBlockManager(con : Context){
         var parameterReadFromFile: Double = -1.0
         var textReadFromFile: String = ""
         var type: DragDropBlock.e_type = DragDropBlock.e_type.CUSTOM
+        var parameterEnable: Boolean = false
 
         File(context.filesDir, customDragDropBlockSaveFile).useLines { lines ->
             lines.forEach {
@@ -133,13 +135,14 @@ class SaveCustomDragDropBlockManager(con : Context){
                     4 -> parameterReadFromFile = it.toDouble()
                     5 -> textReadFromFile = it
                     6 -> type = DragDropBlock.e_type.valueOf(it.toString())
+                    7 -> parameterEnable = it.toBoolean()
                 }
-                if (count < 6) {
+                if (count < 7) {
                     count++
                 } else {
                     Log.e("CUSTOM_LOG", "Loaded: $textReadFromFile")
                     count = 0
-                    arrayWithDragDropBlock.add(DragDropBlock(dragImageReadFromFile, directionImageReadFromFile, textReadFromFile, commandReadFromFile, parameterReadFromFile, displayParameterReadFromFile, type))
+                    arrayWithDragDropBlock.add(DragDropBlock(dragImageReadFromFile, directionImageReadFromFile, textReadFromFile, commandReadFromFile, parameterReadFromFile, displayParameterReadFromFile, type, parameterEnable))
                 }
             }
         }

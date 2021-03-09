@@ -132,6 +132,7 @@ class SaveFilesManager(con : Context) {
             fwProjectSaveFile.write(data.parameter.toString() + "\n")
             fwProjectSaveFile.write(data.text + "\n")
             fwProjectSaveFile.write(data.type.toString() + "\n")
+            fwProjectSaveFile.write(data.parameterEnabled.toString() + "\n")
             Log.e("FILE_LOG", "Saved a DragDropBlock in: $projectName")
         }
         fwProjectSaveFile.flush()
@@ -139,9 +140,7 @@ class SaveFilesManager(con : Context) {
     }
 
     fun projectNameExist(name : String) : Boolean{
-        //Change to return on same line, written this way for dubuging
-        val nameExist = arrayWithProjectNames.contains(name)
-        return nameExist
+        return arrayWithProjectNames.contains(name)
     }
 
     fun addNewName(projectName: String) : Boolean{
@@ -210,6 +209,7 @@ class SaveFilesManager(con : Context) {
         var parameterReadFromFile: Double = -1.0
         var textReadFromFile: String = ""
         var type: DragDropBlock.e_type = DragDropBlock.e_type.CUSTOM
+        var parameterEnabled: Boolean = false
 
         File(context.filesDir,"$projectName.txt").useLines { lines ->
             lines.forEach {
@@ -221,8 +221,9 @@ class SaveFilesManager(con : Context) {
                     4 -> parameterReadFromFile = it.toDouble()
                     5 -> textReadFromFile = it
                     6 -> type = DragDropBlock.e_type.valueOf(it.toString())
+                    7 -> parameterEnabled = it.toBoolean()
                 }
-                if (count < 6) {
+                if (count < 7) {
                     count++
                 } else {
                     Log.e("FILE_LOG", "Type read was: $type")
@@ -235,7 +236,8 @@ class SaveFilesManager(con : Context) {
                             commandReadFromFile,
                             parameterReadFromFile,
                             displayParameterReadFromFile,
-                            type
+                            type,
+                            parameterEnabled
                         )
                     )
                 }
