@@ -717,6 +717,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
             resetListTraverse()
         }
+        else{
+            Utils.UtilsObject.showUpdatedToast("You are not connected to a bluetooth device", this)
+        }
     }
 
     /*Resetting list to its original state*/
