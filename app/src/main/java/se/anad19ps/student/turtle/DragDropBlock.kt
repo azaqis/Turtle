@@ -14,7 +14,7 @@ data class DragDropBlock(
     var parameter: Double,
     var displayParameter: Double,
     val type: e_type,
-	val parameterEnabled : Boolean
+    val parameterEnabled : Boolean
 ) : Parcelable, Serializable{
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
@@ -25,9 +25,7 @@ data class DragDropBlock(
         parcel.readDouble(),
         parcel.readSerializable() as e_type,
 		parcel.readString()!!.toBoolean()
-    ) {
-    }
-) : Serializable{
+    )
     enum class e_type{
         DRIVE,
         MODULE,
