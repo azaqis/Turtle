@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import java.io.File
 import java.io.FileWriter
-import java.util.*
 import kotlin.collections.ArrayList
 
 class SaveFilesManager(con : Context) {
