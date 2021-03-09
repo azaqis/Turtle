@@ -121,9 +121,14 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_play_button.setOnClickListener {
             if (state == RunState.IDLE) {
                 job = GlobalScope.launch(Dispatchers.Main) {
-                    state = RunState.RUNNING
-                    programming_play_button.setImageResource(R.drawable.ic_pause)
-                    traverseList()
+                    if(Utils.UtilsObject.isBluetoothConnectionThreadActive()){
+                        state = RunState.RUNNING
+                        programming_play_button.setImageResource(R.drawable.ic_pause)
+                        traverseList()
+                    }
+                    else{
+                        Utils.UtilsObject.showUpdatedToast("You are not connected to a bluetooth device", baseContext)
+                    }
                 }
             } else if (state == RunState.PAUSE) {
                 if (sem.availablePermits == 0) {
@@ -594,7 +599,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         if (markForDeletion) {
             /*If item is already added to deleteList we want to deselect it*/
             if (deleteList.contains(itemList[position])) {
-                holder.card_drag_drop.setCardBackgroundColor(Color.WHITE)
+                holder.card_drag_drop.setCardBackgroundColor(Color.GREEN)
                 holder.card_image_drag_dots.setImageResource(R.drawable.ic_drag_dots)
                 deleteList.remove(itemList[position])
                 if (deleteList.isEmpty()) {
@@ -703,13 +708,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 }
             }
 
+            //Stop the robot
+            Utils.UtilsObject.bluetoothSendString("5", this.baseContext)
             Utils.UtilsObject.showUpdatedToast(getString(R.string.project_has_run_through_completely), this)
             delay(secondInMS * 3)
 
             resetListTraverse()
-        }
-        else{
-            Utils.UtilsObject.showUpdatedToast("You are not connected to a bluetooth device", this)
         }
     }
 

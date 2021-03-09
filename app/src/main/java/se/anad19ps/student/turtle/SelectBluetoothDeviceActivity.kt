@@ -98,7 +98,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         selectPairedDeviceList.onItemClickListener = AdapterView.OnItemClickListener { _, v, position, _ ->
             val device: BluetoothDevice = pairedDevicesList[position]
             //Here the app tries to connect with the device chosen in the listview
-            Utils.UtilsObject.showUpdatedToast(getString(R.string.connecting_to) + device.name + "...", this)
+            Utils.UtilsObject.showUpdatedToast(getString(R.string.connecting_to) + ": " + device.name + "...", this)
 
             showProgressHideButton()
             clientThread = BluetoothClient(device, this)
