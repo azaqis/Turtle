@@ -166,8 +166,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 deleteList.clear()
                 markForDeletion = false //So clicks no longer marks for deletion
             }
-            /* Causes a bug, don't know why. Code commented out should only run if no DragDropBlock is selected, but for some reason this code always runs when clicking trashcan even if items is selected.
-            else{
+            /* Should maybe make sure that marking blocks works fine before adding the code below. Code below deletes the hole project if nothing is selected
+            else if(markForDeletion == false){
                 if(projectName != newProjectStandardName || itemList.isNotEmpty()){
                     deleteProject()
                 }
@@ -176,7 +176,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 }
 
             }
-
              */
         }
 
