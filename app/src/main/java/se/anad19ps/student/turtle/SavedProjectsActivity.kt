@@ -30,8 +30,6 @@ class SavedProjectsActivity : AppCompatActivity() {
 
     /*
     TODO IN THIS FILE
-     - Look over what should be private and not private
-     - Delete test code
      - Check if names is logical
      - Comment code
      - Remove static strings and link to strings file instead
@@ -61,7 +59,6 @@ class SavedProjectsActivity : AppCompatActivity() {
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
         savedProjectsListView.onItemClickListener = AdapterView.OnItemClickListener { _, v, position, _ ->
-            Toast.makeText(this, "Clicked on: " + savedFilesManager.getArrayWithNames()[position], Toast.LENGTH_SHORT).show()
 
             val intent = Intent(this, ProgrammingActivity::class.java)
 
@@ -74,8 +71,8 @@ class SavedProjectsActivity : AppCompatActivity() {
     private fun createNewProject(){
         val dialogInputName = LayoutInflater.from(this).inflate(R.layout.input_text_dialog, null)
         val dialogInputNameBuilder = AlertDialog.Builder(this).setView(dialogInputName)
-        dialogInputNameBuilder.setTitle("Enter a project name")
-        dialogInputNameBuilder.setMessage("Please enter a project name.")
+        dialogInputNameBuilder.setTitle(R.string.enter_project_name)
+        dialogInputNameBuilder.setMessage(R.string.please_enter_project_name)
 
         val inputNameDialogClickListener = DialogInterface.OnClickListener { _, which ->
             when (which) {
@@ -85,8 +82,8 @@ class SavedProjectsActivity : AppCompatActivity() {
                 DialogInterface.BUTTON_POSITIVE -> {
                     if(dialogInputName.dialogTextFieldName.text.toString().isBlank()){
                         val dialogNameBlankWarning = android.app.AlertDialog.Builder(this)
-                        dialogNameBlankWarning.setTitle("Name can not be blank")
-                        dialogNameBlankWarning.setMessage("Please enter a name that is not blank or only containing spaces!")
+                        dialogNameBlankWarning.setTitle(R.string.name_can_not_be_blank)
+                        dialogNameBlankWarning.setMessage(R.string.name_can_not_be_blank_warning)
                         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                             when (which) {
                                 DialogInterface.BUTTON_NEUTRAL -> {
@@ -94,7 +91,7 @@ class SavedProjectsActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        dialogNameBlankWarning.setNeutralButton("OK", dialogClickListener)
+                        dialogNameBlankWarning.setNeutralButton(R.string.okay, dialogClickListener)
                         dialogNameBlankWarning.create().show()
                     }
                     else if (savedFilesManager.createNewEmptyProject(
@@ -109,8 +106,8 @@ class SavedProjectsActivity : AppCompatActivity() {
                         finish()
                     } else {
                         val dialogRenaming = android.app.AlertDialog.Builder(this)
-                        dialogRenaming.setTitle("Project name exist already")
-                        dialogRenaming.setMessage("Do you want to override the existing save file?")
+                        dialogRenaming.setTitle(R.string.project_name_already_exists)
+                        dialogRenaming.setMessage(R.string.do_you_want_to_override_the_existing_save_file)
 
                         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                             when (which) {
@@ -132,15 +129,15 @@ class SavedProjectsActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        dialogRenaming.setPositiveButton("Yes", dialogClickListener)
-                        dialogRenaming.setNegativeButton("No", dialogClickListener)
+                        dialogRenaming.setPositiveButton(R.string.yes, dialogClickListener)
+                        dialogRenaming.setNegativeButton(R.string.no, dialogClickListener)
                         dialogRenaming.create().show()
                     }
                 }
             }
         }
-        dialogInputNameBuilder.setPositiveButton("Save", inputNameDialogClickListener)
-        dialogInputNameBuilder.setNeutralButton("Cancel", inputNameDialogClickListener)
+        dialogInputNameBuilder.setPositiveButton(R.string.save, inputNameDialogClickListener)
+        dialogInputNameBuilder.setNeutralButton(R.string.cancel, inputNameDialogClickListener)
         dialogInputNameBuilder.show()
     }
 }

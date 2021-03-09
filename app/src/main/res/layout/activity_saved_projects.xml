@@ -26,7 +26,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Saved projects"
+                android:text="@string/saved_projects"
                 android:layout_gravity="center_horizontal"
                 android:textSize="20sp"/>
 
@@ -41,7 +41,7 @@
             android:id="@+id/savedProjectsCreateButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create new project"
+            android:text="@string/create_new_project"
             android:layout_gravity="center"/>
 
     </LinearLayout>

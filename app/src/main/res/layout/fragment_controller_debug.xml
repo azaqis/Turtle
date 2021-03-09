@@ -29,7 +29,7 @@
             android:id="@+id/buttonClearList"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Clear list"
+            android:text="@string/clear_list"
             android:layout_weight="2"
             android:textColor="@color/PrimaryLight"/>
 

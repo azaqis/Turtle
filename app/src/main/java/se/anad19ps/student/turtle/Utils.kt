@@ -1,10 +1,9 @@
 package se.anad19ps.student.turtle
 
-import android.R
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.webkit.WebViewFragment
+import android.provider.Settings.Global.getString
 import android.widget.Toast
 
 
@@ -17,9 +16,9 @@ class Utils() {
         //This function sends strings to the module which in turn sends it into the robot through UART
         fun bluetoothSendString(string : String, uicontext: Context) {
             if(SelectBluetoothDeviceActivity.bluetoothConnectionThreadActive)
-                SelectBluetoothDeviceActivity.clientThread.write(string)
+                SelectBluetoothDeviceActivity.clientThread.writeToConnectedDevice(string)
             else
-                showUpdatedToast("You are not connected to a bluetooth device", uicontext)
+                showUpdatedToast(uicontext.getString(R.string.not_connected_to_bt_device_warning), uicontext)
         }
 
         fun isBluetoothConnectionThreadActive() : Boolean{

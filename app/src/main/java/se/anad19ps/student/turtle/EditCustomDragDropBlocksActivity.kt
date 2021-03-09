@@ -3,7 +3,10 @@ package se.anad19ps.student.turtle
 import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_edit_custom_dragdropblock.*
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
@@ -29,13 +32,18 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
 
             if(dragDropBlock != null){
                 editTextDragDropBlockName.setText(dragDropBlock!!.text)
-                //PARAMETER ENABLED OR NOT SHOULD BE SET HERE
+                checkBox.isChecked = dragDropBlock!!.parameterEnabled
                 editTextDragDropBlockCommand.setText(dragDropBlock!!.command)
             }
             else{
                 //If dragDropBlock is null here the dragDropBlock does not exists. Therefore it is not possible to edit it and therefore finishing this activity. This should not be able to happen
                 finish()
             }
+        }
+        else if(savedInstanceState != null){
+            editTextDragDropBlockName.setText(savedInstanceState.getString("inputName"))
+            checkBox.isChecked = savedInstanceState.getBoolean("parameterEnabled")
+            editTextDragDropBlockCommand.setText(savedInstanceState.getString("inputCommand"))
         }
 
         val buttonUpdate = findViewById<Button>(R.id.editCustomCommandsButtonUpdate)
@@ -50,17 +58,18 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                 val parameter = dragDropBlock!!.parameter
                 val displayParameter = dragDropBlock!!.displayParameter
                 val type = dragDropBlock!!.type
+                val parameterEnabled = checkBox.isChecked
 
                 if(text.isNotBlank() && command.isNotBlank()){
-                    val updatedDragDropBlock = DragDropBlock(dragImage, directionImage, text, command, parameter, displayParameter, type)
+                    val updatedDragDropBlock = DragDropBlock(dragImage, directionImage, text, command, parameter, displayParameter, type, parameterEnabled)
 
                     if (saveCustomDragDropBlockManager.editDragDropBlock(dragDropBlock!!.text, updatedDragDropBlock)){
                         finish()
                     }
                     else {
                        val dialogNameExists = android.app.AlertDialog.Builder(this)
-                        dialogNameExists.setTitle("Name already exists")
-                        dialogNameExists.setMessage("Please choose a unique name")
+                        dialogNameExists.setTitle(R.string.name_already_exists)
+                        dialogNameExists.setMessage(R.string.please_choose_a_unique_name)
                         //Might delete this click listener
                         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                            when (which) {
@@ -68,14 +77,14 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    dialogNameExists.setNeutralButton("OK", dialogClickListener)
+                    dialogNameExists.setNeutralButton(R.string.okay, dialogClickListener)
                     dialogNameExists.create().show()
                     }
                 }
                 else{
                     val dialogNameIsBlank = android.app.AlertDialog.Builder(this)
-                    dialogNameIsBlank.setTitle("Name or command field is empty")
-                    dialogNameIsBlank.setMessage("Please make sure that neither name or command field is empty or only containing spaces!")
+                    dialogNameIsBlank.setTitle(R.string.name_or_command_field_is_empty)
+                    dialogNameIsBlank.setMessage(R.string.name_or_command_field_is_empty_warning)
                     //Might delete this click listener
                     val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                         when (which) {
@@ -83,7 +92,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    dialogNameIsBlank.setNeutralButton("OK", dialogClickListener)
+                    dialogNameIsBlank.setNeutralButton(R.string.okay, dialogClickListener)
                     dialogNameIsBlank.create().show()
                 }
             }
@@ -94,8 +103,8 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         buttonDelete.setBackgroundColor(getResources().getColor(R.color.PrimaryComplement))
         buttonDelete.setOnClickListener{
             val dialogConfirmDelete = android.app.AlertDialog.Builder(this)
-            dialogConfirmDelete.setTitle("Confirm deletion")
-            dialogConfirmDelete.setMessage("Are you sure you want to delete this custom command?")
+            dialogConfirmDelete.setTitle(R.string.confirm_delete)
+            dialogConfirmDelete.setMessage(R.string.confirm_delete_custom_command_warning)
             val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
@@ -106,8 +115,8 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                     }
                 }
             }
-            dialogConfirmDelete.setPositiveButton("Yes", dialogClickListener)
-            dialogConfirmDelete.setNegativeButton("No", dialogClickListener)
+            dialogConfirmDelete.setPositiveButton(R.string.yes, dialogClickListener)
+            dialogConfirmDelete.setNegativeButton(R.string.no, dialogClickListener)
             dialogConfirmDelete.create().show()
         }
 
@@ -116,5 +125,16 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         buttonCancel.setOnClickListener{
             finish()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        val inputName : String = editTextDragDropBlockName.text.toString()
+        val parameterEnabled : Boolean = checkBox.isChecked
+        val inputCommand : String = editTextDragDropBlockCommand.text.toString()
+
+        outState.putString("inputName", inputName)
+        outState.putString("parameterEnabled", parameterEnabled.toString())
+        outState.putString("inputCommand", inputCommand)
     }
 }
