@@ -33,16 +33,17 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/card_text"
-            android:src="@drawable/ic_drag_dots"
             android:textSize="16sp"
             android:text="PLACEHOLDER TEXT"
             android:textStyle="bold"
+            app:layout_constrainedWidth="true"
             app:layout_constraintStart_toEndOf="@id/card_image_drag_dots"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/card_image_direction"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/programming_card_button"

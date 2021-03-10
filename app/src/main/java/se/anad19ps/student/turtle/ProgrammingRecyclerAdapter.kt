@@ -99,12 +99,12 @@ class ProgrammingRecyclerAdapter(
 
         override fun onClick(v: View?) {
             val position = adapterPosition
-            /*itemView is the view that belongs to this specific instance of InnerViewHolder class. Did not work by just writing 'v == view'
-            * Unclear why*/
+            /*When an item is clicked*/
             if (position != RecyclerView.NO_POSITION && v == itemView) {
                 clickListener.onItemClick(position, v)
             }
-            else if(position != RecyclerView.NO_POSITION && v == firstButton){
+            /*If we pressed a button and parameter is enabled*/
+            else if(position != RecyclerView.NO_POSITION && v == firstButton && itemList[adapterPosition].parameterEnabled){
                 clickListener.onParameterButtonClicked(position)
             }
         }

@@ -42,7 +42,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private val newProjectStandardName = "New Project"
 
     private var markForDeletion = false //Marks if a click should add to deleteList
-   // private var deleteList = HashMap<DragDropBlock, View>()    //Also holds View for individual recycler item to reset colors
     private var deleteList = ArrayList<DragDropBlock>()
 
     private lateinit var adapter: ProgrammingRecyclerAdapter
@@ -133,7 +132,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     /*Save necessary states and variables for run time configuration changes*/
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val saveStates = ProgrammingSavedState(itemList, deleteList,  itemIdCounter, alertParameterPosition)
+        val saveStates = ProgrammingSavedState(itemList, deleteList, itemIdCounter, alertParameterPosition)
         outState.putParcelable("savedStateObject", saveStates)
     }
 
