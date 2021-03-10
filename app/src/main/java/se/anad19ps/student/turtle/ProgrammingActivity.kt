@@ -609,7 +609,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     block.idNumber =
                         itemIdCounter++    //Increment after adding id. No worries about itemIdCounter overflow.
                     itemList.add(block)
-                    adapter.notifyDataSetChanged()
+                    adapter.notifyItemInserted(itemList.size)
+                    //adapter.notifyDataSetChanged()
                     programming_spinner_driving.setSelection(//Always make title block stay on top
                         0,
                         false
