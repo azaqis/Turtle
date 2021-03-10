@@ -34,6 +34,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         RUNNING,
         PAUSE
     }
+
+    private var alertParameterPosition: Int = -1
+
+
     //Should this be hardcoded?
     private val newProjectStandardName = "New Project"
 
@@ -112,10 +116,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 itemList = savedStates.itemList
                 itemIdCounter = savedStates.itemIdCounter
                 deleteList = savedStates.deleteList
-
-                /*savedStates.deleteList.forEachIndexed{index, block ->
-                    //deleteList.put(block, savedStates.deleteListViews[index])
-                }*/
+                alertParameterPosition = savedStates.positionAlertDialog
+                if(alertParameterPosition != -1)
+                    changeItemParameterDialog(alertParameterPosition)
             }
 
         }
@@ -130,10 +133,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     /*Save necessary states and variables for run time configuration changes*/
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val saveStates = ProgrammingSavedState(itemList, deleteList,  itemIdCounter)
+        val saveStates = ProgrammingSavedState(itemList, deleteList,  itemIdCounter, alertParameterPosition)
         outState.putParcelable("savedStateObject", saveStates)
-        /*outState.putParcelableArrayList("itemList", itemList)
-        outState.putLong("itemIdCounter", itemIdCounter)*/
     }
 
     override fun onStart() {
@@ -464,47 +465,58 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         return list
     }
 
+    /*Creating a list containing all drive blocks for the drive spinner*/
+    private fun createSpinnerDrivingBlocks(): ArrayList<DragDropBlock>{
+        val list = ArrayList<DragDropBlock>()
+
+        list.add(
+            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_arrow_up, "Drive forward", "Null", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, true, 0))
+
+        list.add(
+            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_arrow_right, "Turn right", "Null", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, true, 0))
+
+        list.add(
+            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_arrow_down, "Reverse", "Null", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, true, 0))
+
+        list.add(
+            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_arrow_left, "Turn left", "Null", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, true, 0))
+
+        list.add(
+            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_stop, "Stop", "Null", 0.0,
+                0.0, DragDropBlock.e_type.DRIVE, false, 0))
+
+        list.add(
+            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_gear, "Gear up", "Null", 0.0,
+                0.0, DragDropBlock.e_type.DRIVE, false, 0))
+
+        list.add(
+            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_gear, "Gear down", "Null", 0.0,
+                0.0, DragDropBlock.e_type.DRIVE, false, 0))
+
+        list.add(
+            0,   //Unused object. Shown only in title. Cannot be added to itemList
+            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_drive, "Driving", "Null", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, false, 0))
+        return list
+    }
 
     /*May want to limit number of chars in each spinner item. Affects the size of the spinners*/
     private fun setupSpinners() {
-        driveBlocksSpinnerList = populateList(5, DragDropBlock.e_type.DRIVE)
+        driveBlocksSpinnerList = createSpinnerDrivingBlocks()
         spinnerDriveAdapter = ProgrammingSpinnerAdapter(driveBlocksSpinnerList, this)
-        //spinnerDriveAdapter.setDropDownViewResource(R.layout.programming_spinner_driving_dropdown_layout)
-        driveBlocksSpinnerList.add(
-            0,   //Unused object. Shown only in title. Cannot be added to itemList
-            DragDropBlock(
-                R.drawable.ic_drag_dots,
-                R.drawable.ic_drive,
-                "Driving",
-                "Null",
-                1.0,
-                1.0,
-                DragDropBlock.e_type.DRIVE,
-                false,
-                0
-            )
-        )
         programming_spinner_driving.adapter = spinnerDriveAdapter
         programming_spinner_driving.setSelection(0, false)
 
 
         modulesBlocksSpinnerList = populateList(5, DragDropBlock.e_type.MODULE)
         spinnerModulesAdapter = ProgrammingSpinnerAdapter(modulesBlocksSpinnerList, this)
-        //spinnerModulesAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
-        modulesBlocksSpinnerList.add(
-            0,
-            DragDropBlock(
-                R.drawable.ic_drag_dots,
-                R.drawable.ic_modules,
-                "Modules",
-                "Null",
-                1.0,
-                1.0,
-                DragDropBlock.e_type.MODULE,
-                false,
-                0
-            )
-        )
+        modulesBlocksSpinnerList.add(0, DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_modules, "Modules", "Null",
+            1.0, 1.0, DragDropBlock.e_type.MODULE, false, 0))
+
         programming_spinner_modules.adapter = spinnerModulesAdapter
         programming_spinner_modules.setSelection(0, false)
 
@@ -513,20 +525,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             SaveCustomDragDropBlockManager(this).getArrayWithCustomDragDropBlocks()
         spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinnerList, this)
         spinnerCustomAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
-        customBlocksSpinnerList.add(
-            0,
-            DragDropBlock(
-                R.drawable.ic_drag_dots,
-                R.drawable.ic_custom,
-                "Custom",
-                "Null",
-                1.0,
-                1.0,
-                DragDropBlock.e_type.CUSTOM,
-                false,
-                0
-            )
-        )
+        customBlocksSpinnerList.add(0, DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_custom, "Custom", "Null", 1.0,
+                1.0, DragDropBlock.e_type.CUSTOM, false, 0))
+
         programming_spinner_custom.adapter = spinnerCustomAdapter
         programming_spinner_custom.setSelection(0, false)
 
@@ -672,6 +673,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     /*Shows an input dialog for changing an items parameter.*/
     private fun changeItemParameterDialog(position: Int) {
+        alertParameterPosition = position
+
         val builder = AlertDialog.Builder(this).create()
         val dialogLayout = LayoutInflater.from(this).inflate(R.layout.input_dialog_layout, null)
         val editText = dialogLayout.findViewById<EditText>(R.id.input_dialog_text_in)
@@ -681,9 +684,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         builder.setTitle(getString(R.string.change_parameter))
         builder.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.okay)) { dialog, which ->
             updateItemValue(position, editText.text.toString().toDouble())
+            alertParameterPosition = -1
         }
         builder.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel)) { dialog, which ->
-            //Nothing
+            alertParameterPosition = -1
         }
         builder.setView(dialogLayout)
         builder.show()
