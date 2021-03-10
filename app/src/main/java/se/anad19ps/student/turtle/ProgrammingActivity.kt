@@ -76,6 +76,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private lateinit var projectName: String
     private lateinit var customCommandManager: SaveCustomDragDropBlockManager
 
+    /*Start coroutine from button click. Traverse list*/
+    private var job: Job? = null
+
+    private var traversingList : Boolean = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,6 +134,21 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 if (alertParameterPosition != -1)
                     changeItemParameterDialog(alertParameterPosition)
 
+                if (savedInstanceState.getString("traversingList") == "true"){
+                    job = GlobalScope.launch(Dispatchers.Main) {
+                        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+                            state = RunState.RUNNING
+                            programming_play_button.setImageResource(R.drawable.ic_pause)
+                            traverseList()
+                        } else {
+                            Utils.UtilsObject.showUpdatedToast(
+                                "You are not connected to a bluetooth device",
+                                baseContext
+                            )
+                        }
+                    }
+                }
+
                 openDialog = savedInstanceState.getString("openDialog")?.let { OpenDialog.valueOf(it) }!!
 
                 when(openDialog){
@@ -154,7 +174,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         val saveStates =
             ProgrammingSavedState(itemList, selectedItemsList, itemIdCounter, alertParameterPosition)
         outState.putParcelable("savedStateObject", saveStates)
-
+        outState.putString("traversingList", traversingList.toString())
         outState.putString("openDialog", openDialog.toString())
     }
 
@@ -164,14 +184,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     private fun setupButtons() {
-        /*Start coroutine from button click. Traverse list*/
-        var job: Job? = null
-
         /*Play button*/
         programming_play_button.setOnClickListener {
             if (state == RunState.IDLE) {
                 job = GlobalScope.launch(Dispatchers.Main) {
-                    if (!Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+                    if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
                         state = RunState.RUNNING
                         programming_play_button.setImageResource(R.drawable.ic_pause)
                         traverseList()
@@ -773,7 +790,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private suspend fun traverseList() {
 
-        if (!Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
             val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
             val tenthOfSecondInMS: Long = 100
             val secondInMS: Long = 1000
@@ -786,6 +803,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 var parameter: Int = item.displayParameter.toInt()
 
                 if (item.parameterEnabled) {
+                    traversingList = true
                     while (item.displayParameter > 0) {
                         when (state) {  //State machine
                             RunState.RUNNING -> {
@@ -848,6 +866,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             delay(secondInMS * 3)
 
             resetListTraverse()
+            traversingList = false
         }
     }
 
@@ -914,5 +933,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogNameExistsWarning.setPositiveButton(R.string.yes, dialogClickListener)
         dialogNameExistsWarning.setNegativeButton(R.string.no, dialogClickListener)
         dialogNameExistsWarning.create().show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(job != null){
+            job!!.cancel()
+        }
     }
 }
