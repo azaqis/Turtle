@@ -17,7 +17,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         private lateinit var saveCustomDragDropBlockManager : SaveCustomDragDropBlockManager
         private var dragDropBlock : DragDropBlock? = null
 
-        enum class OpenDialog{
+        private enum class OpenDialog{
             DIALOG_NAME_EXISTS, DIALOG_NAME_IS_BLANK, NONE
         }
 
