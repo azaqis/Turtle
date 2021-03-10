@@ -4,8 +4,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Parcelable
-import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -14,7 +12,6 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -27,7 +24,6 @@ import kotlinx.android.synthetic.main.input_text_dialog.view.*
 import kotlinx.android.synthetic.main.top_bar.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Semaphore
-import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -42,7 +38,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private val newProjectStandardName = "New Project"
 
     private var markForDeletion = false //Marks if a click should add to deleteList
-    private var deleteList = HashMap<DragDropBlock, View>()    //Also holds View for individual recycler item to reset colors
+   // private var deleteList = HashMap<DragDropBlock, View>()    //Also holds View for individual recycler item to reset colors
+    private var deleteList = ArrayList<DragDropBlock>()
 
     private lateinit var adapter: ProgrammingRecyclerAdapter
 
@@ -51,6 +48,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private lateinit var spinnerCustomAdapter: ProgrammingSpinnerAdapter
 
     private var itemList = ArrayList<DragDropBlock>()   //List for items in RecyclerView
+    private var itemIdCounter: Long = 1  //Used to assign unique id to each dragDropBlock. 0 reserved for non added
 
     private var driveBlocksSpinnerList =
         mutableListOf<DragDropBlock>() //Lists for items in spinners
@@ -105,8 +103,21 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         /*Restore saved state if there is any. Affects runtime configuration changes*/
         if (savedInstanceState != null) {
-            itemList =
+            /*itemList =
                 savedInstanceState.getParcelableArrayList<DragDropBlock>("itemList") as ArrayList<DragDropBlock>
+            itemIdCounter = savedInstanceState.getLong("itemIdCounter")*/
+            val savedStates = savedInstanceState.getParcelable<ProgrammingSavedState>("savedStateObject")
+
+            if(savedStates != null) {
+                itemList = savedStates.itemList
+                itemIdCounter = savedStates.itemIdCounter
+                deleteList = savedStates.deleteList
+
+                /*savedStates.deleteList.forEachIndexed{index, block ->
+                    //deleteList.put(block, savedStates.deleteListViews[index])
+                }*/
+            }
+
         }
 
         adapter = ProgrammingRecyclerAdapter(itemList, this)
@@ -119,7 +130,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     /*Save necessary states and variables for run time configuration changes*/
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelableArrayList("itemList", itemList)
+        val saveStates = ProgrammingSavedState(itemList, deleteList,  itemIdCounter)
+        outState.putParcelable("savedStateObject", saveStates)
+        /*outState.putParcelableArrayList("itemList", itemList)
+        outState.putLong("itemIdCounter", itemIdCounter)*/
     }
 
     override fun onStart() {
@@ -172,7 +186,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 indexes.reverse()   //So largest index is first. This way we don't need to change index after every removal
 
                 for (i in 0 until indexes.size) {
-                    deleteList[itemList[indexes[i]]]?.card_drag_drop?.setCardBackgroundColor(Color.WHITE)   //Reset holders to standard color
+                    //deleteList[itemList[indexes[i]]]?.card_drag_drop?.setCardBackgroundColor(Color.WHITE)   //Reset holders to standard color
                     itemList.removeAt(indexes[i])
                     adapter.notifyItemRemoved(indexes[i])
                 }
@@ -438,7 +452,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 1.0,
                 1.0,
                 type,
-                true
+                true,
+                0
             )
             list.add(item)
         }
@@ -461,7 +476,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 1.0,
                 1.0,
                 DragDropBlock.e_type.DRIVE,
-                false
+                false,
+                0
             )
         )
         programming_spinner_driving.adapter = spinnerDriveAdapter
@@ -481,7 +497,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 1.0,
                 1.0,
                 DragDropBlock.e_type.MODULE,
-                false
+                false,
+                0
             )
         )
         programming_spinner_modules.adapter = spinnerModulesAdapter
@@ -502,7 +519,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 1.0,
                 1.0,
                 DragDropBlock.e_type.CUSTOM,
-                false
+                false,
+                0
             )
         )
         programming_spinner_custom.adapter = spinnerCustomAdapter
@@ -520,6 +538,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             ) {
                 if (position != 0) { //We shouldn't add the title block
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
+                    block.idNumber = itemIdCounter++    //Increment after adding id. No worries about itemIdCounter overflow.
                     itemList.add(block)
                     adapter.notifyDataSetChanged()
                     programming_spinner_driving.setSelection(//Always make title block stay on top
@@ -608,16 +627,22 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         if (markForDeletion) {
             /*If item is already added to deleteList we want to deselect it*/
             if (deleteList.contains(itemList[position])) {
-                holder.card_drag_drop.setCardBackgroundColor(Color.WHITE)
-                holder.card_image_drag_dots.setImageResource(R.drawable.ic_drag_dots)
+                itemList[position].dragImage = R.drawable.ic_drag_dots
                 deleteList.remove(itemList[position])
+                adapter.notifyItemChanged(position)
+               /* holder.card_drag_drop.setCardBackgroundColor(Color.WHITE)
+                holder.card_image_drag_dots.setImageResource(R.drawable.ic_drag_dots)
+                deleteList.remove(itemList[position])*/
                 if (deleteList.isEmpty()) {
                     markForDeletion = false
                 }
             } else {
-                holder.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
+                itemList[position].dragImage = R.drawable.ic_baseline_delete_24_red
+                deleteList.add(itemList[position])
+                adapter.notifyItemChanged(position)
+                /*holder.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
                 holder.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
-                deleteList[itemList[position]] = holder
+                deleteList[itemList[position]] = holder*/
             }
         }
     }
@@ -630,10 +655,13 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     override fun onLongClick(position: Int, view: View) {
         /*No need to activate if already activated*/
         if (!markForDeletion) {
-            view.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
+            itemList[position].dragImage = R.drawable.ic_baseline_delete_24_red
+            deleteList.add(itemList[position])
+            adapter.notifyItemChanged(position)
+            /*view.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
             view.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
             deleteList[itemList[position]] =
-                view   //Map (DragDropBlock at position) with accompanying recycler item view
+                view   //Map (DragDropBlock at position) with accompanying recycler item view*/
             markForDeletion = true
         }
     }
@@ -709,7 +737,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                             adapter.notifyDataSetChanged()
                         }
                         RunState.PAUSE -> {
-                            sem.acquire()
+                            sem.acquire() //Button pause takes the semaphore. This coroutine will wait for it
                         }
                         else -> {
                             state = RunState.IDLE

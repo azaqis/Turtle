@@ -7,14 +7,15 @@ import java.io.Serializable
 
 /*Holds data. Make sure to add data for parameter time and command*/
 data class DragDropBlock(
-    val dragImage: Int,
+    var dragImage: Int,
     val directionImage: Int,
-    val text: String,
+    var text: String,
     val command: String,
     var parameter: Double,
     var displayParameter: Double,
     val type: e_type,
-    val parameterEnabled : Boolean
+    val parameterEnabled : Boolean,
+    var idNumber : Long
 ) : Parcelable, Serializable{
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
@@ -24,7 +25,8 @@ data class DragDropBlock(
         parcel.readDouble(),
         parcel.readDouble(),
         parcel.readSerializable() as e_type,
-		parcel.readString()!!.toBoolean()
+		parcel.readString()!!.toBoolean(),
+        parcel.readLong()
     )
     enum class e_type{
         DRIVE,
@@ -40,6 +42,8 @@ data class DragDropBlock(
         parcel.writeDouble(parameter)
         parcel.writeDouble(displayParameter)
         parcel.writeSerializable(type)
+        parcel.writeString(parameterEnabled.toString()) //MAY CAUSE PROBLEMS DUE TO BOOLEAN TYPE!!!!!
+        parcel.writeLong(idNumber)
     }
 
     override fun describeContents(): Int {

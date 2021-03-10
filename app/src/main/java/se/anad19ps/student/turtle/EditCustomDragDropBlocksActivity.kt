@@ -59,9 +59,10 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                 val displayParameter = dragDropBlock!!.displayParameter
                 val type = dragDropBlock!!.type
                 val parameterEnabled = checkBox.isChecked
+                val idNumber = dragDropBlock!!.idNumber
 
                 if(text.isNotBlank() && command.isNotBlank()){
-                    val updatedDragDropBlock = DragDropBlock(dragImage, directionImage, text, command, parameter, displayParameter, type, parameterEnabled)
+                    val updatedDragDropBlock = DragDropBlock(dragImage, directionImage, text, command, parameter, displayParameter, type, parameterEnabled, idNumber)
 
                     if (saveCustomDragDropBlockManager.editDragDropBlock(dragDropBlock!!.text, updatedDragDropBlock)){
                         finish()

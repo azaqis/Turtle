@@ -169,6 +169,7 @@ class SaveFilesManager(con : Context) {
         var textReadFromFile: String = ""
         var type: DragDropBlock.e_type = DragDropBlock.e_type.CUSTOM
         var parameterEnabled: Boolean = false
+        var idNumber: Long = 0
 
         //Loop through every line in the file. Reading in the same order as we are writing to file in saveProjectToFile.
         // We know that a DragDropBlock contains 8 attributes. Therefore we know on the 8th iteration that we have read a
@@ -184,6 +185,7 @@ class SaveFilesManager(con : Context) {
                     5 -> textReadFromFile = it
                     6 -> type = DragDropBlock.e_type.valueOf(it.toString())
                     7 -> parameterEnabled = it.toBoolean()
+                    8 -> idNumber = it.toLong()
                 }
                 if (count < 7) {
                     count++
@@ -199,7 +201,8 @@ class SaveFilesManager(con : Context) {
                             parameterReadFromFile,
                             displayParameterReadFromFile,
                             type,
-                            parameterEnabled
+                            parameterEnabled,
+                            idNumber
                         )
                     )
                 }

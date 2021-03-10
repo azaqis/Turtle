@@ -34,7 +34,7 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
             val command = editTextDragDropBlockCommand.text.toString()
 
             if(name.isNotBlank() && command.isNotBlank()){
-                var dragDropBlock = DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_custom, name, command, 1.0, 1.0, DragDropBlock.e_type.CUSTOM,parameterEnabled)
+                var dragDropBlock = DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_custom, name, command, 1.0, 1.0, DragDropBlock.e_type.CUSTOM,parameterEnabled, 0)
                 var saveCustomDragDropBlockManager = SaveCustomDragDropBlockManager(this)
 
                 if(saveCustomDragDropBlockManager.saveDragDropBlock(dragDropBlock, false)){

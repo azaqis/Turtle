@@ -56,7 +56,8 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity(){
                 1.0,
                 1.0,
                 DragDropBlock.e_type.CUSTOM,
-                true
+                true,
+                0
             )
             Log.e("CUSTOM_LOG", "TEST CODE ADDED A NEW DRAGDROPBLOCK WITH NAME: " + "test" + 1);
             customDragDropBlockManager.saveDragDropBlock(item, false)
