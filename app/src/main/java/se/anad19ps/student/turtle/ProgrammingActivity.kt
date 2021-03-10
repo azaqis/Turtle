@@ -804,6 +804,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                     )
                                         .toDouble()
 
+                            item.displayParameter =
+                                String.format(Locale.ENGLISH, "%.1f", item.displayParameter - 0.1)
+                                    .toDouble()
 
 
                                 adapter.notifyDataSetChanged()
