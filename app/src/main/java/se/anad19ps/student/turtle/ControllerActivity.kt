@@ -9,9 +9,7 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.fragment_controller_debug.*
 import kotlinx.android.synthetic.main.top_bar.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, JoystickView.JoystickListener {
@@ -19,6 +17,8 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
     companion object{
         private lateinit var bottomFragment : Fragment
         private lateinit var topFragment : Fragment
+        private var coroutine : Job? = null
+        private var coroutineActive : Boolean = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,23 +107,34 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
     override fun onJoystickMoved(xPercentageMoved: Int, yPercentageMoved: Int) {
         val tenthOfSecondInMS : Long = 100;
-        GlobalScope.launch {
-            var xMovedString : String = xPercentageMoved.toString()
-            var yMovedString : String = yPercentageMoved.toString()
 
-            if(xMovedString.length == 1)
-                xMovedString = "00$xMovedString"
-            else if(xMovedString.length == 2)
-                xMovedString = "0$xMovedString"
+        if(!coroutineActive){
+            coroutine = GlobalScope.launch {
+                coroutineActive = true
 
-            if(yMovedString.length == 1)
-                yMovedString = "00$yMovedString"
-            else if(yMovedString.length == 2)
-                yMovedString = "0$yMovedString"
+                var xMovedString : String = xPercentageMoved.toString()
+                var yMovedString : String = yPercentageMoved.toString()
 
-            Utils.UtilsObject.bluetoothSendString("9$xMovedString$yMovedString", baseContext)
-            delay(tenthOfSecondInMS)
-            Log.d("TAG", "9,$xMovedString,$yMovedString")
+                if(xMovedString.length == 1)
+                    xMovedString = "00$xMovedString"
+                else if(xMovedString.length == 2)
+                    xMovedString = "0$xMovedString"
+
+                if(yMovedString.length == 1)
+                    yMovedString = "00$yMovedString"
+                else if(yMovedString.length == 2)
+                    yMovedString = "0$yMovedString"
+
+                Utils.UtilsObject.bluetoothSendString("9$xMovedString$yMovedString", baseContext)
+                delay(tenthOfSecondInMS)
+                Log.d("TAG", "9,$xMovedString,$yMovedString")
+
+                coroutineActive = false
+            }
+        }
+
+        else{
+            Log.d("TAG", "In else from joystickmoved")
         }
     }
 }

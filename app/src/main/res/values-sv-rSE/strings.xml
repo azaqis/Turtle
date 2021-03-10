@@ -68,7 +68,7 @@
     <string name="bluetooth_is_not_enabled_warning">Bluetooth är inte aktiverat, var snäll och försök igen</string>
     <string name="no_devices_found">Inga enheter hittade</string>
     <string name="trying_to_bond_to_device">Försöker att förbinda med enhet</string>
-    <string name="connected_to">Ansluted till</string>
+    <string name="connected_to">Ansluten till</string>
     <string name="disconnection_requested">Avbrytning av anslutning förfrågad</string>
     <string name="disconnected">Anslutning avbruten</string>
     <string name="not_connected_to_bt_device_warning">Du är inte ansluten till en bluetooth-enhet</string>

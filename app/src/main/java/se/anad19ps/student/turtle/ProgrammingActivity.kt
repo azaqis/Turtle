@@ -149,9 +149,14 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_play_button.setOnClickListener {
             if (state == RunState.IDLE) {
                 job = GlobalScope.launch(Dispatchers.Main) {
-                    state = RunState.RUNNING
-                    programming_play_button.setImageResource(R.drawable.ic_pause)
-                    traverseList()
+                    if(Utils.UtilsObject.isBluetoothConnectionThreadActive()){
+                        state = RunState.RUNNING
+                        programming_play_button.setImageResource(R.drawable.ic_pause)
+                        traverseList()
+                    }
+                    else{
+                        Utils.UtilsObject.showUpdatedToast("You are not connected to a bluetooth device", baseContext)
+                    }
                 }
             } else if (state == RunState.PAUSE) {
                 if (sem.availablePermits == 0) {
@@ -194,8 +199,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 deleteList.clear()
                 markForDeletion = false //So clicks no longer marks for deletion
             }
-            /* Causes a bug, don't know why. Code commented out should only run if no DragDropBlock is selected, but for some reason this code always runs when clicking trashcan even if items is selected.
-            else{
+            /* Should maybe make sure that marking blocks works fine before adding the code below. Code below deletes the hole project if nothing is selected
+            else if(markForDeletion == false){
                 if(projectName != newProjectStandardName || itemList.isNotEmpty()){
                     deleteProject()
                 }
@@ -204,7 +209,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 }
 
             }
-
              */
         }
 
@@ -746,13 +750,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 }
             }
 
+            //Stop the robot
+            Utils.UtilsObject.bluetoothSendString("5", this.baseContext)
             Utils.UtilsObject.showUpdatedToast(getString(R.string.project_has_run_through_completely), this)
             delay(secondInMS * 3)
 
             resetListTraverse()
-        }
-        else{
-            Utils.UtilsObject.showUpdatedToast("You are not connected to a bluetooth device", this)
         }
     }
 
