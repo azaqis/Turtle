@@ -9,5 +9,6 @@ import kotlinx.android.parcel.Parcelize
 data class ProgrammingSavedState(
     val itemList: ArrayList<DragDropBlock>,
     val deleteList: ArrayList<DragDropBlock>,
-    val itemIdCounter: Long
+    val itemIdCounter: Long,
+    val positionAlertDialog: Int
 ) : Parcelable

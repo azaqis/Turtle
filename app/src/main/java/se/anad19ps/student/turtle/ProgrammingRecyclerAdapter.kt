@@ -46,20 +46,34 @@ class ProgrammingRecyclerAdapter(
         holder: ProgrammingRecyclerAdapter.InnerViewHolder,
         position: Int
     ) {
+        val parameterEnabled = itemList[position].parameterEnabled
+
         /*Set graphics for element to match whatever data is stored in dragDropBlock*/
         holder.directionImage.setImageResource(itemList[position].directionImage)
         holder.dragImage.setImageResource(itemList[position].dragImage)
         holder.text.text = itemList[position].text
-        holder.firstButton.text = itemList[position].displayParameter.toString()
+
+        if(parameterEnabled)
+            holder.firstButton.text = itemList[position].displayParameter.toString()
+
 
         /*Choose appropriate graphics depending on type of block*/
         when(itemList[position].type){
             DragDropBlock.e_type.DRIVE ->
-                holder.firstButton.setBackgroundResource(R.drawable.programming_card_parameter_button_drive)
+                if(parameterEnabled)
+                    holder.firstButton.setBackgroundResource(R.drawable.programming_card_parameter_button_drive)
+                else
+                    holder.firstButton.setBackgroundResource(R.drawable.programming_card_parameter_button_drive_filled)
             DragDropBlock.e_type.MODULE ->
-                holder.firstButton.setBackgroundResource(R.drawable.programming_card_parameter_button_module)
+                if(parameterEnabled)
+                    holder.firstButton.setBackgroundResource(R.drawable.programming_card_parameter_button_module)
+                else
+                    holder.firstButton.setBackgroundResource(R.drawable.programming_card_parameter_button_module_filled)
             DragDropBlock.e_type.CUSTOM ->
-                holder.firstButton.setBackgroundResource(R.drawable.programming_card_parameter_button_custom)
+                if(parameterEnabled)
+                    holder.firstButton.setBackgroundResource(R.drawable.programming_card_parameter_button_custom)
+                else
+                    holder.firstButton.setBackgroundResource(R.drawable.programming_card_parameter_button_custom_filled)
         }
     }
 
@@ -85,12 +99,12 @@ class ProgrammingRecyclerAdapter(
 
         override fun onClick(v: View?) {
             val position = adapterPosition
-            /*itemView is the view that belongs to this specific instance of InnerViewHolder class. Did not work by just writing 'v == view'
-            * Unclear why*/
+            /*When an item is clicked*/
             if (position != RecyclerView.NO_POSITION && v == itemView) {
                 clickListener.onItemClick(position, v)
             }
-            else if(position != RecyclerView.NO_POSITION && v == firstButton){
+            /*If we pressed a button and parameter is enabled*/
+            else if(position != RecyclerView.NO_POSITION && v == firstButton && itemList[adapterPosition].parameterEnabled){
                 clickListener.onParameterButtonClicked(position)
             }
         }

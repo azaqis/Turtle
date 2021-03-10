@@ -14,7 +14,6 @@ class BluetoothClient(device: BluetoothDevice, uiactivity: Activity) : Thread() 
     private lateinit var outputStream: OutputStream
 
     override fun run() {
-        SelectBluetoothDeviceActivity.bluetoothConnectionThreadActive = true
         try {
             Log.d("BT.Client", "Connecting")
             this.socket.connect()
@@ -29,6 +28,7 @@ class BluetoothClient(device: BluetoothDevice, uiactivity: Activity) : Thread() 
         }
 
         if (this.socket.isConnected) {
+            SelectBluetoothDeviceActivity.bluetoothConnectionThreadActive = true
             outputStream = this.socket.outputStream
             val inputStream = this.socket.inputStream
             var bytesBuffer: Int

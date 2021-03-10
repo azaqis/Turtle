@@ -30,7 +30,6 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:textAlignment="center"
             app:layout_constraintStart_toEndOf="@id/card_spinner_image"/>
 
     </LinearLayout>
