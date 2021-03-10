@@ -2,7 +2,6 @@ package se.anad19ps.student.turtle
 
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,7 +17,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_programming.*
-import kotlinx.android.synthetic.main.card_drag_drop.view.*
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.input_text_dialog.view.*
 import kotlinx.android.synthetic.main.top_bar.*
@@ -26,7 +24,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Semaphore
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.ItemClickListener {
     private enum class RunState {
@@ -41,10 +38,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     //Should this be hardcoded?
     private val newProjectStandardName = "New Project"
 
-    private var markForDeletion = false //Marks if a click should add to deleteList
+    private var blocksAreSelected = false //Marks if a click should add to deleteList
 
     // private var deleteList = HashMap<DragDropBlock, View>()    //Also holds View for individual recycler item to reset colors
-    private var deleteList = ArrayList<DragDropBlock>()
+    private var selectedItemsList = ArrayList<DragDropBlock>()
 
     private lateinit var adapter: ProgrammingRecyclerAdapter
 
@@ -118,7 +115,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             if (savedStates != null) {
                 itemList = savedStates.itemList
                 itemIdCounter = savedStates.itemIdCounter
-                deleteList = savedStates.deleteList
+                selectedItemsList = savedStates.deleteList
                 alertParameterPosition = savedStates.positionAlertDialog
                 if (alertParameterPosition != -1)
                     changeItemParameterDialog(alertParameterPosition)
@@ -137,7 +134,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val saveStates =
-            ProgrammingSavedState(itemList, deleteList, itemIdCounter, alertParameterPosition)
+            ProgrammingSavedState(itemList, selectedItemsList, itemIdCounter, alertParameterPosition)
         outState.putParcelable("savedStateObject", saveStates)
     }
 
@@ -185,38 +182,13 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         /*Delete button*/
         programming_delete_btn.setOnClickListener {
-            if (deleteList.isNotEmpty()) {
-                val indexes = ArrayList<Int>()  //To record indexed that should be deleted
-
-                itemList.forEachIndexed { index, dragDropBlock -> //Record indexes
-                    if (deleteList.contains(dragDropBlock)) {
-                        indexes.add(index)
-                    }
-                }
-
-                indexes.sort()  //Sort indexes by size
-                indexes.reverse()   //So largest index is first. This way we don't need to change index after every removal
-
-                for (i in 0 until indexes.size) {
-                    //deleteList[itemList[indexes[i]]]?.card_drag_drop?.setCardBackgroundColor(Color.WHITE)   //Reset holders to standard color
-                    itemList.removeAt(indexes[i])
-                    adapter.notifyItemRemoved(indexes[i])
-                }
-
-                deleteList.clear()
-                markForDeletion = false //So clicks no longer marks for deletion
-            }
-            /* Should maybe make sure that marking blocks works fine before adding the code below. Code below deletes the hole project if nothing is selected
-            else if(markForDeletion == false){
-                if(projectName != newProjectStandardName || itemList.isNotEmpty()){
+            if(!blocksAreSelected) {
+                if (projectName != newProjectStandardName || itemList.isNotEmpty()) {
                     deleteProject()
-                }
-                else{
+                } else {
                     Utils.UtilsObject.showUpdatedToast("Project is empty, nothing to delete", this)
                 }
-
             }
-             */
         }
 
         /*Load button*/
@@ -242,6 +214,46 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             }
 
         }
+
+        programming_delete_btn_selected.setOnClickListener{
+            if (selectedItemsList.isNotEmpty()) {
+                val indexes = ArrayList<Int>()  //To record indexed that should be deleted
+
+                itemList.forEachIndexed { index, dragDropBlock -> //Record indexes
+                    if (selectedItemsList.contains(dragDropBlock)) {
+                        indexes.add(index)
+                    }
+                }
+
+                indexes.sort()  //Sort indexes by size
+                indexes.reverse()   //So largest index is first. This way we don't need to change index after every removal
+
+                for (i in 0 until indexes.size) {
+                    //deleteList[itemList[indexes[i]]]?.card_drag_drop?.setCardBackgroundColor(Color.WHITE)   //Reset holders to standard color
+                    itemList.removeAt(indexes[i])
+                    adapter.notifyItemRemoved(indexes[i])
+                }
+
+                selectedItemsList.clear()
+                blocksAreSelected = false //So clicks no longer marks for deletion
+
+                showUnselectedButtonsHideSelectedButtons()
+            }
+        }
+
+        programming_save_btn_selected.setOnClickListener{
+            //CODE TO SAVE SELECTED BLOCK SET AS GROUPED BLOCKS
+        }
+    }
+
+    private fun showUnselectedButtonsHideSelectedButtons(){
+        programming_button_area_not_selected.visibility = View.VISIBLE
+        programming_button_area_selected.visibility = View.GONE
+    }
+
+    private fun showSelectedButtonsHideUnselectedButtons(){
+        programming_button_area_selected.visibility = View.VISIBLE
+        programming_button_area_not_selected.visibility = View.GONE
     }
 
     private fun deleteProject() {
@@ -682,21 +694,22 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     /*Used to mark item for deletion*/
     override fun onItemClick(position: Int, holder: View) {
-        if (markForDeletion) {
+        if (blocksAreSelected) {
             /*If item is already added to deleteList we want to deselect it*/
-            if (deleteList.contains(itemList[position])) {
+            if (selectedItemsList.contains(itemList[position])) {
                 itemList[position].dragImage = R.drawable.ic_drag_dots
-                deleteList.remove(itemList[position])
+                selectedItemsList.remove(itemList[position])
                 adapter.notifyItemChanged(position)
                 /* holder.card_drag_drop.setCardBackgroundColor(Color.WHITE)
                  holder.card_image_drag_dots.setImageResource(R.drawable.ic_drag_dots)
                  deleteList.remove(itemList[position])*/
-                if (deleteList.isEmpty()) {
-                    markForDeletion = false
+                if (selectedItemsList.isEmpty()) {
+                    blocksAreSelected = false
+                    showUnselectedButtonsHideSelectedButtons()
                 }
             } else {
-                itemList[position].dragImage = R.drawable.ic_baseline_delete_24_red
-                deleteList.add(itemList[position])
+                itemList[position].dragImage = R.drawable.ic_baseline_check_circle_24
+                selectedItemsList.add(itemList[position])
                 adapter.notifyItemChanged(position)
                 /*holder.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
                 holder.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
@@ -712,15 +725,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     /*LongClick activates selection for deletion*/
     override fun onLongClick(position: Int, view: View) {
         /*No need to activate if already activated*/
-        if (!markForDeletion) {
-            itemList[position].dragImage = R.drawable.ic_baseline_delete_24_red
-            deleteList.add(itemList[position])
+        if (!blocksAreSelected) {
+            showSelectedButtonsHideUnselectedButtons()
+            itemList[position].dragImage = R.drawable.ic_baseline_check_circle_24
+            selectedItemsList.add(itemList[position])
             adapter.notifyItemChanged(position)
             /*view.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
             view.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
             deleteList[itemList[position]] =
                 view   //Map (DragDropBlock at position) with accompanying recycler item view*/
-            markForDeletion = true
+            blocksAreSelected = true
         }
     }
 
@@ -804,11 +818,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                     )
                                         .toDouble()
 
-                            item.displayParameter =
-                                String.format(Locale.ENGLISH, "%.1f", item.displayParameter - 0.1)
-                                    .toDouble()
-
-
                                 adapter.notifyDataSetChanged()
                             }
                             RunState.PAUSE -> {
@@ -827,7 +836,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                 this.baseContext
                             )
                             //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
-                            delay(tenthOfSecondInMS * 5) //Will finish current 'delayTimeMillis' period before pause
+                            delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
 
                             adapter.notifyDataSetChanged()
                         }
@@ -836,33 +845,32 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         }
                         else -> {
                             state = RunState.IDLE
-                        } //So w
+                        } //So we go to a known state if something would go wrong
                     }
                 }
-
-                //Stop the robot
-                Utils.UtilsObject.bluetoothSendString("5", this.baseContext)
-                Utils.UtilsObject.showUpdatedToast(
-                    getString(R.string.project_has_run_through_completely),
-                    this
-                )
-                delay(secondInMS * 3)
-
-                resetListTraverse()
-
             }
+
+            //Stop the robot
+            Utils.UtilsObject.bluetoothSendString("5", this.baseContext)
+            Utils.UtilsObject.showUpdatedToast(
+                getString(R.string.project_has_run_through_completely),
+                this
+            )
+            delay(secondInMS * 3)
+
+            resetListTraverse()
         }
     }
 
-        /*Resetting list to its original state*/
-        private fun resetListTraverse() {
-            if (sem.availablePermits == 0) {
-                sem.release()
-            }
-            state = RunState.IDLE
-            for (i in itemList)
-                i.displayParameter = i.parameter
-            adapter.notifyDataSetChanged()
-            programming_play_button.setImageResource(R.drawable.ic_play_arrow)
+    /*Resetting list to its original state*/
+    private fun resetListTraverse() {
+        if (sem.availablePermits == 0) {
+            sem.release()
         }
+        state = RunState.IDLE
+        for (i in itemList)
+            i.displayParameter = i.parameter
+        adapter.notifyDataSetChanged()
+        programming_play_button.setImageResource(R.drawable.ic_play_arrow)
     }
+}

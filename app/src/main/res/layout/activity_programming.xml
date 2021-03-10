@@ -71,6 +71,7 @@
         android:textColor="@color/PrimaryLight"
         android:textAlignment="center"/>
 
+
     <LinearLayout
         android:id="@+id/programming_button_area"
         android:layout_width="match_parent"
@@ -81,62 +82,116 @@
         android:background="@color/PrimaryDark"
         android:gravity="center">
 
-        <ImageButton
-            android:id="@+id/programming_delete_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_baseline_delete_24"
-            android:background="@drawable/rounded_button"
-            android:backgroundTint="#FE5F55"
-            android:scaleType="fitCenter"
-            android:padding="10dp"
-            android:elevation="10dp"
-            android:layout_margin="10dp"/>
+        <LinearLayout
+            android:id="@+id/programming_button_area_not_selected"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/PrimaryDark"
+            android:gravity="center">
 
-        <ImageButton
-            android:id="@+id/programming_reset_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_restart"
-            android:background="@drawable/rounded_button"
-            android:scaleType="fitCenter"
-            android:padding="10dp"
-            android:elevation="10dp"
-            android:layout_margin="10dp"/>
+            <ImageButton
+                android:id="@+id/programming_delete_btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_baseline_delete_24"
+                android:background="@drawable/rounded_button"
+                android:backgroundTint="#FE5F55"
+                android:scaleType="fitCenter"
+                android:padding="10dp"
+                android:elevation="10dp"
+                android:layout_margin="10dp"/>
 
-        <ImageButton
-            android:id="@+id/programming_play_button"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/ic_play_arrow"
-            android:background="@drawable/rounded_button"
-            android:scaleType="fitCenter"
-            android:padding="20dp"
-            android:elevation="10dp"
-            android:layout_margin="10dp"/>
+            <ImageButton
+                android:id="@+id/programming_reset_btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_restart"
+                android:background="@drawable/rounded_button"
+                android:scaleType="fitCenter"
+                android:padding="10dp"
+                android:elevation="10dp"
+                android:layout_margin="10dp"/>
 
-        <ImageButton
-            android:id="@+id/programming_load_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_folder"
-            android:background="@drawable/rounded_button"
-            android:scaleType="fitCenter"
-            android:padding="10dp"
-            android:elevation="10dp"
-            android:layout_margin="10dp"/>
+            <ImageButton
+                android:id="@+id/programming_play_button"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_play_arrow"
+                android:background="@drawable/rounded_button"
+                android:scaleType="fitCenter"
+                android:padding="20dp"
+                android:elevation="10dp"
+                android:layout_margin="10dp"/>
 
-        <ImageButton
-            android:id="@+id/programming_save_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_baseline_save_alt_24"
-            android:background="@drawable/rounded_button"
-            android:scaleType="fitCenter"
-            android:padding="10dp"
-            android:elevation="10dp"
-            android:layout_margin="10dp"/>
+            <ImageButton
+                android:id="@+id/programming_load_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_folder"
+                android:background="@drawable/rounded_button"
+                android:scaleType="fitCenter"
+                android:padding="10dp"
+                android:elevation="10dp"
+                android:layout_margin="10dp"/>
+
+            <ImageButton
+                android:id="@+id/programming_save_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_baseline_save_alt_24"
+                android:background="@drawable/rounded_button"
+                android:scaleType="fitCenter"
+                android:padding="10dp"
+                android:elevation="10dp"
+                android:layout_margin="10dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/programming_button_area_selected"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/PrimaryDark"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/programming_delete_btn_selected"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_baseline_delete_24"
+                android:background="@drawable/rounded_button"
+                android:backgroundTint="#FE5F55"
+                android:scaleType="fitCenter"
+                android:padding="10dp"
+                android:elevation="10dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"/>
+
+            <ImageButton
+                android:id="@+id/programming_save_btn_selected"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_baseline_save_alt_24"
+                android:background="@drawable/rounded_button"
+                android:scaleType="fitCenter"
+                android:padding="10dp"
+                android:elevation="10dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"/>
+
+        </LinearLayout>
+
     </LinearLayout>
+
     <include
         layout="@layout/drawer_layout">
     </include>
