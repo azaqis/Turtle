@@ -21,7 +21,7 @@
         android:weightSum="3">
 
         <Spinner
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/programming_spinner_driving"
             android:layout_weight="1"
@@ -30,7 +30,7 @@
             android:textAlignment="center"/>
 
         <Spinner
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/programming_spinner_modules"
             android:layout_weight="1"
@@ -39,7 +39,7 @@
             android:textAlignment="center"/>
 
         <Spinner
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/programming_spinner_custom"
             android:layout_weight="1"

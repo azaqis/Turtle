@@ -42,7 +42,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private val newProjectStandardName = "New Project"
 
     private var markForDeletion = false //Marks if a click should add to deleteList
-   // private var deleteList = HashMap<DragDropBlock, View>()    //Also holds View for individual recycler item to reset colors
+
+    // private var deleteList = HashMap<DragDropBlock, View>()    //Also holds View for individual recycler item to reset colors
     private var deleteList = ArrayList<DragDropBlock>()
 
     private lateinit var adapter: ProgrammingRecyclerAdapter
@@ -52,7 +53,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private lateinit var spinnerCustomAdapter: ProgrammingSpinnerAdapter
 
     private var itemList = ArrayList<DragDropBlock>()   //List for items in RecyclerView
-    private var itemIdCounter: Long = 1  //Used to assign unique id to each dragDropBlock. 0 reserved for non added
+    private var itemIdCounter: Long =
+        1  //Used to assign unique id to each dragDropBlock. 0 reserved for non added
 
     private var driveBlocksSpinnerList =
         mutableListOf<DragDropBlock>() //Lists for items in spinners
@@ -110,14 +112,15 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             /*itemList =
                 savedInstanceState.getParcelableArrayList<DragDropBlock>("itemList") as ArrayList<DragDropBlock>
             itemIdCounter = savedInstanceState.getLong("itemIdCounter")*/
-            val savedStates = savedInstanceState.getParcelable<ProgrammingSavedState>("savedStateObject")
+            val savedStates =
+                savedInstanceState.getParcelable<ProgrammingSavedState>("savedStateObject")
 
-            if(savedStates != null) {
+            if (savedStates != null) {
                 itemList = savedStates.itemList
                 itemIdCounter = savedStates.itemIdCounter
                 deleteList = savedStates.deleteList
                 alertParameterPosition = savedStates.positionAlertDialog
-                if(alertParameterPosition != -1)
+                if (alertParameterPosition != -1)
                     changeItemParameterDialog(alertParameterPosition)
             }
 
@@ -133,7 +136,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     /*Save necessary states and variables for run time configuration changes*/
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val saveStates = ProgrammingSavedState(itemList, deleteList,  itemIdCounter, alertParameterPosition)
+        val saveStates =
+            ProgrammingSavedState(itemList, deleteList, itemIdCounter, alertParameterPosition)
         outState.putParcelable("savedStateObject", saveStates)
     }
 
@@ -150,13 +154,15 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_play_button.setOnClickListener {
             if (state == RunState.IDLE) {
                 job = GlobalScope.launch(Dispatchers.Main) {
-                    if(Utils.UtilsObject.isBluetoothConnectionThreadActive()){
+                    if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
                         state = RunState.RUNNING
                         programming_play_button.setImageResource(R.drawable.ic_pause)
                         traverseList()
-                    }
-                    else{
-                        Utils.UtilsObject.showUpdatedToast("You are not connected to a bluetooth device", baseContext)
+                    } else {
+                        Utils.UtilsObject.showUpdatedToast(
+                            "You are not connected to a bluetooth device",
+                            baseContext
+                        )
                     }
                 }
             } else if (state == RunState.PAUSE) {
@@ -228,9 +234,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_save_button.setOnClickListener {
             if (projectName != newProjectStandardName || itemList.isNotEmpty()) {
                 saveProject()
-            } 
-            else{
-                Utils.UtilsObject.showUpdatedToast(getString(R.string.save_project_when_empty), this)
+            } else {
+                Utils.UtilsObject.showUpdatedToast(
+                    getString(R.string.save_project_when_empty),
+                    this
+                )
             }
 
         }
@@ -243,7 +251,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
             when (which) {
                 DialogInterface.BUTTON_NEGATIVE -> {
-                    Utils.UtilsObject.showUpdatedToast(getString(R.string.project_not_deleted), this)
+                    Utils.UtilsObject.showUpdatedToast(
+                        getString(R.string.project_not_deleted),
+                        this
+                    )
                     Log.e("FILE_LOG", "No clicked, Project not deleted")
                 }
                 DialogInterface.BUTTON_POSITIVE -> {
@@ -320,7 +331,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                         )
                                     ) {
 
-                                        Utils.UtilsObject.showUpdatedToast(getString(R.string.overwriting) + ": $projectName", this)
+                                        Utils.UtilsObject.showUpdatedToast(
+                                            getString(R.string.overwriting) + ": $projectName",
+                                            this
+                                        )
                                         Log.e("FILE_LOG", "Overwriting: $projectName")
                                         projectName =
                                             dialogInputName.dialogTextFieldName.text.toString()
@@ -406,11 +420,17 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                             when (which) {
                                 DialogInterface.BUTTON_NEGATIVE -> {
-                                    Utils.UtilsObject.showUpdatedToast(getString(R.string.did_not_override_save_file), this)
+                                    Utils.UtilsObject.showUpdatedToast(
+                                        getString(R.string.did_not_override_save_file),
+                                        this
+                                    )
                                     saveProjectAndChangeActivity(intent)
                                 }
                                 DialogInterface.BUTTON_POSITIVE -> {
-                                    Utils.UtilsObject.showUpdatedToast(getString(R.string.overwrite_save_file), this)
+                                    Utils.UtilsObject.showUpdatedToast(
+                                        getString(R.string.overwrite_save_file),
+                                        this
+                                    )
                                     Log.e("FILE_LOG", "Overwriting: $projectName")
                                     if (saveFilesManager.saveProject(
                                             dialogInputName.dialogTextFieldName.text.toString(),
@@ -466,41 +486,65 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     /*Creating a list containing all drive blocks for the drive spinner*/
-    private fun createSpinnerDrivingBlocks(): ArrayList<DragDropBlock>{
+    private fun createSpinnerDrivingBlocks(): ArrayList<DragDropBlock> {
         val list = ArrayList<DragDropBlock>()
 
         list.add(
-            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_arrow_up, "Drive forward", "Null", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, true, 0))
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_arrow_up, "Drive forward", "2", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, true, 0
+            )
+        )
 
         list.add(
-            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_arrow_right, "Turn right", "Null", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, true, 0))
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_arrow_right, "Turn right", "6", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, true, 0
+            )
+        )
 
         list.add(
-            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_arrow_down, "Reverse", "Null", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, true, 0))
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_arrow_down, "Reverse", "8", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, true, 0
+            )
+        )
 
         list.add(
-            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_arrow_left, "Turn left", "Null", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, true, 0))
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_arrow_left, "Turn left", "4", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, true, 0
+            )
+        )
 
         list.add(
-            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_stop, "Stop", "Null", 0.0,
-                0.0, DragDropBlock.e_type.DRIVE, false, 0))
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_stop, "Stop", "5", 0.0,
+                0.0, DragDropBlock.e_type.DRIVE, false, 0
+            )
+        )
 
         list.add(
-            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_gear, "Gear up", "Null", 0.0,
-                0.0, DragDropBlock.e_type.DRIVE, false, 0))
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_gear, "Gear up", "u", 0.0,
+                0.0, DragDropBlock.e_type.DRIVE, false, 0
+            )
+        )
 
         list.add(
-            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_gear, "Gear down", "Null", 0.0,
-                0.0, DragDropBlock.e_type.DRIVE, false, 0))
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_gear, "Gear down", "d", 0.0,
+                0.0, DragDropBlock.e_type.DRIVE, false, 0
+            )
+        )
 
         list.add(
             0,   //Unused object. Shown only in title. Cannot be added to itemList
-            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_drive, "Driving", "Null", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, false, 0))
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_drive, "Driving", "Null", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, false, 0
+            )
+        )
         return list
     }
 
@@ -514,8 +558,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         modulesBlocksSpinnerList = populateList(5, DragDropBlock.e_type.MODULE)
         spinnerModulesAdapter = ProgrammingSpinnerAdapter(modulesBlocksSpinnerList, this)
-        modulesBlocksSpinnerList.add(0, DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_modules, "Modules", "Null",
-            1.0, 1.0, DragDropBlock.e_type.MODULE, false, 0))
+        modulesBlocksSpinnerList.add(
+            0, DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_modules, "Modules", "Null",
+                1.0, 1.0, DragDropBlock.e_type.MODULE, false, 0
+            )
+        )
 
         programming_spinner_modules.adapter = spinnerModulesAdapter
         programming_spinner_modules.setSelection(0, false)
@@ -525,8 +573,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             SaveCustomDragDropBlockManager(this).getArrayWithCustomDragDropBlocks()
         spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinnerList, this)
         spinnerCustomAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
-        customBlocksSpinnerList.add(0, DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_custom, "Custom", "Null", 1.0,
-                1.0, DragDropBlock.e_type.CUSTOM, false, 0))
+        customBlocksSpinnerList.add(
+            0, DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_custom, "Custom", "Null", 1.0,
+                1.0, DragDropBlock.e_type.CUSTOM, false, 0
+            )
+        )
 
         programming_spinner_custom.adapter = spinnerCustomAdapter
         programming_spinner_custom.setSelection(0, false)
@@ -543,7 +595,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             ) {
                 if (position != 0) { //We shouldn't add the title block
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
-                    block.idNumber = itemIdCounter++    //Increment after adding id. No worries about itemIdCounter overflow.
+                    block.idNumber =
+                        itemIdCounter++    //Increment after adding id. No worries about itemIdCounter overflow.
                     itemList.add(block)
                     adapter.notifyDataSetChanged()
                     programming_spinner_driving.setSelection(//Always make title block stay on top
@@ -635,9 +688,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 itemList[position].dragImage = R.drawable.ic_drag_dots
                 deleteList.remove(itemList[position])
                 adapter.notifyItemChanged(position)
-               /* holder.card_drag_drop.setCardBackgroundColor(Color.WHITE)
-                holder.card_image_drag_dots.setImageResource(R.drawable.ic_drag_dots)
-                deleteList.remove(itemList[position])*/
+                /* holder.card_drag_drop.setCardBackgroundColor(Color.WHITE)
+                 holder.card_image_drag_dots.setImageResource(R.drawable.ic_drag_dots)
+                 deleteList.remove(itemList[position])*/
                 if (deleteList.isEmpty()) {
                     markForDeletion = false
                 }
@@ -686,7 +739,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             updateItemValue(position, editText.text.toString().toDouble())
             alertParameterPosition = -1
         }
-        builder.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel)) { dialog, which ->
+        builder.setButton(
+            AlertDialog.BUTTON_NEGATIVE,
+            getString(R.string.cancel)
+        ) { dialog, which ->
             alertParameterPosition = -1
         }
         builder.setView(dialogLayout)
@@ -726,21 +782,49 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
                 var parameter: Int = item.displayParameter.toInt()
 
-                while (item.displayParameter > 0) {
+                if (item.parameterEnabled) {
+                    while (item.displayParameter > 0) {
+                        when (state) {  //State machine
+                            RunState.RUNNING -> {
+                                Utils.UtilsObject.bluetoothSendString(
+                                    "7${item.command}$parameter",
+                                    this.baseContext
+                                )
+                                //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
+                                delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
+                                parameter--
+
+
+                                /*Works with Locale but crashes without? Only for Andreas*/
+                                item.displayParameter =
+                                    String.format(
+                                        Locale.ENGLISH,
+                                        "%.1f",
+                                        item.displayParameter - 0.1
+                                    )
+                                        .toDouble()
+
+
+
+                                adapter.notifyDataSetChanged()
+                            }
+                            RunState.PAUSE -> {
+                                sem.acquire() //Button pause takes the semaphore. This coroutine will wait for it
+                            }
+                            else -> {
+                                state = RunState.IDLE
+                            } //So we go to a known state if something would go wrong
+                        }
+                    }
+                } else {
                     when (state) {  //State machine
                         RunState.RUNNING -> {
-                            Utils.UtilsObject.bluetoothSendString("72$parameter", this.baseContext)
+                            Utils.UtilsObject.bluetoothSendString(
+                                "7${item.command}1",
+                                this.baseContext
+                            )
                             //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
-                            delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
-                            parameter--
-
-
-                            /*Works with Locale but crashes without? Only for Andreas*/
-                            item.displayParameter =
-                                String.format(Locale.ENGLISH, "%.1f", item.displayParameter - 0.1)
-                                    .toDouble()
-
-
+                            delay(tenthOfSecondInMS * 5) //Will finish current 'delayTimeMillis' period before pause
 
                             adapter.notifyDataSetChanged()
                         }
@@ -749,29 +833,33 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         }
                         else -> {
                             state = RunState.IDLE
-                        } //So we go to a known state if something would go wrong
+                        } //So w
                     }
                 }
+
+                //Stop the robot
+                Utils.UtilsObject.bluetoothSendString("5", this.baseContext)
+                Utils.UtilsObject.showUpdatedToast(
+                    getString(R.string.project_has_run_through_completely),
+                    this
+                )
+                delay(secondInMS * 3)
+
+                resetListTraverse()
+
             }
-
-            //Stop the robot
-            Utils.UtilsObject.bluetoothSendString("5", this.baseContext)
-            Utils.UtilsObject.showUpdatedToast(getString(R.string.project_has_run_through_completely), this)
-            delay(secondInMS * 3)
-
-            resetListTraverse()
         }
     }
 
-    /*Resetting list to its original state*/
-    private fun resetListTraverse() {
-        if (sem.availablePermits == 0) {
-            sem.release()
+        /*Resetting list to its original state*/
+        private fun resetListTraverse() {
+            if (sem.availablePermits == 0) {
+                sem.release()
+            }
+            state = RunState.IDLE
+            for (i in itemList)
+                i.displayParameter = i.parameter
+            adapter.notifyDataSetChanged()
+            programming_play_button.setImageResource(R.drawable.ic_play_arrow)
         }
-        state = RunState.IDLE
-        for (i in itemList)
-            i.displayParameter = i.parameter
-        adapter.notifyDataSetChanged()
-        programming_play_button.setImageResource(R.drawable.ic_play_arrow)
     }
-}
