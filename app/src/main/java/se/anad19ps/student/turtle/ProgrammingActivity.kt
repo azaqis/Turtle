@@ -486,8 +486,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 1.0, DragDropBlock.e_type.DRIVE, true, 0))
 
         list.add(
-            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_stop, "Stop", "Null", 0.0,
-                0.0, DragDropBlock.e_type.DRIVE, false, 0))
+            DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_stop, "Stop", "Null", 0.5,
+                0.5, DragDropBlock.e_type.DRIVE, false, 0))
 
         list.add(
             DragDropBlock(R.drawable.ic_drag_dots, R.drawable.ic_gear, "Gear up", "Null", 0.0,
@@ -735,7 +735,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                             parameter--
 
 
-                            /*Works with Locale but crashes without? Only for Andreas*/
                             item.displayParameter =
                                 String.format(Locale.ENGLISH, "%.1f", item.displayParameter - 0.1)
                                     .toDouble()
