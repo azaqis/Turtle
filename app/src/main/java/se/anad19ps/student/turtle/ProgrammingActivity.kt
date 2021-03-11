@@ -630,7 +630,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 if (position != 0) {
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
                     block.idNumber =
-                        itemIdCounter++    //Increment after adding id. No worries about itemIdCounter overflow.
+                        itemIdCounter++
                     itemList.add(block)
                     adapter.notifyItemInserted(adapter.itemCount)
                     recycler.scrollToPosition(adapter.itemCount-1)
@@ -652,7 +652,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 if (position != 0) {
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
                     block.idNumber =
-                        itemIdCounter++    //Increment after adding id. No worries about itemIdCounter overflow.
+                        itemIdCounter++
                     itemList.add(block)
                     adapter.notifyItemInserted(adapter.itemCount)
                     recycler.scrollToPosition(adapter.itemCount-1)
