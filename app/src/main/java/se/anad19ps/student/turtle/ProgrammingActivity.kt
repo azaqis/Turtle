@@ -1,11 +1,8 @@
 package se.anad19ps.student.turtle
 
-import android.bluetooth.BluetoothDevice
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
-import android.provider.Settings.Global.getString
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -14,7 +11,6 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
@@ -467,31 +463,63 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogWantToSave.create().show()
     }
 
-    private fun populateList(
+    private fun populateModulesSpinnerList(
         num: Int,
         type: DragDropBlock.e_type
     ): ArrayList<DragDropBlock> {
         val list = ArrayList<DragDropBlock>()
 
         for (i in 0 until num) {
-            val drawable = when (i % 4) {
-                0 -> R.drawable.ic_arrow_up
-                1 -> R.drawable.ic_arrow_down
-                2 -> R.drawable.ic_arrow_right
+            val drawable = when (i) {
+                0 -> R.drawable.ic_baseline_highlight_24
+                1 -> R.drawable.ic_baseline_highlight_24
+                2 -> R.drawable.ic_baseline_surround_sound_24
                 else -> R.drawable.ic_arrow_left
             }
-            val item = DragDropBlock(
-                R.drawable.ic_drag_dots,
-                drawable,
-                "Some text",
-                "Command",
-                1.0,
-                1.0,
-                type,
-                true,
-                0
-            )
-            list.add(item)
+            when (i) {
+                0 -> {
+                    val item = DragDropBlock(
+                        R.drawable.ic_drag_dots,
+                        drawable,
+                        "LED Turn on",
+                        "Command",
+                        1.0,
+                        1.0,
+                        type,
+                        false,
+                        0
+                    )
+                    list.add(item)
+                }
+                1 -> {
+                    val item = DragDropBlock(
+                        R.drawable.ic_drag_dots,
+                        drawable,
+                        "LED Turn off",
+                        "Command",
+                        1.0,
+                        1.0,
+                        type,
+                        false,
+                        0
+                    )
+                    list.add(item)
+                }
+                2 -> {
+                    val item = DragDropBlock(
+                        R.drawable.ic_drag_dots,
+                        drawable,
+                        "Buzzer buzz",
+                        "Command",
+                        1.0,
+                        1.0,
+                        type,
+                        true,
+                        0
+                    )
+                    list.add(item)
+                }
+            }
         }
         return list
     }
@@ -566,7 +594,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_driving.adapter = spinnerDriveAdapter
         programming_spinner_driving.setSelection(0, false)
 
-        modulesBlocksSpinnerList = populateList(5, DragDropBlock.e_type.MODULE)
+        modulesBlocksSpinnerList = populateModulesSpinnerList(3, DragDropBlock.e_type.MODULE)
         spinnerModulesAdapter = ProgrammingSpinnerAdapter(modulesBlocksSpinnerList, this)
         modulesBlocksSpinnerList.add(
             0, DragDropBlock(
