@@ -99,4 +99,10 @@
     <string name="change_activity_or_stay_traverselist">Önskar du att avbryta det nuvarande projektet och byta vy eller stanna kvar med det nuvarande projektet?</string>
     <string name="stay">Stanna kvar</string>
     <string name="change_view">Byt vy</string>
+    <string name="select_bluetooth_device_activity">SelectBluetoothDeviceActivity</string>
+    <string name="programming_activity">ProgrammingActivity</string>
+    <string name="controller_activity">ControllerActivity</string>
+    <string name="manage_custom_drag_drop_blocks_activity">ManageCustomDragDropBlockActivity</string>
+    <string name="project_is_empty">Ditt nuvarande projekt är tomt!</string>
+    <string name="bluetooth_client_not_active">Bluetooth-klienten är ej aktiv</string>
 </resources>

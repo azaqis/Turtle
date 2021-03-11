@@ -138,13 +138,20 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
                 if (savedInstanceState.getString("traversingList") == "true"){
                     job = GlobalScope.launch(Dispatchers.Main) {
-                        if (!Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
-                            state = RunState.RUNNING
-                            programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
-                            traverseList()
+                        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+                            if(itemList.isNotEmpty()){
+                                state = RunState.RUNNING
+                                programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
+                                traverseList()
+                            }
+                            else
+                                Utils.UtilsObject.showUpdatedToast(
+                                    getString(R.string.project_is_empty),
+                                    baseContext
+                                )
                         } else {
                             Utils.UtilsObject.showUpdatedToast(
-                                "You are not connected to a bluetooth device",
+                                getString(R.string.not_connected_to_bt_device_warning),
                                 baseContext
                             )
                         }
@@ -190,13 +197,20 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_play_or_pause_button.setOnClickListener {
             if (state == RunState.IDLE) {
                 job = GlobalScope.launch(Dispatchers.Main) {
-                    if (!Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
-                        state = RunState.RUNNING
-                        programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
-                        traverseList()
+                    if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+                        if(itemList.isNotEmpty()){
+                            state = RunState.RUNNING
+                            programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
+                            traverseList()
+                        }
+                        else
+                            Utils.UtilsObject.showUpdatedToast(
+                                getString(R.string.project_is_empty),
+                                baseContext
+                            )
                     } else {
                         Utils.UtilsObject.showUpdatedToast(
-                            "You are not connected to a bluetooth device",
+                            getString(R.string.not_connected_to_bt_device_warning),
                             baseContext
                         )
                     }
@@ -794,7 +808,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private suspend fun traverseList() {
 
-        if (!Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
             val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
             val tenthOfSecondInMS: Long = 100
             val secondInMS: Long = 1000
@@ -873,6 +887,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             resetListTraverse()
             traversingList = false
         }
+        else
+            Utils.UtilsObject.showUpdatedToast(getString(R.string.bluetooth_client_not_active), this)
     }
 
     /*Resetting list to its original state*/

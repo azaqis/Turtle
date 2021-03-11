@@ -16,7 +16,20 @@ import com.google.android.material.navigation.NavigationView
 
 
 class HamburgerMenu(){
-    lateinit var toggle: ActionBarDrawerToggle
+
+    companion object{
+        private enum class ActivityNumber{
+            SELECT_BLUETOOTH_DEVICE_ACTIVITY,
+            PROGRAMMING_ACTIVITY,
+            CONTROLLER_ACTIVITY,
+            MANAGE_CUSTOM_DRAG_DROP_BLOCKS_ACTIVITY,
+            NOT_DEFINED
+        }
+
+        private lateinit var toggle: ActionBarDrawerToggle
+
+        private var currentActivity : ActivityNumber = ActivityNumber.NOT_DEFINED
+    }
 
     fun setUpHamburgerMenu(
         con: Context,
@@ -32,27 +45,62 @@ class HamburgerMenu(){
             R.string.close
         )
 
+        fun setCurrentActivity(){
+            if(con is SelectBluetoothDeviceActivity){
+                currentActivity = ActivityNumber.SELECT_BLUETOOTH_DEVICE_ACTIVITY
+            }
+            else if(con is ProgrammingActivity) {
+                currentActivity = ActivityNumber.PROGRAMMING_ACTIVITY
+            }
+            else if(con is ControllerActivity){
+                currentActivity = ActivityNumber.CONTROLLER_ACTIVITY
+            }
+            else if(con is ManageCustomDragDropBlocksActivity){
+                currentActivity = ActivityNumber.MANAGE_CUSTOM_DRAG_DROP_BLOCKS_ACTIVITY
+            }
+            else
+                currentActivity = ActivityNumber.NOT_DEFINED
+        }
+
         fun changeIntent(it : MenuItem){
+            setCurrentActivity()
+
             when (it.itemId) {
                 R.id.drawerItemBluetoothConnect -> {
-                    val intent = Intent(con, SelectBluetoothDeviceActivity::class.java)
-                    startActivity(con, intent, null)
-                    con.finish()
+                    if(currentActivity != ActivityNumber.SELECT_BLUETOOTH_DEVICE_ACTIVITY){
+                        val intent = Intent(con, SelectBluetoothDeviceActivity::class.java)
+                        startActivity(con, intent, null)
+                        con.finish()
+                    }
+                    else
+                        drawerLayout.closeDrawer(GravityCompat.START)
                 }
                 R.id.drawerItemProgramming -> {
-                    val intent = Intent(con, ProgrammingActivity::class.java)
-                    startActivity(con, intent, null)
-                    con.finish()
+                    if(currentActivity != ActivityNumber.PROGRAMMING_ACTIVITY){
+                        val intent = Intent(con, ProgrammingActivity::class.java)
+                        startActivity(con, intent, null)
+                        con.finish()
+                    }
+                    else
+                        drawerLayout.closeDrawer(GravityCompat.START)
                 }
                 R.id.drawerItemRemoteController -> {
-                    val intent = Intent(con, ControllerActivity::class.java)
-                    startActivity(con, intent, null)
-                    con.finish()
+                    if(currentActivity != ActivityNumber.CONTROLLER_ACTIVITY){
+                        val intent = Intent(con, ControllerActivity::class.java)
+                        startActivity(con, intent, null)
+                        con.finish()
+                    }
+                    else
+                        drawerLayout.closeDrawer(GravityCompat.START)
                 }
                 R.id.drawerItemManageCommands -> {
-                    val intent = Intent(con, ManageCustomDragDropBlocksActivity::class.java)
-                    startActivity(con, intent, null)
-                    con.finish()
+                    if(currentActivity != ActivityNumber.MANAGE_CUSTOM_DRAG_DROP_BLOCKS_ACTIVITY){
+                        val intent = Intent(con, ManageCustomDragDropBlocksActivity::class.java)
+                        startActivity(con, intent, null)
+                        con.finish()
+                    }
+                    else
+                        drawerLayout.closeDrawer(GravityCompat.START)
                 }
             }
         }
