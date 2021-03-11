@@ -51,8 +51,8 @@
     </string-array>
 
     <string-array name="controllerSpinnerController">
-        <item>Controller: Joystick</item>
-        <item>Controller: Arrow-buttons</item>
+        <item>Current controller: Joystick</item>
+        <item>Current controller: Arrow-buttons</item>
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -139,6 +139,8 @@
     <string name="manage_custom_drag_drop_blocks_activity">ManageCustomDragDropBlockActivity</string>
     <string name="project_is_empty">Your current project is empty!</string>
     <string name="bluetooth_client_not_active">Bluetooth client is not active</string>
+    <string name="new_project">New project</string>
+    <string name="spinner_image">spinnerImage</string>
 
 
 </resources>

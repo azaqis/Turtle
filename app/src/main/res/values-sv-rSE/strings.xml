@@ -105,4 +105,6 @@
     <string name="manage_custom_drag_drop_blocks_activity">ManageCustomDragDropBlockActivity</string>
     <string name="project_is_empty">Ditt nuvarande projekt är tomt!</string>
     <string name="bluetooth_client_not_active">Bluetooth-klienten är ej aktiv</string>
+    <string name="new_project">Nytt projekt</string>
+    <string name="spinner_image">spinnerImage</string>
 </resources>

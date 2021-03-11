@@ -5,7 +5,6 @@ import android.os.Parcelable
 
 import java.io.Serializable
 
-/*Holds data. Make sure to add data for parameter time and command*/
 data class DragDropBlock(
     var dragImage: Int,
     val directionImage: Int,

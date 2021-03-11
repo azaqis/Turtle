@@ -50,13 +50,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         private var alertParameterPosition: Int = -1
 
-		//Should this be hardcoded?
-		// Yes, i think sååå
-		private val newProjectStandardName = "New Project"
-
 		private var blocksAreSelected = false //Marks if a click should add to deleteList
 		private var selectedItemsList = ArrayList<DragDropBlock>()
 
+        private lateinit var newProjectStandardName : String
 
         private lateinit var adapter: ProgrammingRecyclerAdapter
 
@@ -104,6 +101,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             setupButtons()
         }).start()
 
+        newProjectStandardName = getString(R.string.new_project)
         saveFilesManager = SaveFilesManager(this)
         customCommandManager = SaveCustomDragDropBlockManager(this)
 
@@ -153,7 +151,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             if (savedStates != null) {
                 itemList = savedStates.itemList
                 itemIdCounter = savedStates.itemIdCounter
-                selectedItemsList = savedStates.deleteList
+                selectedItemsList = savedStates.selectedList
                 alertParameterPosition = savedStates.positionAlertDialog
 
                 if (savedInstanceState.getString("traversingList") == "true"){
@@ -204,7 +202,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     }
                 }
             }
-
         }
 
         adapter = ProgrammingRecyclerAdapter(itemList, this)
@@ -217,8 +214,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     /*Save necessary states and variables for run time configuration changes*/
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+
+        val itemListClone : ArrayList<DragDropBlock> = itemList.clone() as ArrayList<DragDropBlock>
+        val selectedItemsListClone : ArrayList<DragDropBlock> = selectedItemsList.clone() as ArrayList<DragDropBlock>
+
         val saveStates =
-            ProgrammingSavedState(itemList, selectedItemsList, itemIdCounter, alertParameterPosition)
+            ProgrammingSavedState(itemListClone, selectedItemsListClone, itemIdCounter, alertParameterPosition)
         outState.putParcelable("savedStateObject", saveStates)
         outState.putString("traversingList", traversingList.toString())
         outState.putString("openDialog", openDialog.toString())
@@ -332,7 +333,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 for (i in 0 until indexes.size) {
                     //deleteList[itemList[indexes[i]]]?.card_drag_drop?.setCardBackgroundColor(Color.WHITE)   //Reset holders to standard color
                     itemList.removeAt(indexes[i])
-                    adapter.notifyItemRemoved(indexes[i])
+                    adapter.notifyDataSetChanged()
+                    //adapter.notifyItemRemoved(indexes[i])
                 }
 
                 selectedItemsList.clear()
@@ -477,31 +479,63 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogWantToSave.create().show()
     }
 
-    private fun populateList(
+    private fun populateModulesSpinnerList(
         num: Int,
         type: DragDropBlock.e_type
     ): ArrayList<DragDropBlock> {
         val list = ArrayList<DragDropBlock>()
 
         for (i in 0 until num) {
-            val drawable = when (i % 4) {
-                0 -> R.drawable.ic_arrow_up
-                1 -> R.drawable.ic_arrow_down
-                2 -> R.drawable.ic_arrow_right
+            val drawable = when (i) {
+                0 -> R.drawable.ic_baseline_highlight_24
+                1 -> R.drawable.ic_baseline_highlight_24
+                2 -> R.drawable.ic_baseline_surround_sound_24
                 else -> R.drawable.ic_arrow_left
             }
-            val item = DragDropBlock(
-                R.drawable.ic_drag_dots,
-                drawable,
-                "Some text",
-                "Command",
-                1.0,
-                1.0,
-                type,
-                true,
-                0
-            )
-            list.add(item)
+            when (i) {
+                0 -> {
+                    val item = DragDropBlock(
+                        R.drawable.ic_drag_dots,
+                        drawable,
+                        "LED Turn on",
+                        "Command",
+                        1.0,
+                        1.0,
+                        type,
+                        false,
+                        0
+                    )
+                    list.add(item)
+                }
+                1 -> {
+                    val item = DragDropBlock(
+                        R.drawable.ic_drag_dots,
+                        drawable,
+                        "LED Turn off",
+                        "Command",
+                        1.0,
+                        1.0,
+                        type,
+                        false,
+                        0
+                    )
+                    list.add(item)
+                }
+                2 -> {
+                    val item = DragDropBlock(
+                        R.drawable.ic_drag_dots,
+                        drawable,
+                        "Buzzer buzz",
+                        "Command",
+                        1.0,
+                        1.0,
+                        type,
+                        true,
+                        0
+                    )
+                    list.add(item)
+                }
+            }
         }
         return list
     }
@@ -540,8 +574,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         list.add(
             DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_stop, "Stop", "5", 0.0,
-                0.0, DragDropBlock.e_type.DRIVE, false, 0
+                R.drawable.ic_drag_dots, R.drawable.ic_stop, "Stop", "5", 1.0,
+                0.0, DragDropBlock.e_type.DRIVE, true, 0
             )
         )
 
@@ -576,8 +610,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_driving.adapter = spinnerDriveAdapter
         programming_spinner_driving.setSelection(0, false)
 
-
-        modulesBlocksSpinnerList = populateList(5, DragDropBlock.e_type.MODULE)
+        modulesBlocksSpinnerList = populateModulesSpinnerList(3, DragDropBlock.e_type.MODULE)
         spinnerModulesAdapter = ProgrammingSpinnerAdapter(modulesBlocksSpinnerList, this)
         modulesBlocksSpinnerList.add(
             0, DragDropBlock(
@@ -603,6 +636,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_custom.adapter = spinnerCustomAdapter
         programming_spinner_custom.setSelection(0, false)
 
+        /*So we can scroll to the added item*/
+        val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
+
         programming_spinner_driving.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
@@ -618,12 +654,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     block.idNumber =
                         itemIdCounter++    //Increment after adding id. No worries about itemIdCounter overflow.
                     itemList.add(block)
-                    adapter.notifyItemInserted(itemList.size)
-                    //adapter.notifyDataSetChanged()
-                    programming_spinner_driving.setSelection(//Always make title block stay on top
+                    adapter.notifyItemInserted(adapter.itemCount)
+                    recycler.scrollToPosition(adapter.itemCount-1)
+                    programming_spinner_driving.setSelection(
                         0,
                         false
-                    )
+                    )//Make title block stay on top
                 }
             }
         }
@@ -640,8 +676,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             ) {
                 if (position != 0) {
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
+                    block.idNumber =
+                        itemIdCounter++
                     itemList.add(block)
-                    adapter.notifyDataSetChanged()
+                    adapter.notifyItemInserted(adapter.itemCount)
+                    recycler.scrollToPosition(adapter.itemCount-1)
                     programming_spinner_modules.setSelection(0, false)
                 }
             }
@@ -659,8 +698,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             ) {
                 if (position != 0) {
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
+                    block.idNumber =
+                        itemIdCounter++
                     itemList.add(block)
-                    adapter.notifyDataSetChanged()
+                    adapter.notifyItemInserted(adapter.itemCount)
+                    recycler.scrollToPosition(adapter.itemCount-1)
                     programming_spinner_custom.setSelection(0, false)
                 }
             }
@@ -702,16 +744,13 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     /*Used to mark item for deletion*/
-    override fun onItemClick(position: Int, holder: View) {
+    override fun onItemClick(position: Int) {
         if (blocksAreSelected) {
             /*If item is already added to deleteList we want to deselect it*/
             if (selectedItemsList.contains(itemList[position])) {
                 itemList[position].dragImage = R.drawable.ic_drag_dots
                 selectedItemsList.remove(itemList[position])
-                adapter.notifyItemChanged(position)
-                /* holder.card_drag_drop.setCardBackgroundColor(Color.WHITE)
-                 holder.card_image_drag_dots.setImageResource(R.drawable.ic_drag_dots)
-                 deleteList.remove(itemList[position])*/
+                adapter.notifyDataSetChanged()
                 if (selectedItemsList.isEmpty()) {
                     blocksAreSelected = false
                     showUnselectedButtonsHideSelectedButtons()
@@ -719,10 +758,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             } else {
                 itemList[position].dragImage = R.drawable.ic_baseline_check_circle_24
                 selectedItemsList.add(itemList[position])
-                adapter.notifyItemChanged(position)
-                /*holder.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
-                holder.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
-                deleteList[itemList[position]] = holder*/
+                adapter.notifyDataSetChanged()
             }
         }
     }
@@ -731,18 +767,14 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         changeItemParameterDialog(position)
     }
 
-    /*LongClick activates selection for deletion*/
-    override fun onLongClick(position: Int, view: View) {
+    /*LongClick activates selection for selection*/
+    override fun onLongClick(position: Int) {
         /*No need to activate if already activated*/
         if (!blocksAreSelected) {
             showSelectedButtonsHideUnselectedButtons()
             itemList[position].dragImage = R.drawable.ic_baseline_check_circle_24
             selectedItemsList.add(itemList[position])
-            adapter.notifyItemChanged(position)
-            /*view.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
-            view.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
-            deleteList[itemList[position]] =
-                view   //Map (DragDropBlock at position) with accompanying recycler item view*/
+            adapter.notifyDataSetChanged()
             blocksAreSelected = true
         }
     }
