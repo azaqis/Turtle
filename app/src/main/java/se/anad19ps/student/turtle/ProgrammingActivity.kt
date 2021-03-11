@@ -530,8 +530,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         list.add(
             DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_stop, "Stop", "5", 0.0,
-                0.0, DragDropBlock.e_type.DRIVE, false, 0
+                R.drawable.ic_drag_dots, R.drawable.ic_stop, "Stop", "5", 1.0,
+                0.0, DragDropBlock.e_type.DRIVE, true, 0
             )
         )
 
@@ -806,7 +806,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private suspend fun traverseList() {
 
-        if (!Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
             val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
             val tenthOfSecondInMS: Long = 100
             val secondInMS: Long = 1000
