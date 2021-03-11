@@ -14,24 +14,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Turtle">
-        <activity android:name=".SavedProjectsActivity"/>
-        <activity android:name=".EditCustomDragDropBlocksActivity" />
-        <activity android:name=".ProgrammingActivity" />
-        <activity android:name=".CreateCustomDragDropBlocksActivity" />
-        <activity android:name=".ManageCustomDragDropBlocksActivity" />
+        <activity android:name=".SavedProjectsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".EditCustomDragDropBlocksActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ProgrammingActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".CreateCustomDragDropBlocksActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ManageCustomDragDropBlocksActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ControllerActivity"
             android:label="@string/title_activity_controller"
-            android:theme="@style/Theme.Turtle.NoActionBar" />
-        <activity
-            android:name=".MainActivity2"
-            android:label="@string/title_activity_main2"
-            android:theme="@style/Theme.Turtle.NoActionBar" />
+            android:theme="@style/Theme.Turtle.NoActionBar"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".SelectBluetoothDeviceActivity"
             android:label="@string/title_activity_bluetooth"
-            android:theme="@style/Theme.Turtle.NoActionBar" />
-        <activity android:name=".MainActivity">
+            android:theme="@style/Theme.Turtle.NoActionBar"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -6,44 +6,48 @@ import android.os.Looper
 import android.widget.Toast
 
 
-class Utils() {
+class Utils {
 
-    object UtilsObject{
+    object UtilsObject {
 
-        private var toastMessage : Toast? = null
+        private var toastMessage: Toast? = null
 
         //This function sends strings to the module which in turn sends it into the robot through UART
-        fun bluetoothSendString(string : String, uicontext: Context) {
-            if(SelectBluetoothDeviceActivity.bluetoothConnectionThreadActive)
+        fun bluetoothSendString(string: String, uicontext: Context) {
+            if (SelectBluetoothDeviceActivity.bluetoothConnectionThreadActive)
                 SelectBluetoothDeviceActivity.clientThread.writeToConnectedDevice(string)
             else
-                showUpdatedToast(uicontext.getString(R.string.not_connected_to_bt_device_warning), uicontext)
+                showUpdatedToast(
+                    uicontext.getString(R.string.not_connected_to_bt_device_warning),
+                    uicontext
+                )
         }
 
-        fun isBluetoothConnectionThreadActive() : Boolean{
+        fun isBluetoothConnectionThreadActive(): Boolean {
             return SelectBluetoothDeviceActivity.bluetoothConnectionThreadActive
         }
 
-        fun bluetoothReceiveStringReady(recievedString : String){
-            ControllerDebugFragment().addStringToDebugList(recievedString)
+        fun bluetoothReceiveStringReady(receivedString: String) {
+            ControllerDebugFragment().addStringToDebugList(receivedString)
         }
 
-        //This function toasts a message in the UI-thread only needing string and context. This also changes the current toast to the newest toast to not stack toasts
-        fun showUpdatedToast(string : String, uicontext : Context) {
+        /*This function toasts a message in the UI-thread only needing string and context.
+        This also changes the current toast to the newest toast to not stack toasts*/
+        fun showUpdatedToast(string: String, uicontext: Context) {
             val handler = Handler(Looper.getMainLooper())
             handler.post {
-                if(toastMessage!=null)
+                if (toastMessage != null)
                     toastMessage!!.cancel()
                 toastMessage = Toast.makeText(uicontext, string, Toast.LENGTH_SHORT)
                 toastMessage!!.show()
             }
         }
 
-        fun programmingIsTraversingList() : Boolean{
+        fun programmingIsTraversingList(): Boolean {
             return ProgrammingActivity.traversingList
         }
 
-        fun stopTraversingList(){
+        fun stopTraversingList() {
             ProgrammingActivity.traversingList = false
         }
     }

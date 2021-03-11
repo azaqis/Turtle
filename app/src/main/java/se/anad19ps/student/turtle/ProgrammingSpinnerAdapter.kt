@@ -9,25 +9,25 @@ import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.card_spinner_block.view.*
 
 class ProgrammingSpinnerAdapter(
-    contentList: List<DragDropBlock>,
+    itemList: List<DragDropBlock>,
     context: Context
-) : ArrayAdapter<DragDropBlock>(context, 0, contentList){
+) : ArrayAdapter<DragDropBlock>(context, 0, itemList){
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        return init(position, convertView, parent)
+        return init(position, parent)
     }
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-        return init(position, convertView, parent)
+        return init(position, parent)
     }
 
-    private fun init(position: Int, v: View?, parent: ViewGroup): View {
+    private fun init(position: Int, parent: ViewGroup): View {
         val item = getItem(position)
 
         val view: View = LayoutInflater.from(context)
-            .inflate(R.layout.card_spinner_block, parent, false)    //Make view from layout
+            .inflate(R.layout.card_spinner_block, parent, false)
 
-        /*Different colors for different spinners*/
+        /*Set color on item depending on type*/
         when (item?.type) {
             DragDropBlock.e_type.DRIVE ->
                 view.card_spinner_constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.SpinnerBackgroundTurquoise))
