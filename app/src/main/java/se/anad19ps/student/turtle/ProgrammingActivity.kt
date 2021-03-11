@@ -150,7 +150,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_play_button.setOnClickListener {
             if (state == RunState.IDLE) {
                 job = GlobalScope.launch(Dispatchers.Main) {
-                    if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+                    if (!Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
                         state = RunState.RUNNING
                         programming_play_button.setImageResource(R.drawable.ic_pause)
                         traverseList()
@@ -230,7 +230,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 for (i in 0 until indexes.size) {
                     //deleteList[itemList[indexes[i]]]?.card_drag_drop?.setCardBackgroundColor(Color.WHITE)   //Reset holders to standard color
                     itemList.removeAt(indexes[i])
-                    adapter.notifyItemRemoved(indexes[i])
+                    adapter.notifyDataSetChanged()
+                    //adapter.notifyItemRemoved(indexes[i])
                 }
 
                 selectedItemsList.clear()
@@ -566,7 +567,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_driving.adapter = spinnerDriveAdapter
         programming_spinner_driving.setSelection(0, false)
 
-
         modulesBlocksSpinnerList = populateList(5, DragDropBlock.e_type.MODULE)
         spinnerModulesAdapter = ProgrammingSpinnerAdapter(modulesBlocksSpinnerList, this)
         modulesBlocksSpinnerList.add(
@@ -594,6 +594,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_custom.adapter = spinnerCustomAdapter
         programming_spinner_custom.setSelection(0, false)
 
+        /*So we can scroll to the added item*/
+        val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
+
         programming_spinner_driving.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
@@ -609,12 +612,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     block.idNumber =
                         itemIdCounter++    //Increment after adding id. No worries about itemIdCounter overflow.
                     itemList.add(block)
-                    adapter.notifyItemInserted(itemList.size)
-                    //adapter.notifyDataSetChanged()
-                    programming_spinner_driving.setSelection(//Always make title block stay on top
+                    adapter.notifyItemInserted(adapter.itemCount)
+                    recycler.scrollToPosition(adapter.itemCount-1)
+                    programming_spinner_driving.setSelection(
                         0,
                         false
-                    )
+                    )//Make title block stay on top
                 }
             }
         }
@@ -631,8 +634,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             ) {
                 if (position != 0) {
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
+                    block.idNumber =
+                        itemIdCounter++    //Increment after adding id. No worries about itemIdCounter overflow.
                     itemList.add(block)
-                    adapter.notifyDataSetChanged()
+                    adapter.notifyItemInserted(adapter.itemCount)
+                    recycler.scrollToPosition(adapter.itemCount-1)
                     programming_spinner_modules.setSelection(0, false)
                 }
             }
@@ -650,8 +656,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             ) {
                 if (position != 0) {
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
+                    block.idNumber =
+                        itemIdCounter++    //Increment after adding id. No worries about itemIdCounter overflow.
                     itemList.add(block)
-                    adapter.notifyDataSetChanged()
+                    adapter.notifyItemInserted(adapter.itemCount)
+                    recycler.scrollToPosition(adapter.itemCount-1)
                     programming_spinner_custom.setSelection(0, false)
                 }
             }
@@ -699,7 +708,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             if (selectedItemsList.contains(itemList[position])) {
                 itemList[position].dragImage = R.drawable.ic_drag_dots
                 selectedItemsList.remove(itemList[position])
-                adapter.notifyItemChanged(position)
+                adapter.notifyDataSetChanged()
+                //adapter.notifyItemChanged(position)
                 /* holder.card_drag_drop.setCardBackgroundColor(Color.WHITE)
                  holder.card_image_drag_dots.setImageResource(R.drawable.ic_drag_dots)
                  deleteList.remove(itemList[position])*/
@@ -710,7 +720,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             } else {
                 itemList[position].dragImage = R.drawable.ic_baseline_check_circle_24
                 selectedItemsList.add(itemList[position])
-                adapter.notifyItemChanged(position)
+                adapter.notifyDataSetChanged()
+                //adapter.notifyItemChanged(position)
                 /*holder.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
                 holder.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
                 deleteList[itemList[position]] = holder*/
@@ -729,7 +740,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             showSelectedButtonsHideUnselectedButtons()
             itemList[position].dragImage = R.drawable.ic_baseline_check_circle_24
             selectedItemsList.add(itemList[position])
-            adapter.notifyItemChanged(position)
+            adapter.notifyDataSetChanged()
+            //adapter.notifyItemChanged(position)
             /*view.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
             view.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
             deleteList[itemList[position]] =
@@ -784,7 +796,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private suspend fun traverseList() {
 
-        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+        if (!Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
             val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
             val tenthOfSecondInMS: Long = 100
             val secondInMS: Long = 1000
