@@ -26,7 +26,7 @@ class SavedProjectsActivity : AppCompatActivity() {
         private lateinit var savedProjectsListViewAdapter : ArrayAdapter<String>
         private lateinit var savedFilesManager : SaveFilesManager
         private lateinit var listWithNames : ArrayList<String>
-        enum class OpenDialog{
+        private enum class OpenDialog{
             DIALOG_INPUT_NAME, DIALOG_NAME_BLANK_WARNING, DIALOG_NAME_EXISTS_WARNING, NONE
         }
         private var openDialog = OpenDialog.NONE

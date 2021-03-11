@@ -129,6 +129,16 @@
     <string name="programming">Programming</string>
     <string name="remote_controller">Remote Controller</string>
     <string name="manage_custom_commands">Manage Custom Commands</string>
+    <string name="changing_activity_while_traversinglist">You are still running your program</string>
+    <string name="change_activity_or_stay_traverselist">Do you wish to stop the running project and change view or stay with the current project?</string>
+    <string name="stay">Stay</string>
+    <string name="change_view">Change view</string>
+    <string name="controller_activity">ControllerActivity</string>
+    <string name="select_bluetooth_device_activity">SelectBluetoothDeviceActivity</string>
+    <string name="programming_activity">ProgrammingActivity</string>
+    <string name="manage_custom_drag_drop_blocks_activity">ManageCustomDragDropBlockActivity</string>
+    <string name="project_is_empty">Your current project is empty!</string>
+    <string name="bluetooth_client_not_active">Bluetooth client is not active</string>
 
 
 </resources>

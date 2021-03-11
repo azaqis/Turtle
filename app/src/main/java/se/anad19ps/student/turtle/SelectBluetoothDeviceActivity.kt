@@ -284,13 +284,13 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
     private fun tryBonding(device: BluetoothDevice, v: View){
         //Dont bond if it is already bonded, then connect instead
         if(!pairedDevicesList.contains(device)){
-            Utils.UtilsObject.showUpdatedToast(getString(R.string.trying_to_bond_to_device)+": " + device.name, this)
+            Utils.UtilsObject.showUpdatedToast(getString(R.string.trying_to_bond_to_device) + ": " + device.name, this)
             Log.d(TAG, "Trying to bond with " + device.name)
 
             device.createBond()
         }
         else{
-            Utils.UtilsObject.showUpdatedToast(getString(R.string.connecting_to) + device.name + "...", this)
+            Utils.UtilsObject.showUpdatedToast(getString(R.string.connecting_to) + ": " + device.name + "...", this)
             Log.d(TAG, "Trying to connect to: " + device.name)
 
             clientThread = BluetoothClient(device, this)
