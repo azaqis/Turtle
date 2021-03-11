@@ -27,11 +27,16 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <Spinner
-                android:id="@+id/spinnerView"
+            <TextView
+                android:id="@+id/text_view_top"
+                android:text="Debug window"
+                android:background="@drawable/gradient_background_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/gradient_background_spinner" />
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:padding="10dp"
+                android:textColor="@color/PrimaryLight"/>
             <!--Fragment doesnt work, doesnt change onItemListener-->
             <FrameLayout
                 android:id="@+id/fragmentTop"
@@ -55,7 +60,7 @@
                 android:id="@+id/spinnerController"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/gradient_background_spinner" />
+                android:background="@drawable/gradient_background_spinner"/>
             <!--Fragment doesnt work, doesnt change onItemListener-->
             <FrameLayout
                 android:id="@+id/fragmentBottom"

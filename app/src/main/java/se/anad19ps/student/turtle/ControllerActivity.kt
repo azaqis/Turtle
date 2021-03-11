@@ -7,18 +7,18 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.drawer_layout.*
-import kotlinx.android.synthetic.main.fragment_controller_debug.*
 import kotlinx.android.synthetic.main.top_bar.*
 import kotlinx.coroutines.*
 
 
-class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, JoystickView.JoystickListener {
+class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
+    JoystickView.JoystickListener {
 
-    companion object{
-        private lateinit var bottomFragment : Fragment
-        private lateinit var topFragment : Fragment
-        private var coroutine : Job? = null
-        private var coroutineActive : Boolean = false
+    companion object {
+        private lateinit var bottomFragment: Fragment
+        private lateinit var topFragment: Fragment
+        private var coroutine: Job? = null
+        private var coroutineActive: Boolean = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,46 +32,22 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        /*val text = parent!!.getItemAtPosition(position).toString()
-        Toast.makeText(parent.context, text, Toast.LENGTH_SHORT).show()*/
+
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        TODO("Not yet implemented")
+
     }
 
-    private fun setupSpinnerAdapters(){
-        val spinnerSpinnerView = findViewById<Spinner>(R.id.spinnerView)
-        val adapterSpinnerView = ArrayAdapter.createFromResource(
-            this,
-            R.array.controllerSpinnerView, R.layout.controller_spinner_layout
-        )
-        adapterSpinnerView.setDropDownViewResource(R.layout.controller_spinner_dropdown_layout)
-        spinnerSpinnerView.adapter = adapterSpinnerView
+    private fun setupSpinnerAdapters() {
+        topFragment = ControllerDebugFragment()
 
+        val managerTopFragment = supportFragmentManager
+        val transaction = managerTopFragment.beginTransaction()
 
-        spinnerSpinnerView.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-                when (position) {
-                    0 -> topFragment = ControllerDebugFragment()
-                }
-
-                var managerTopFragment = supportFragmentManager
-                var transaction = managerTopFragment.beginTransaction()
-
-                transaction.replace(R.id.fragmentTop, topFragment)
-                transaction.addToBackStack(null)
-                transaction.commit()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
-            }
-
-        }
-
-        //--------------------------------------------------------------------------------------------------------------------------------
+        transaction.replace(R.id.fragmentTop, topFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
 
 
         val spinnerSpinnerController = findViewById<Spinner>(R.id.spinnerController)
@@ -83,46 +59,52 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         spinnerSpinnerController.adapter = adapterSpinnerController
 
 
-        spinnerSpinnerController.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if(position == 0)
-                    bottomFragment = ControllerJoystickFragment()
-                else if (position == 1)
-                    bottomFragment = ControllerArrowButtonsFragment()
+        spinnerSpinnerController.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    if (position == 0)
+                        bottomFragment = ControllerJoystickFragment()
+                    else if (position == 1)
+                        bottomFragment = ControllerArrowButtonsFragment()
 
-                var managerBottomFragment = supportFragmentManager
-                var transaction = managerBottomFragment.beginTransaction()
+                    val managerBottomFragment = supportFragmentManager
+                    val transaction = managerBottomFragment.beginTransaction()
 
-                transaction.replace(R.id.fragmentBottom, bottomFragment)
-                transaction.addToBackStack(null)
-                transaction.commit()
+                    transaction.replace(R.id.fragmentBottom, bottomFragment)
+                    transaction.addToBackStack(null)
+                    transaction.commit()
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
-            }
-
-        }
     }
 
     override fun onJoystickMoved(xPercentageMoved: Int, yPercentageMoved: Int) {
-        val tenthOfSecondInMS : Long = 100;
+        val tenthOfSecondInMS: Long = 100
 
-        if(!coroutineActive){
+        if (!coroutineActive) {
             coroutine = GlobalScope.launch {
                 coroutineActive = true
 
-                var xMovedString : String = xPercentageMoved.toString()
-                var yMovedString : String = yPercentageMoved.toString()
+                var xMovedString: String = xPercentageMoved.toString()
+                var yMovedString: String = yPercentageMoved.toString()
 
-                if(xMovedString.length == 1)
+                if (xMovedString.length == 1)
                     xMovedString = "00$xMovedString"
-                else if(xMovedString.length == 2)
+                else if (xMovedString.length == 2)
                     xMovedString = "0$xMovedString"
 
-                if(yMovedString.length == 1)
+                if (yMovedString.length == 1)
                     yMovedString = "00$yMovedString"
-                else if(yMovedString.length == 2)
+                else if (yMovedString.length == 2)
                     yMovedString = "0$yMovedString"
 
                 Utils.UtilsObject.bluetoothSendString("9$xMovedString$yMovedString", baseContext)
@@ -131,9 +113,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
                 coroutineActive = false
             }
-        }
-
-        else{
+        } else {
             Log.d("TAG", "In else from joystickmoved")
         }
     }

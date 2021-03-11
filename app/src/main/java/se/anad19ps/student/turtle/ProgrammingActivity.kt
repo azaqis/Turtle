@@ -1,8 +1,11 @@
 package se.anad19ps.student.turtle
 
+import android.bluetooth.BluetoothDevice
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
+import android.provider.Settings.Global.getString
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -51,13 +54,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         private var alertParameterPosition: Int = -1
 
-		//Should this be hardcoded?
-		// Yes, i think sååå
-		private val newProjectStandardName = "New Project"
-
 		private var blocksAreSelected = false //Marks if a click should add to deleteList
 		private var selectedItemsList = ArrayList<DragDropBlock>()
 
+        private lateinit var newProjectStandardName : String
 
         private lateinit var adapter: ProgrammingRecyclerAdapter
 
@@ -105,6 +105,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             setupButtons()
         }).start()
 
+        newProjectStandardName = getString(R.string.new_project)
         saveFilesManager = SaveFilesManager(this)
         customCommandManager = SaveCustomDragDropBlockManager(this)
 
@@ -141,7 +142,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             if (savedStates != null) {
                 itemList = savedStates.itemList
                 itemIdCounter = savedStates.itemIdCounter
-                selectedItemsList = savedStates.deleteList
+                selectedItemsList = savedStates.selectedList
                 alertParameterPosition = savedStates.positionAlertDialog
 
                 if (savedInstanceState.getString("traversingList") == "true"){
@@ -192,7 +193,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     }
                 }
             }
-
         }
 
         adapter = ProgrammingRecyclerAdapter(itemList, this)
@@ -205,8 +205,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     /*Save necessary states and variables for run time configuration changes*/
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+
+        val itemListClone : ArrayList<DragDropBlock> = itemList.clone() as ArrayList<DragDropBlock>
+        val selectedItemsListClone : ArrayList<DragDropBlock> = selectedItemsList.clone() as ArrayList<DragDropBlock>
+
         val saveStates =
-            ProgrammingSavedState(itemList, selectedItemsList, itemIdCounter, alertParameterPosition)
+            ProgrammingSavedState(itemListClone, selectedItemsListClone, itemIdCounter, alertParameterPosition)
         outState.putParcelable("savedStateObject", saveStates)
         outState.putString("traversingList", traversingList.toString())
         outState.putString("openDialog", openDialog.toString())
