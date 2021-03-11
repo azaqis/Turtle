@@ -40,46 +40,48 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         NONE
     }
 
-    private var openDialog = OpenDialog.NONE
+    companion object{
+        private var openDialog = OpenDialog.NONE
 
-    private var alertParameterPosition: Int = -1
-
-
-    //Should this be hardcoded?
-    private val newProjectStandardName = "New Project"
+        private var alertParameterPosition: Int = -1
 
 
-    private var blocksAreSelected = false //Marks if a click should add to deleteList
-    private var selectedItemsList = ArrayList<DragDropBlock>()
+        //Should this be hardcoded?
+        private val newProjectStandardName = "New Project"
 
-    private lateinit var adapter: ProgrammingRecyclerAdapter
 
-    private lateinit var spinnerDriveAdapter: ProgrammingSpinnerAdapter
-    private lateinit var spinnerModulesAdapter: ProgrammingSpinnerAdapter
-    private lateinit var spinnerCustomAdapter: ProgrammingSpinnerAdapter
+        private var blocksAreSelected = false //Marks if a click should add to deleteList
+        private var selectedItemsList = ArrayList<DragDropBlock>()
 
-    private var itemList = ArrayList<DragDropBlock>()   //List for items in RecyclerView
-    private var itemIdCounter: Long =
-        1  //Used to assign unique id to each dragDropBlock. 0 reserved for non added
+        private lateinit var adapter: ProgrammingRecyclerAdapter
 
-    private var driveBlocksSpinnerList =
-        mutableListOf<DragDropBlock>() //Lists for items in spinners
-    private var modulesBlocksSpinnerList = mutableListOf<DragDropBlock>()
-    private var customBlocksSpinnerList = mutableListOf<DragDropBlock>()
+        private lateinit var spinnerDriveAdapter: ProgrammingSpinnerAdapter
+        private lateinit var spinnerModulesAdapter: ProgrammingSpinnerAdapter
+        private lateinit var spinnerCustomAdapter: ProgrammingSpinnerAdapter
 
-    private lateinit var itemTouchHelper: ItemTouchHelper   //For RecyclerView drag and drop. Receives events from RecyclerView
+        private var itemList = ArrayList<DragDropBlock>()   //List for items in RecyclerView
+        private var itemIdCounter: Long =
+            1  //Used to assign unique id to each dragDropBlock. 0 reserved for non added
 
-    private lateinit var state: RunState    //State for iteration through list. Needed for play, pause and stop
-    private val sem = Semaphore(1)  //Can force the state machine to halt coroutine when pausing
+        private var driveBlocksSpinnerList =
+            mutableListOf<DragDropBlock>() //Lists for items in spinners
+        private var modulesBlocksSpinnerList = mutableListOf<DragDropBlock>()
+        private var customBlocksSpinnerList = mutableListOf<DragDropBlock>()
 
-    private lateinit var saveFilesManager: SaveFilesManager
-    private lateinit var projectName: String
-    private lateinit var customCommandManager: SaveCustomDragDropBlockManager
+        private lateinit var itemTouchHelper: ItemTouchHelper   //For RecyclerView drag and drop. Receives events from RecyclerView
 
-    /*Start coroutine from button click. Traverse list*/
-    private var job: Job? = null
+        private lateinit var state: RunState    //State for iteration through list. Needed for play, pause and stop
+        private val sem = Semaphore(1)  //Can force the state machine to halt coroutine when pausing
 
-    private var traversingList : Boolean = false
+        private lateinit var saveFilesManager: SaveFilesManager
+        private lateinit var projectName: String
+        private lateinit var customCommandManager: SaveCustomDragDropBlockManager
+
+        /*Start coroutine from button click. Traverse list*/
+        private var job: Job? = null
+
+        var traversingList : Boolean = false
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,9 +138,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
                 if (savedInstanceState.getString("traversingList") == "true"){
                     job = GlobalScope.launch(Dispatchers.Main) {
-                        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+                        if (!Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
                             state = RunState.RUNNING
-                            programming_play_button.setImageResource(R.drawable.ic_pause)
+                            programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
                             traverseList()
                         } else {
                             Utils.UtilsObject.showUpdatedToast(
@@ -185,12 +187,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private fun setupButtons() {
         /*Play button*/
-        programming_play_button.setOnClickListener {
+        programming_play_or_pause_button.setOnClickListener {
             if (state == RunState.IDLE) {
                 job = GlobalScope.launch(Dispatchers.Main) {
-                    if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+                    if (!Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
                         state = RunState.RUNNING
-                        programming_play_button.setImageResource(R.drawable.ic_pause)
+                        programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
                         traverseList()
                     } else {
                         Utils.UtilsObject.showUpdatedToast(
@@ -202,12 +204,14 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             } else if (state == RunState.PAUSE) {
                 if (sem.availablePermits == 0) {
                     sem.release()   //Used to avoid idle wait in traverseList
+                    traversingList = true
                 }
-                programming_play_button.setImageResource(R.drawable.ic_pause)
+                programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
                 state = RunState.RUNNING
             } else if (state == RunState.RUNNING) {
-                programming_play_button.setImageResource(R.drawable.ic_play_arrow)
+                programming_play_or_pause_button.setImageResource(R.drawable.ic_play_arrow)
                 state = RunState.PAUSE
+                traversingList = false
             }
         }
 
@@ -790,40 +794,60 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private suspend fun traverseList() {
 
-        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+        if (!Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
             val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
             val tenthOfSecondInMS: Long = 100
             val secondInMS: Long = 1000
-
-
+            traversingList = true
 
             itemList.forEachIndexed { index, item ->
-                recycler.scrollToPosition(index) //Scrolls list so that current item is on screen
 
-                var parameter: Int = item.displayParameter.toInt()
+                if(traversingList){
+                    recycler.scrollToPosition(index) //Scrolls list so that current item is on screen
 
-                if (item.parameterEnabled) {
-                    traversingList = true
-                    while (item.displayParameter > 0) {
+                    var parameter: Int = item.displayParameter.toInt()
+
+                    if (item.parameterEnabled) {
+                        while (item.displayParameter > 0) {
+                            when (state) {  //State machine
+                                RunState.RUNNING -> {
+                                    Utils.UtilsObject.bluetoothSendString(
+                                        "7${item.command}$parameter",
+                                        this.baseContext
+                                    )
+                                    //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
+                                    delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
+                                    parameter--
+
+
+                                    /*Works with Locale but crashes without? Only for Andreas*/
+                                    item.displayParameter =
+                                        String.format(
+                                            Locale.ENGLISH,
+                                            "%.1f",
+                                            item.displayParameter - 0.1
+                                        )
+                                            .toDouble()
+
+                                    adapter.notifyDataSetChanged()
+                                }
+                                RunState.PAUSE -> {
+                                    sem.acquire() //Button pause takes the semaphore. This coroutine will wait for it
+                                }
+                                else -> {
+                                    state = RunState.IDLE
+                                } //So we go to a known state if something would go wrong
+                            }
+                        }
+                    } else {
                         when (state) {  //State machine
                             RunState.RUNNING -> {
                                 Utils.UtilsObject.bluetoothSendString(
-                                    "7${item.command}$parameter",
+                                    "7${item.command}1",
                                     this.baseContext
                                 )
                                 //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
                                 delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
-                                parameter--
-
-
-                                /*Works with Locale but crashes without? Only for Andreas*/
-                                item.displayParameter =
-                                    String.format(
-                                        Locale.ENGLISH,
-                                        "%.1f",
-                                        item.displayParameter - 0.1
-                                    )
-                                        .toDouble()
 
                                 adapter.notifyDataSetChanged()
                             }
@@ -834,25 +858,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                 state = RunState.IDLE
                             } //So we go to a known state if something would go wrong
                         }
-                    }
-                } else {
-                    when (state) {  //State machine
-                        RunState.RUNNING -> {
-                            Utils.UtilsObject.bluetoothSendString(
-                                "7${item.command}1",
-                                this.baseContext
-                            )
-                            //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
-                            delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
-
-                            adapter.notifyDataSetChanged()
-                        }
-                        RunState.PAUSE -> {
-                            sem.acquire() //Button pause takes the semaphore. This coroutine will wait for it
-                        }
-                        else -> {
-                            state = RunState.IDLE
-                        } //So we go to a known state if something would go wrong
                     }
                 }
             }
@@ -879,7 +884,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         for (i in itemList)
             i.displayParameter = i.parameter
         adapter.notifyDataSetChanged()
-        programming_play_button.setImageResource(R.drawable.ic_play_arrow)
+        programming_play_or_pause_button.setImageResource(R.drawable.ic_play_arrow)
     }
 
     private fun displayDialogNameBlankWarning(intent : Intent? = null){

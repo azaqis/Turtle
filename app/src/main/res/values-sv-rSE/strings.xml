@@ -95,4 +95,8 @@
     <string name="programming">Programmering</string>
     <string name="remote_controller">Fjärr-styrning</string>
     <string name="manage_custom_commands">Hantera Custom Kommand</string>
+    <string name="changing_activity_while_traversinglist">Du kör fortfarande ditt program</string>
+    <string name="change_activity_or_stay_traverselist">Önskar du att avbryta det nuvarande projektet och byta vy eller stanna kvar med det nuvarande projektet?</string>
+    <string name="stay">Stanna kvar</string>
+    <string name="change_view">Byt vy</string>
 </resources>

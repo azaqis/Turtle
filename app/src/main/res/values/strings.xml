@@ -129,6 +129,10 @@
     <string name="programming">Programming</string>
     <string name="remote_controller">Remote Controller</string>
     <string name="manage_custom_commands">Manage Custom Commands</string>
+    <string name="changing_activity_while_traversinglist">You are still running your program</string>
+    <string name="change_activity_or_stay_traverselist">Do you wish to stop the running project and change view or stay with the current project?</string>
+    <string name="stay">Stay</string>
+    <string name="change_view">Change view</string>
 
 
 </resources>

@@ -3,7 +3,6 @@ package se.anad19ps.student.turtle
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings.Global.getString
 import android.widget.Toast
 
 
@@ -38,6 +37,14 @@ class Utils() {
                 toastMessage = Toast.makeText(uicontext, string, Toast.LENGTH_SHORT)
                 toastMessage!!.show()
             }
+        }
+
+        fun programmingIsTraversingList() : Boolean{
+            return ProgrammingActivity.traversingList
+        }
+
+        fun stopTraversingList(){
+            ProgrammingActivity.traversingList = false
         }
     }
 }
