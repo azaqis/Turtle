@@ -697,17 +697,13 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     /*Used to mark item for deletion*/
-    override fun onItemClick(position: Int, holder: View) {
+    override fun onItemClick(position: Int) {
         if (blocksAreSelected) {
             /*If item is already added to deleteList we want to deselect it*/
             if (selectedItemsList.contains(itemList[position])) {
                 itemList[position].dragImage = R.drawable.ic_drag_dots
                 selectedItemsList.remove(itemList[position])
                 adapter.notifyDataSetChanged()
-                //adapter.notifyItemChanged(position)
-                /* holder.card_drag_drop.setCardBackgroundColor(Color.WHITE)
-                 holder.card_image_drag_dots.setImageResource(R.drawable.ic_drag_dots)
-                 deleteList.remove(itemList[position])*/
                 if (selectedItemsList.isEmpty()) {
                     blocksAreSelected = false
                     showUnselectedButtonsHideSelectedButtons()
@@ -716,10 +712,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 itemList[position].dragImage = R.drawable.ic_baseline_check_circle_24
                 selectedItemsList.add(itemList[position])
                 adapter.notifyDataSetChanged()
-                //adapter.notifyItemChanged(position)
-                /*holder.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
-                holder.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
-                deleteList[itemList[position]] = holder*/
             }
         }
     }
@@ -728,19 +720,14 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         changeItemParameterDialog(position)
     }
 
-    /*LongClick activates selection for deletion*/
-    override fun onLongClick(position: Int, view: View) {
+    /*LongClick activates selection for selection*/
+    override fun onLongClick(position: Int) {
         /*No need to activate if already activated*/
         if (!blocksAreSelected) {
             showSelectedButtonsHideUnselectedButtons()
             itemList[position].dragImage = R.drawable.ic_baseline_check_circle_24
             selectedItemsList.add(itemList[position])
             adapter.notifyDataSetChanged()
-            //adapter.notifyItemChanged(position)
-            /*view.card_drag_drop.setCardBackgroundColor(Color.parseColor("#AABBCC"))
-            view.card_image_drag_dots.setImageResource(R.drawable.ic_baseline_delete_24)
-            deleteList[itemList[position]] =
-                view   //Map (DragDropBlock at position) with accompanying recycler item view*/
             blocksAreSelected = true
         }
     }
