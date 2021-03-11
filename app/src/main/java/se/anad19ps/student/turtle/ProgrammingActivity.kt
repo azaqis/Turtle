@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
@@ -110,14 +109,27 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         val intent = intent
 
-        if (intent.hasExtra("PROJECT_NAME")) {
-            projectName = intent.getSerializableExtra("PROJECT_NAME") as String
-            itemList = saveFilesManager.loadProject(projectName)
+        if (intent.hasExtra("SAVED_PROJECT_MANAGER")) {
+            saveFilesManager =
+                intent.getSerializableExtra("SAVED_PROJECT_MANAGER") as SaveFilesManager
+            projectName = saveFilesManager.getNameOfLastOpenedProject().toString()
+
+            val loadedProject = saveFilesManager.getProject(projectName, this)
+
+            if (loadedProject != null) {
+                itemList = loadedProject
+            }
+
         } else {
             val lastOpenProject = saveFilesManager.getNameOfLastOpenedProject()
             if (lastOpenProject != null) {
-                itemList = saveFilesManager.loadProject(lastOpenProject)
-                projectName = lastOpenProject
+                val loadedProject = saveFilesManager.getProject(lastOpenProject, this)
+
+                if (loadedProject != null) {
+                    itemList = loadedProject
+                    projectName = lastOpenProject
+                }
+
             } else {
                 projectName = newProjectStandardName
             }
@@ -287,6 +299,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             if (projectName != newProjectStandardName || itemList.isNotEmpty()) {
                 displayDialogAskIfWantToSave(newIntent)
             } else {
+                newIntent.putExtra("SAVED_PROJECT_MANAGER", saveFilesManager)
                 startActivity(newIntent)
             }
 
@@ -363,7 +376,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     Utils.UtilsObject.showUpdatedToast(getString(R.string.project_deleted), this)
                     Log.e("FILE_LOG", "Yes clicked, project deleted")
 
-                    saveFilesManager.deleteProject(projectName)
+                    saveFilesManager.deleteProject(projectName, this)
                     itemList.clear()
                     projectName = newProjectStandardName
                     programming_text_view_current_project.text = projectName
@@ -408,7 +421,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     } else if (saveFilesManager.saveProject(
                             dialogInputName.dialogTextFieldName.text.toString(),
                             itemList,
-                            false
+                            false,
+                            this
                         )
                     ) {
                         Utils.UtilsObject.showUpdatedToast(getString(R.string.project_saved), this)
@@ -459,6 +473,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
         dialogWantToSave.setPositiveButton(R.string.yes, dialogClickListener)
         dialogWantToSave.setNegativeButton(R.string.no, dialogClickListener)
+        dialogWantToSave.setCancelable(false)
         dialogWantToSave.create().show()
     }
 
@@ -575,8 +590,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_modules.setSelection(0, false)
 
         //Ugly way to do it, should not initialize a new SaveCustomDragDropBlockManager, rather use the one in the main thread
-        customBlocksSpinnerList =
-            SaveCustomDragDropBlockManager(this).getArrayWithCustomDragDropBlocks()
+        customBlocksSpinnerList = SaveCustomDragDropBlockManager(this).getArrayWithCustomDragDropBlocks().clone() as ArrayList<DragDropBlock>
         spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinnerList, this)
         spinnerCustomAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
         customBlocksSpinnerList.add(
@@ -925,7 +939,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     if (saveFilesManager.saveProject(
                             inputNameThatExists,
                             itemList,
-                            true
+                            true,
+                            this
                         )
                     ) {
                         Utils.UtilsObject.showUpdatedToast(
