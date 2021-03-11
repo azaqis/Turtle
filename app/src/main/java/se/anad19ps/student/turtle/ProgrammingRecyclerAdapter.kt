@@ -40,12 +40,11 @@ class ProgrammingRecyclerAdapter(
         return holder
     }
 
-    /*Fill view holder with data. Remember that recyclerview contains re-usable holders that needs to be loaded when enetring screen.
-    * This function is called whenever a new element is loaded*/
     override fun onBindViewHolder(
         holder: ProgrammingRecyclerAdapter.InnerViewHolder,
         position: Int
     ) {
+        holder.setIsRecyclable(false)   //Was not able to solve with wrong position parameter. This solves the problem but does not allow recycling
         val parameterEnabled = itemList[position].parameterEnabled
 
         /*Set graphics for element to match whatever data is stored in dragDropBlock*/
