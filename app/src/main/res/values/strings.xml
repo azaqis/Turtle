@@ -139,6 +139,7 @@
     <string name="manage_custom_drag_drop_blocks_activity">ManageCustomDragDropBlockActivity</string>
     <string name="project_is_empty">Your current project is empty!</string>
     <string name="bluetooth_client_not_active">Bluetooth client is not active</string>
+    <string name="new_project">New project</string>
 
 
 </resources>
