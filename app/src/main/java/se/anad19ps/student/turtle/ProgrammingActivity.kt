@@ -1,5 +1,6 @@
 package se.anad19ps.student.turtle
 
+import android.bluetooth.BluetoothDevice
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -131,7 +132,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             if (savedStates != null) {
                 itemList = savedStates.itemList
                 itemIdCounter = savedStates.itemIdCounter
-                selectedItemsList = savedStates.deleteList
+                selectedItemsList = savedStates.selectedList
                 alertParameterPosition = savedStates.positionAlertDialog
                 if (alertParameterPosition != -1)
                     changeItemParameterDialog(alertParameterPosition)
@@ -180,8 +181,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     /*Save necessary states and variables for run time configuration changes*/
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+
+        val itemListClone : ArrayList<DragDropBlock> = itemList.clone() as ArrayList<DragDropBlock>
+        val selectedItemsListClone : ArrayList<DragDropBlock> = selectedItemsList.clone() as ArrayList<DragDropBlock>
+
         val saveStates =
-            ProgrammingSavedState(itemList, selectedItemsList, itemIdCounter, alertParameterPosition)
+            ProgrammingSavedState(itemListClone, selectedItemsListClone, itemIdCounter, alertParameterPosition)
         outState.putParcelable("savedStateObject", saveStates)
         outState.putString("traversingList", traversingList.toString())
         outState.putString("openDialog", openDialog.toString())
