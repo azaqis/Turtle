@@ -172,20 +172,6 @@
                 android:scaleType="fitCenter"
                 android:padding="10dp"
                 android:elevation="10dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"/>
-
-            <ImageButton
-                android:id="@+id/programming_save_btn_selected"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/ic_baseline_save_alt_24"
-                android:background="@drawable/rounded_button"
-                android:scaleType="fitCenter"
-                android:padding="10dp"
-                android:elevation="10dp"
-                android:layout_marginLeft="30dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"/>
 

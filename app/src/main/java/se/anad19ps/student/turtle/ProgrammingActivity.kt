@@ -343,10 +343,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 showUnselectedButtonsHideSelectedButtons()
             }
         }
-
-        programming_save_btn_selected.setOnClickListener{
-            //CODE TO SAVE SELECTED BLOCK SET AS GROUPED BLOCKS
-        }
     }
 
     private fun showUnselectedButtonsHideSelectedButtons(){
