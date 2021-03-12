@@ -25,10 +25,9 @@ class HamburgerMenu(){
             MANAGE_CUSTOM_DRAG_DROP_BLOCKS_ACTIVITY,
             NOT_DEFINED
         }
+        private var currentActivity : ActivityNumber = ActivityNumber.NOT_DEFINED
 
         private lateinit var toggle: ActionBarDrawerToggle
-
-        private var currentActivity : ActivityNumber = ActivityNumber.NOT_DEFINED
     }
 
     fun setUpHamburgerMenu(
@@ -46,20 +45,13 @@ class HamburgerMenu(){
         )
 
         fun setCurrentActivity(){
-            if(con is SelectBluetoothDeviceActivity){
-                currentActivity = ActivityNumber.SELECT_BLUETOOTH_DEVICE_ACTIVITY
+            currentActivity = when (con){
+                is SelectBluetoothDeviceActivity -> ActivityNumber.SELECT_BLUETOOTH_DEVICE_ACTIVITY
+                is ProgrammingActivity -> ActivityNumber.PROGRAMMING_ACTIVITY
+                is ControllerActivity -> ActivityNumber.CONTROLLER_ACTIVITY
+                is ManageCustomDragDropBlocksActivity -> ActivityNumber.MANAGE_CUSTOM_DRAG_DROP_BLOCKS_ACTIVITY
+                else -> ActivityNumber.NOT_DEFINED
             }
-            else if(con is ProgrammingActivity) {
-                currentActivity = ActivityNumber.PROGRAMMING_ACTIVITY
-            }
-            else if(con is ControllerActivity){
-                currentActivity = ActivityNumber.CONTROLLER_ACTIVITY
-            }
-            else if(con is ManageCustomDragDropBlocksActivity){
-                currentActivity = ActivityNumber.MANAGE_CUSTOM_DRAG_DROP_BLOCKS_ACTIVITY
-            }
-            else
-                currentActivity = ActivityNumber.NOT_DEFINED
         }
 
         fun changeIntent(it : MenuItem){

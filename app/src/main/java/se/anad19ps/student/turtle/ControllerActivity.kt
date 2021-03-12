@@ -19,6 +19,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         private lateinit var topFragment: Fragment
         private var coroutine: Job? = null
         private var coroutineActive: Boolean = false
+        private const val JOYSTICK_COMMAND = "9"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,29 +28,11 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
+        setupTopFragment()
         setupSpinnerAdapters()
-
-    }
-
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-
     }
 
     private fun setupSpinnerAdapters() {
-        topFragment = ControllerDebugFragment()
-
-        val managerTopFragment = supportFragmentManager
-        val transaction = managerTopFragment.beginTransaction()
-
-        transaction.replace(R.id.fragmentTop, topFragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-
-
         val spinnerSpinnerController = findViewById<Spinner>(R.id.spinnerController)
         val adapterSpinnerController = ArrayAdapter.createFromResource(
             this,
@@ -57,7 +40,6 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         )
         adapterSpinnerController.setDropDownViewResource(R.layout.controller_spinner_dropdown_layout)
         spinnerSpinnerController.adapter = adapterSpinnerController
-
 
         spinnerSpinnerController.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
@@ -67,17 +49,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
                     position: Int,
                     id: Long
                 ) {
-                    if (position == 0)
-                        bottomFragment = ControllerJoystickFragment()
-                    else if (position == 1)
-                        bottomFragment = ControllerArrowButtonsFragment()
-
-                    val managerBottomFragment = supportFragmentManager
-                    val transaction = managerBottomFragment.beginTransaction()
-
-                    transaction.replace(R.id.fragmentBottom, bottomFragment)
-                    transaction.addToBackStack(null)
-                    transaction.commit()
+                    setupItemSelected(position)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -87,6 +59,31 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
             }
     }
 
+    private fun setupItemSelected(position: Int) {
+        if (position == 0)
+            bottomFragment = ControllerJoystickFragment()
+        else if (position == 1)
+            bottomFragment = ControllerArrowButtonsFragment()
+
+        val managerBottomFragment = supportFragmentManager
+        val transaction = managerBottomFragment.beginTransaction()
+
+        transaction.replace(R.id.fragment_bottom, bottomFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
+    private fun setupTopFragment() {
+        topFragment = ControllerDebugFragment()
+
+        val managerTopFragment = supportFragmentManager
+        val transaction = managerTopFragment.beginTransaction()
+
+        transaction.replace(R.id.fragment_top, topFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
     override fun onJoystickMoved(xPercentageMoved: Int, yPercentageMoved: Int) {
         val tenthOfSecondInMS: Long = 100
 
@@ -94,27 +91,39 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
             coroutine = GlobalScope.launch {
                 coroutineActive = true
 
-                var xMovedString: String = xPercentageMoved.toString()
-                var yMovedString: String = yPercentageMoved.toString()
+                val xMovedString = getConvertedPercentageToString(xPercentageMoved)
+                val yMovedString = getConvertedPercentageToString(yPercentageMoved)
 
-                if (xMovedString.length == 1)
-                    xMovedString = "00$xMovedString"
-                else if (xMovedString.length == 2)
-                    xMovedString = "0$xMovedString"
-
-                if (yMovedString.length == 1)
-                    yMovedString = "00$yMovedString"
-                else if (yMovedString.length == 2)
-                    yMovedString = "0$yMovedString"
-
-                Utils.UtilsObject.bluetoothSendString("9$xMovedString$yMovedString", baseContext)
+                Utils.UtilsObject.bluetoothSendString(
+                    "$JOYSTICK_COMMAND$xMovedString$yMovedString",
+                    baseContext
+                )
                 delay(tenthOfSecondInMS)
-                Log.d("TAG", "9,$xMovedString,$yMovedString")
+                Log.d("TAG", "$JOYSTICK_COMMAND,$xMovedString,$yMovedString")
 
                 coroutineActive = false
             }
         } else {
             Log.d("TAG", "In else from joystickmoved")
         }
+    }
+
+    private fun getConvertedPercentageToString(percentageMoved: Int) : String{
+        var movedString: String = percentageMoved.toString()
+
+        if (movedString.length == 1)
+            movedString = "00$movedString"
+        else if (movedString.length == 2)
+            movedString = "0$movedString"
+
+        return movedString
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+
     }
 }

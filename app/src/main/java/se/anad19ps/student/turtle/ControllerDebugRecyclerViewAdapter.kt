@@ -6,17 +6,16 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class ControllerDebugRecyclerViewAdapter (private var strings: List<String>) :
-    RecyclerView.Adapter<ControllerDebugRecyclerViewAdapter.ViewHolder>(){
+class ControllerDebugRecyclerViewAdapter(private var strings: List<String>) :
+    RecyclerView.Adapter<ControllerDebugRecyclerViewAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        val itemString: TextView = itemView.findViewById(R.id.textViewDebug)
-
+        val itemString: TextView = itemView.findViewById(R.id.text_view_Debug)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.fragment_controller_debug_row_layout, parent, false)
+        val v = LayoutInflater.from(parent.context)
+            .inflate(R.layout.fragment_controller_debug_row_layout, parent, false)
         return ViewHolder(v)
     }
 

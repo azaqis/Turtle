@@ -4,7 +4,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/textViewDebug"
+        android:id="@+id/text_view_Debug"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/PrimaryLight"/>
