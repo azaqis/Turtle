@@ -277,7 +277,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
 
         /*Reset button*/
-        programming_reset_btn.setOnClickListener {  //Stop coroutine and reset list traversal
+        programming_reset_btn.setOnClickListener {
             job?.cancel()
             resetListTraverse()
         }
@@ -288,7 +288,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 if (projectName != newProjectStandardName || itemList.isNotEmpty()) {
                     displayDialogDeleteProject()
                 } else {
-                    Utils.UtilsObject.showUpdatedToast("Project is empty, nothing to delete", this)
+                    Utils.UtilsObject.showUpdatedToast(getString(R.string.empty_project_delete_button_toast), this)
                 }
             }
         }
@@ -599,7 +599,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         return list
     }
 
-    /*May want to limit number of chars in each spinner item. Affects the size of the spinners*/
     private fun setupSpinners() {
         driveBlocksSpinnerList = createSpinnerDrivingBlocks()
         spinnerDriveAdapter = ProgrammingSpinnerAdapter(driveBlocksSpinnerList, this)
@@ -635,6 +634,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         /*So we can scroll to the added item*/
         val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
 
+        /*When an item is selected. Three similar setups for onItemSelectedListener*/
         programming_spinner_driving.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
@@ -648,7 +648,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 if (position != 0) { //We shouldn't add the title block
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
                     block.idNumber =
-                        itemIdCounter++    //Increment after adding id. No worries about itemIdCounter overflow.
+                        itemIdCounter++    //Increment after adding id
                     itemList.add(block)
                     adapter.notifyItemInserted(adapter.itemCount)
                     recycler.scrollToPosition(adapter.itemCount-1)

@@ -141,6 +141,7 @@
     <string name="bluetooth_client_not_active">Bluetooth client is not active</string>
     <string name="new_project">New project</string>
     <string name="spinner_image">spinnerImage</string>
+    <string name="empty_project_delete_button_toast">Project is empty, nothing to delete</string>
 
     <string name="drag_dots_image_description">Drag here symbol</string>
     <string name="direction_image_description">Direction symbol</string>
