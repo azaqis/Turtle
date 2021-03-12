@@ -39,7 +39,7 @@
                 android:textColor="@color/PrimaryLight"/>
             <!--Fragment doesnt work, doesnt change onItemListener-->
             <FrameLayout
-                android:id="@+id/fragmentTop"
+                android:id="@+id/fragment_top"
                 android:name="se.anad19ps.student.turtle.ControllerDebugFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -63,7 +63,7 @@
                 android:background="@drawable/gradient_background_spinner"/>
             <!--Fragment doesnt work, doesnt change onItemListener-->
             <FrameLayout
-                android:id="@+id/fragmentBottom"
+                android:id="@+id/fragment_bottom"
                 android:name="se.anad19ps.student.turtle.ControllerArrowButtonsFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

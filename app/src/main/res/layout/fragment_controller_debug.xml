@@ -26,7 +26,7 @@
             tools:listitem="@layout/fragment_controller_debug_row_layout"/>
 
         <Button
-            android:id="@+id/buttonClearList"
+            android:id="@+id/button_clear_list"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/clear_list"

@@ -3,6 +3,8 @@ package se.anad19ps.student.turtle
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.view.HapticFeedbackConstants
+import android.view.View
 import android.widget.Toast
 
 
@@ -49,6 +51,10 @@ class Utils {
 
         fun stopTraversingList() {
             ProgrammingActivity.traversingList = false
+        }
+
+        fun vibrate(view: View) {
+            view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
         }
     }
 }

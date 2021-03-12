@@ -27,7 +27,7 @@ class ProgrammingRecyclerAdapter(
         val holder = InnerViewHolder(itemView)
 
         /*Adding drag and drop when touching the 'drag dots' area*/
-        holder.itemView.card_image_drag_dots.setOnTouchListener { view, event ->
+        holder.itemView.card_drag_drop_image_drag_dots.setOnTouchListener { view, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN)
                 clickListener.onDragDots(holder)
             else if (event.actionMasked == MotionEvent.ACTION_UP)
@@ -78,10 +78,10 @@ class ProgrammingRecyclerAdapter(
 
     /*Out class for items in the recycler. 'view' is the itemView that we passed in onCreateViewHolder*/
     inner class InnerViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
-        var dragImage: ImageView = view.findViewById(R.id.card_image_drag_dots)
-        var directionImage: ImageView = view.findViewById(R.id.card_image_direction)
-        var text: TextView = view.findViewById(R.id.card_text)
-        var parameterButton: Button = view.findViewById(R.id.programming_card_button)
+        var dragImage: ImageView = view.findViewById(R.id.card_drag_drop_image_drag_dots)
+        var directionImage: ImageView = view.findViewById(R.id.card_drag_drop_image_direction)
+        var text: TextView = view.findViewById(R.id.card_drag_drop_text)
+        var parameterButton: Button = view.findViewById(R.id.card_drag_drop_button)
 
         init {
             view.setOnClickListener(this)

@@ -51,8 +51,8 @@
     </string-array>
 
     <string-array name="controllerSpinnerController">
-        <item>Current controller: Joystick</item>
-        <item>Current controller: Arrow-buttons</item>
+        <item>Controller: Joystick</item>
+        <item>Controller: Arrow-buttons</item>
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -141,6 +141,23 @@
     <string name="bluetooth_client_not_active">Bluetooth client is not active</string>
     <string name="new_project">New project</string>
     <string name="spinner_image">spinnerImage</string>
+    <string name="empty_project_delete_button_toast">Project is empty, nothing to delete</string>
+
+    <string name="drive_spinner_title">Driving</string>
+    <string name="drive_spinner_gear_down">Gear down</string>
+    <string name="drive_spinner_gear_up">Gear up</string>
+    <string name="drive_spinner_stop">Stop</string>
+    <string name="drive_spinner_turn_left">Turn left</string>
+    <string name="drive_spinner_turn_right">Turn right</string>
+    <string name="drive_spinner_reverse">Reverse</string>
+    <string name="drive_spinner_forward">Drive forward</string>
+    <string name="module_spinner_title">Modules</string>
+    <string name="module_spinner_led_on">LED turn on</string>
+    <string name="module_spinner_led_off">LED turn off</string>
+    <string name="module_spinner_buzzer">Buzzer buzz</string>
+
+    <string name="drag_dots_image_description">Drag here symbol</string>
+    <string name="direction_image_description">Direction symbol</string>
 
 
 </resources>

@@ -1,8 +1,6 @@
 package se.anad19ps.student.turtle
 
-import android.content.Context
 import android.os.Bundle
-import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,31 +8,18 @@ import android.widget.Button
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ControllerArrowButtonsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ControllerArrowButtonsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-
-
-
+    companion object {
+        private const val FORWARD_COMMAND = "2"
+        private const val REVERSE_COMMAND = "8"
+        private const val RIGHT_COMMAND = "6"
+        private const val LEFT_COMMAND = "4"
+        private const val AVOID_OBSTACLES_COMMAND = "3"
+        private const val LINE_FOLLOWING_COMMAND = "1"
+        private const val STOP_COMMAND = "5"
+        private const val GEAR_UP_COMMAND = "u"
+        private const val GEAR_DOWN_COMMAND = "d"
     }
 
     override fun onCreateView(
@@ -42,26 +27,25 @@ class ControllerArrowButtonsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_controller_arrow_buttons, container, false)
 
-        initButtons(root)
+        setupButtons(root)
 
         return root
     }
 
-    private fun initButtons(root : View){
-        val btnUp = root.findViewById<View>(R.id.buttonUp) as Button
-        val btnDown = root.findViewById<View>(R.id.buttonDown) as Button
-        val btnLeft = root.findViewById<View>(R.id.buttonLeft) as Button
-        val btnRight = root.findViewById<View>(R.id.buttonRight) as Button
+    private fun setupButtons(root: View) {
+        val btnUp = root.findViewById<View>(R.id.button_up) as Button
+        val btnDown = root.findViewById<View>(R.id.button_down) as Button
+        val btnLeft = root.findViewById<View>(R.id.button_left) as Button
+        val btnRight = root.findViewById<View>(R.id.button_right) as Button
 
-        val btnAvoidObstacles = root.findViewById<View>(R.id.buttonAvoidObstacles) as Button
-        val btnLineFollow = root.findViewById<View>(R.id.buttonLineFollower) as Button
-        val btnStop = root.findViewById<View>(R.id.buttonStop) as Button
+        val btnAvoidObstacles = root.findViewById<View>(R.id.button_avoid_obstacles) as Button
+        val btnLineFollow = root.findViewById<View>(R.id.button_line_follower) as Button
+        val btnStop = root.findViewById<View>(R.id.button_stop) as Button
 
-        val btnGearUp = root.findViewById<View>(R.id.buttonGearUp) as Button
-        val btnGearDown = root.findViewById<View>(R.id.buttonGearDown) as Button
+        val btnGearUp = root.findViewById<View>(R.id.button_gear_up) as Button
+        val btnGearDown = root.findViewById<View>(R.id.button_gear_down) as Button
 
         btnAvoidObstacles.setBackgroundColor(
             getColor(
@@ -83,66 +67,42 @@ class ControllerArrowButtonsFragment : Fragment() {
         )
 
         btnUp.setOnClickListener {
-            vibrate(requireView())
-            Utils.UtilsObject.bluetoothSendString("2", root.context)    //Switch-case in arduino-code, 2 is forward, 8 is backwards etc.
+            Utils.UtilsObject.vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString(FORWARD_COMMAND, root.context)    //Switch-case in arduino-code, 2 is forward, 8 is backwards etc.
         }
         btnDown.setOnClickListener {
-            vibrate(requireView())
-            Utils.UtilsObject.bluetoothSendString("8", root.context)
+            Utils.UtilsObject.vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString(REVERSE_COMMAND, root.context)
         }
         btnLeft.setOnClickListener {
-            vibrate(requireView())
-            Utils.UtilsObject.bluetoothSendString("4", root.context)
+            Utils.UtilsObject.vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString(LEFT_COMMAND, root.context)
         }
         btnRight.setOnClickListener {
-            vibrate(requireView())
-            Utils.UtilsObject.bluetoothSendString("6", root.context)
+            Utils.UtilsObject.vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString(RIGHT_COMMAND, root.context)
         }
 
         btnAvoidObstacles.setOnClickListener {
-            vibrate(requireView())
-            Utils.UtilsObject.bluetoothSendString("3", root.context)
+            Utils.UtilsObject.vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString(AVOID_OBSTACLES_COMMAND, root.context)
         }
         btnLineFollow.setOnClickListener {
-            vibrate(requireView())
-            Utils.UtilsObject.bluetoothSendString("1", root.context)
+            Utils.UtilsObject.vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString(LINE_FOLLOWING_COMMAND, root.context)
         }
         btnStop.setOnClickListener {
-            vibrate(requireView())
-            Utils.UtilsObject.bluetoothSendString("5", root.context)
+            Utils.UtilsObject.vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString(STOP_COMMAND, root.context)
         }
 
         btnGearUp.setOnClickListener {
-            vibrate(requireView())
-            Utils.UtilsObject.bluetoothSendString("u", root.context)
+            Utils.UtilsObject.vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString(GEAR_UP_COMMAND, root.context)
         }
         btnGearDown.setOnClickListener {
-            vibrate(requireView())
-            Utils.UtilsObject.bluetoothSendString("d", root.context)
+            Utils.UtilsObject.vibrate(requireView())
+            Utils.UtilsObject.bluetoothSendString(GEAR_DOWN_COMMAND, root.context)
         }
-    }
-
-    private fun vibrate(view: View) {
-        view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ControllerArrowButtonsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ControllerArrowButtonsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }
