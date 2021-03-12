@@ -4,9 +4,10 @@ import android.content.Context
 import android.util.Log
 import java.io.File
 import java.io.FileWriter
+import java.io.Serializable
 import kotlin.collections.ArrayList
 
-class SaveFilesManager(con : Context) {
+class SaveFilesManager(con : Context) : Serializable{
 
     companion object{
         private const val projectNamesFile = "projectNames.txt"
@@ -15,6 +16,7 @@ class SaveFilesManager(con : Context) {
         private var  lastOpenProject : String ?= null
         private lateinit var context : Context
         private var arrayWithProjectNames = arrayListOf<String>()
+        private lateinit var haschMapWithProjects : HashMap<String, ArrayList<DragDropBlock>>
     }
 
     /*
@@ -26,6 +28,8 @@ class SaveFilesManager(con : Context) {
 
     init {
         context = con
+
+        haschMapWithProjects = HashMap()
 
         //Check if projectNames.txt, otherwise it is probably the first time opening the app (or local storage has been cleaned) and projectNames.txt then need to be created. If it already exists, we load all names from the file
         if(!File(context.filesDir, projectNamesFile).isFile){
@@ -41,7 +45,8 @@ class SaveFilesManager(con : Context) {
         }
         else{
             Log.e("FILE_LOG", "projectNames.txt was already created")
-            loadNamesOfProjects()
+            loadNamesOfProjects(context)
+            loadAllProjectsFromSaveFile(context)
         }
 
         //Check if lastOpenProject.txt, otherwise it is probably the first time opening the app (or local storage has been cleaned) and lastOpenProject.txt then need to be created, If it already exists, we load the last open project from the file
@@ -55,29 +60,31 @@ class SaveFilesManager(con : Context) {
             }
         }
         else{
-            setLastOpenedProject(getNameOfLastOpenedProjectFromFile())
+            setLastOpenedProject(getNameOfLastOpenedProjectFromFile(context), context)
         }
     }
 
-    fun createNewEmptyProject(name : String, allowOverWriting: Boolean) : Boolean{
-        return saveProject(name, ArrayList<DragDropBlock>(), allowOverWriting)
+    fun createNewEmptyProject(name : String, allowOverWriting: Boolean, currentContext : Context) : Boolean{
+        return saveProject(name, ArrayList<DragDropBlock>(), allowOverWriting, currentContext)
     }
 
-    fun saveProject(projectName: String, saveDataList: MutableList<DragDropBlock>, allowOverWriting : Boolean) : Boolean{
+    fun saveProject(projectName: String, saveDataList: MutableList<DragDropBlock>, allowOverWriting : Boolean, currentContext : Context) : Boolean{
         Log.e("FILE_LOG", "Request to save: $projectName")
 
         //Tries to add new project name, if it is not possible to add the new name (due to name already exists) and allowOverWriting is not allowed then saveProject will return false indicating that it could not save project
-        if(!addNewName(projectName) && !allowOverWriting){
+        if(!addNewName(projectName, currentContext) && !allowOverWriting){
             Log.e("FILE_LOG", "Response that name exists $projectName")
             return false
         }
 
-        setLastOpenedProject(projectName)
-        saveProjectToFile(projectName, saveDataList)
+        setLastOpenedProject(projectName, currentContext)
+        saveProjectToFile(projectName, saveDataList, currentContext)
         return true
     }
 
-    private fun saveProjectToFile(projectName: String, saveDataList: MutableList<DragDropBlock>){
+    private fun saveProjectToFile(projectName: String, saveDataList: MutableList<DragDropBlock>, currentContext : Context){
+        context = currentContext
+
         Log.e("FILE_LOG", "Saving: $projectName")
 
         //Creates a file to save project in with the standard start of name + same name as the project
@@ -105,16 +112,18 @@ class SaveFilesManager(con : Context) {
         return arrayWithProjectNames.contains(name)
     }
 
-    private fun addNewName(projectName: String) : Boolean{
+    private fun addNewName(projectName: String, currentContext : Context) : Boolean{
         if(!projectNameExist(projectName)){
             arrayWithProjectNames.add(projectName)
-            updateNameFile()
+            updateNameFile(currentContext)
             return true
         }
         return false
     }
 
-    private fun updateNameFile(){
+    private fun updateNameFile(currentContext : Context){
+        context = currentContext
+
         val fwProjectsNamesFile = FileWriter(File(context.filesDir, projectNamesFile), false)
         for(name : String  in arrayWithProjectNames){
             fwProjectsNamesFile.write(name + "\n")
@@ -124,13 +133,15 @@ class SaveFilesManager(con : Context) {
         fwProjectsNamesFile.close()
     }
 
-    fun deleteProject(projectName : String) : Boolean{
+    fun deleteProject(projectName : String, currentContext : Context) : Boolean{
+        context = currentContext
+
         if(projectNameExist(projectName)){
             if(File(context.filesDir, "$startOfProjectSaveFilesName$projectName.txt").delete()){
                 arrayWithProjectNames.remove(projectName)
                 Log.e("FILE_LOG", "Deleted: " + projectName)
-                updateNameFile()
-                setLastOpenedProject(null)
+                updateNameFile(currentContext)
+                setLastOpenedProject(null, currentContext)
                 return true
             }
         }
@@ -138,7 +149,9 @@ class SaveFilesManager(con : Context) {
         return false
     }
 
-    private fun loadNamesOfProjects() {
+    private fun loadNamesOfProjects(currentContext : Context) {
+        context = currentContext
+
         arrayWithProjectNames.clear()
         Log.e("FILE_LOG", "Loading names requested")
         if(File(context.filesDir, projectNamesFile).isFile) {
@@ -156,64 +169,95 @@ class SaveFilesManager(con : Context) {
         return arrayWithProjectNames
     }
 
-    fun loadProject(projectName: String): ArrayList<DragDropBlock> {
-        var count = 0;
-        var projectItemsList = ArrayList<DragDropBlock>()
-
-        //null would be a better init, but don't know if i can change DragDropBlock to accept null?
-        var commandReadFromFile: String = ""
-        var directionImageReadFromFile: Int = -1
-        var displayParameterReadFromFile: Double = -1.0
-        var dragImageReadFromFile: Int = -1
-        var parameterReadFromFile: Double = -1.0
-        var textReadFromFile: String = ""
-        var type: DragDropBlock.e_type = DragDropBlock.e_type.CUSTOM
-        var parameterEnabled: Boolean = false
-        var idNumber: Long = 0
-
-        //Loop through every line in the file. Reading in the same order as we are writing to file in saveProjectToFile.
-        // We know that a DragDropBlock contains 8 attributes. Therefore we know on the 8th iteration that we have read a
-        // complete DragDropBlock and can now add this block to the array
-        File(context.filesDir,"$startOfProjectSaveFilesName$projectName.txt").useLines { lines ->
-            lines.forEach {
-                when (count) {
-                    0 -> commandReadFromFile = it
-                    1 -> directionImageReadFromFile = it.toInt()
-                    2 -> displayParameterReadFromFile = it.toDouble()
-                    3 -> dragImageReadFromFile = it.toInt()
-                    4 -> parameterReadFromFile = it.toDouble()
-                    5 -> textReadFromFile = it
-                    6 -> type = DragDropBlock.e_type.valueOf(it.toString())
-                    7 -> parameterEnabled = it.toBoolean()
-                    8 -> idNumber = it.toLong()
-                }
-                if (count < 7) {
-                    count++
-                } else {
-                    Log.e("FILE_LOG", "Type read was: $type")
-                    count = 0
-                    projectItemsList.add(
-                        DragDropBlock(
-                            dragImageReadFromFile,
-                            directionImageReadFromFile,
-                            textReadFromFile,
-                            commandReadFromFile,
-                            parameterReadFromFile,
-                            displayParameterReadFromFile,
-                            type,
-                            parameterEnabled,
-                            idNumber
-                        )
-                    )
-                }
-            }
-
-            setLastOpenedProject(projectName)
-            return projectItemsList
+    fun getProject(projectName: String, currentContext : Context): ArrayList<DragDropBlock>? {
+        if(haschMapWithProjects.containsKey(projectName)){
+            setLastOpenedProject(projectName, currentContext)
+            return haschMapWithProjects[projectName]!!
+        } else{
+            return null
         }
     }
 
-    private fun setLastOpenedProject(projectName : String?) : Boolean{
+    private fun loadAllProjectsFromSaveFile(currentContext : Context) {
+        for (projectName: String in arrayWithProjectNames) {
+            context = currentContext
+
+            var count = 0;
+            var projectItemsList = ArrayList<DragDropBlock>()
+
+            //null would be a better init, but don't know if i can change DragDropBlock to accept null?
+            var commandReadFromFile: String = ""
+            var directionImageReadFromFile: Int = -1
+            var displayParameterReadFromFile: Double = -1.0
+            var dragImageReadFromFile: Int = -1
+            var parameterReadFromFile: Double = -1.0
+            var textReadFromFile: String = ""
+            var type: DragDropBlock.e_type = DragDropBlock.e_type.CUSTOM
+            var parameterEnabled: Boolean = false
+            var idNumber: Long = 0
+
+            //Loop through every line in the file. Reading in the same order as we are writing to file in saveProjectToFile.
+            // We know that a DragDropBlock contains 8 attributes. Therefore we know on the 8th iteration that we have read a
+            // complete DragDropBlock and can now add this block to the array
+            File(
+                context.filesDir,
+                "$startOfProjectSaveFilesName$projectName.txt"
+            ).useLines { lines ->
+                lines.forEach {
+                    when (count) {
+                        0 -> commandReadFromFile = it
+                        1 -> directionImageReadFromFile = it.toInt()
+                        2 -> displayParameterReadFromFile = it.toDouble()
+                        3 -> dragImageReadFromFile = it.toInt()
+                        4 -> parameterReadFromFile = it.toDouble()
+                        5 -> textReadFromFile = it
+                        6 -> type = DragDropBlock.e_type.valueOf(it.toString())
+                        7 -> parameterEnabled = it.toBoolean()
+                        8 -> idNumber = it.toLong()
+                    }
+                    if (count < 7) {
+                        count++
+                    } else {
+                        Log.e("FILE_LOG", "Type read was: $type")
+                        count = 0
+                        projectItemsList.add(
+                            DragDropBlock(
+                                dragImageReadFromFile,
+                                directionImageReadFromFile,
+                                textReadFromFile,
+                                commandReadFromFile,
+                                parameterReadFromFile,
+                                displayParameterReadFromFile,
+                                type,
+                                parameterEnabled,
+                                idNumber
+                            )
+                        )
+                    }
+                    haschMapWithProjects[projectName] = projectItemsList
+                }
+            }
+        }
+    }
+
+    fun updateCustomDragDropBlocksInAllProjects(oldCustomDragDropBlock : DragDropBlock, updatedCustomDragDropBlock : DragDropBlock, currentContext : Context){
+        context = currentContext
+
+        for(project in haschMapWithProjects){
+            if(project.component2().contains(oldCustomDragDropBlock)){
+                var i = project.component2().indexOf(oldCustomDragDropBlock)
+                while(i != -1){
+                    project.component2()[i] = updatedCustomDragDropBlock
+                    i = project.component2().indexOf(oldCustomDragDropBlock)
+                }
+                saveProject(project.component1(), project.component2(), true, context)
+            }
+        }
+    }
+
+    private fun setLastOpenedProject(projectName : String?, currentContext : Context) : Boolean{
+        context = currentContext
+
         val fwLastOpenedProject = FileWriter(File(context.filesDir, lastOpenProjectFile), false)
 
         if(projectName == null){
@@ -232,7 +276,9 @@ class SaveFilesManager(con : Context) {
         return true
     }
 
-    private fun getNameOfLastOpenedProjectFromFile() : String?{
+    private fun getNameOfLastOpenedProjectFromFile(currentContext : Context) : String?{
+        context = currentContext
+
         if(File(context.filesDir, lastOpenProjectFile).isFile) {
             File(context.filesDir, lastOpenProjectFile).bufferedReader().use {
                 val projectName =  it.readLine()

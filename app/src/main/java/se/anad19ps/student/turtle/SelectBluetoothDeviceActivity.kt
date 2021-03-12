@@ -196,11 +196,13 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
         if (devices != null) {
             for (device: BluetoothDevice in devices) {
-                pairedDevicesList.add(device)
-                if (device.name != null)
-                    pairedDevicesNameList.add(device.name)
-                else
-                    pairedDevicesNameList.add(device.address)
+                if(!pairedDevicesList.contains(device)){
+                    pairedDevicesList.add(device)
+                    if (device.name != null)
+                        pairedDevicesNameList.add(device.name)
+                    else
+                        pairedDevicesNameList.add(device.address)
+                }
             }
             selectPairedDeviceList.invalidateViews()
             pairedDevicesNameListViewAdapter.notifyDataSetChanged()

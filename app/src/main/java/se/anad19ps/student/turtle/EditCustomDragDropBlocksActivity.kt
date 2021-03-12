@@ -3,10 +3,7 @@ package se.anad19ps.student.turtle
 import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.widget.Button
-import android.widget.CheckBox
-import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_edit_custom_dragdropblock.*
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
@@ -15,13 +12,15 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
 
     companion object{
         private lateinit var saveCustomDragDropBlockManager : SaveCustomDragDropBlockManager
-        private var dragDropBlock : DragDropBlock? = null
+        private var oldDragDropBlock : DragDropBlock? = null
 
         private enum class OpenDialog{
             DIALOG_NAME_EXISTS, DIALOG_NAME_IS_BLANK, NONE
         }
 
         private var openDialog = OpenDialog.NONE
+
+        private lateinit var saveFilesManager : SaveFilesManager
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,16 +29,18 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
 
         saveCustomDragDropBlockManager = SaveCustomDragDropBlockManager(this)
 
+        saveFilesManager = SaveFilesManager(this)
+
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
         if (intent.hasExtra("NAME_DRAGDDROPBLOCK")) {
             val nameFromExtra = intent.getSerializableExtra("NAME_DRAGDDROPBLOCK").toString()
-            dragDropBlock = saveCustomDragDropBlockManager.getDragDropBlockByName(nameFromExtra)
+            oldDragDropBlock = saveCustomDragDropBlockManager.getDragDropBlockByName(nameFromExtra)
 
-            if(dragDropBlock != null){
-                editTextDragDropBlockName.setText(dragDropBlock!!.text)
-                checkBox.isChecked = dragDropBlock!!.parameterEnabled
-                editTextDragDropBlockCommand.setText(dragDropBlock!!.command)
+            if(oldDragDropBlock != null){
+                editTextDragDropBlockName.setText(oldDragDropBlock!!.text)
+                checkBox.isChecked = oldDragDropBlock!!.parameterEnabled
+                editTextDragDropBlockCommand.setText(oldDragDropBlock!!.command)
             }
             else{
                 //If dragDropBlock is null here the dragDropBlock does not exists. Therefore it is not possible to edit it and therefore finishing this activity. This should not be able to happen
@@ -61,22 +62,23 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         val buttonUpdate = findViewById<Button>(R.id.editCustomCommandsButtonUpdate)
         buttonUpdate.setBackgroundColor(getResources().getColor(R.color.PrimaryColor))
         buttonUpdate.setOnClickListener {
-            if (dragDropBlock != null) {
+            if (oldDragDropBlock != null) {
                 //MIGHT DELETE ALL THESE VALS
-                val dragImage = dragDropBlock!!.dragImage
-                val directionImage = dragDropBlock!!.directionImage
+                val dragImage = oldDragDropBlock!!.dragImage
+                val directionImage = oldDragDropBlock!!.directionImage
                 val text = editTextDragDropBlockName.text.toString()
                 val command = editTextDragDropBlockCommand.text.toString()
-                val parameter = dragDropBlock!!.parameter
-                val displayParameter = dragDropBlock!!.displayParameter
-                val type = dragDropBlock!!.type
+                val parameter = oldDragDropBlock!!.parameter
+                val displayParameter = oldDragDropBlock!!.displayParameter
+                val type = oldDragDropBlock!!.type
                 val parameterEnabled = checkBox.isChecked
-                val idNumber = dragDropBlock!!.idNumber
+                val idNumber = oldDragDropBlock!!.idNumber
 
                 if(text.isNotBlank() && command.isNotBlank()){
                     val updatedDragDropBlock = DragDropBlock(dragImage, directionImage, text, command, parameter, displayParameter, type, parameterEnabled, idNumber)
 
-                    if (saveCustomDragDropBlockManager.editDragDropBlock(dragDropBlock!!.text, updatedDragDropBlock)){
+                    if (saveCustomDragDropBlockManager.editDragDropBlock(oldDragDropBlock!!.text, updatedDragDropBlock)){
+                        saveFilesManager.updateCustomDragDropBlocksInAllProjects(oldDragDropBlock!!, updatedDragDropBlock, this)
                         finish()
                     }
                     else {
@@ -99,7 +101,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
             val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
-                        saveCustomDragDropBlockManager.deleteCustomDragDropBlock(dragDropBlock!!.text)
+                        saveCustomDragDropBlockManager.deleteCustomDragDropBlock(oldDragDropBlock!!.text)
                         finish()
                     }
                     DialogInterface.BUTTON_NEGATIVE -> {
