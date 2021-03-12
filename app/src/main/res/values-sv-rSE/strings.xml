@@ -107,6 +107,20 @@
     <string name="bluetooth_client_not_active">Bluetooth-klienten är ej aktiv</string>
     <string name="new_project">Nytt projekt</string>
     <string name="spinner_image">spinnerImage</string>
+    <string name="empty_project_delete_button_toast">Projektet är tomt, ingenting att radera</string>
+
+    <string name="drive_spinner_title">Körning</string>
+    <string name="drive_spinner_gear_down">Växla ner</string>
+    <string name="drive_spinner_gear_up">Växla upp</string>
+    <string name="drive_spinner_stop">Stopp</string>
+    <string name="drive_spinner_turn_left">Sväng vänster</string>
+    <string name="drive_spinner_turn_right">Sväng höger</string>
+    <string name="drive_spinner_reverse">Backa</string>
+    <string name="drive_spinner_forward">Kör framåt</string>
+    <string name="module_spinner_title">Moduler</string>
+    <string name="module_spinner_led_on">Tänd LED</string>
+    <string name="module_spinner_led_off">Släck LED</string>
+    <string name="module_spinner_buzzer">Buzzer ljud</string>
 
     <string name="drag_dots_image_description">Drag här symbol</string>
     <string name="direction_image_description">Riktningssymbol</string>

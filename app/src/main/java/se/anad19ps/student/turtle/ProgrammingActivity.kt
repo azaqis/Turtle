@@ -80,12 +80,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         private lateinit var projectName: String
         private lateinit var customCommandManager: SaveCustomDragDropBlockManager
 
+        private lateinit var recyclerSimpleCallback: ItemTouchHelper.SimpleCallback
+
         /*Start coroutine from button click. Traverse list*/
         private var job: Job? = null
 
         var traversingList : Boolean = false
     }
 
+
+    /*For saving information about runtime configuration*/
     private var inputText : String? = null
     private var inputtedTextExists : String? = null
     private var changeIntentNotNull : Boolean = false
@@ -97,118 +101,32 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
 
-        Thread(Runnable {    //Setting up spinners and buttons slowed down startup of entire activity
+        state = RunState.IDLE
+
+        /*De loading main thread to avoid slowed start of activity*/
+        Thread(Runnable {
             setupSpinners()
             setupButtons()
         }).start()
+
+        setupRecyclerSimpleCallback()
+        restoreRuntimeConfigurationState(savedInstanceState)
 
         newProjectStandardName = getString(R.string.new_project)
         saveFilesManager = SaveFilesManager(this)
         customCommandManager = SaveCustomDragDropBlockManager(this)
 
-        val intent = intent
+        checkForIntentExtra()
 
-        if (intent.hasExtra("SAVED_PROJECT_MANAGER")) {
-            saveFilesManager =
-                intent.getSerializableExtra("SAVED_PROJECT_MANAGER") as SaveFilesManager
-            projectName = saveFilesManager.getNameOfLastOpenedProject().toString()
-
-            val loadedProject = saveFilesManager.getProject(projectName, this)
-
-            if (loadedProject != null) {
-                itemList = loadedProject
-            }
-
-        } else {
-            val lastOpenProject = saveFilesManager.getNameOfLastOpenedProject()
-            if (lastOpenProject != null) {
-                val loadedProject = saveFilesManager.getProject(lastOpenProject, this)
-
-                if (loadedProject != null) {
-                    itemList = loadedProject
-                    projectName = lastOpenProject
-                }
-
-            } else {
-                projectName = newProjectStandardName
-            }
-
-        }
-
-        state = RunState.IDLE
 
         /*Setting RecyclerView layout to linear*/
         val layoutManager = LinearLayoutManager(this)
         programming_recycle_view.layoutManager = layoutManager
 
-        /*Restore saved state if there is any. Affects runtime configuration changes*/
-        if (savedInstanceState != null) {
-            /*itemList =
-                savedInstanceState.getParcelableArrayList<DragDropBlock>("itemList") as ArrayList<DragDropBlock>
-            itemIdCounter = savedInstanceState.getLong("itemIdCounter")*/
-            val savedStates =
-                savedInstanceState.getParcelable<ProgrammingSavedState>("savedStateObject")
-
-            if (savedStates != null) {
-                itemList = savedStates.itemList
-                itemIdCounter = savedStates.itemIdCounter
-                selectedItemsList = savedStates.selectedList
-                alertParameterPosition = savedStates.positionAlertDialog
-
-                if (savedInstanceState.getString("traversingList") == "true"){
-                    job = GlobalScope.launch(Dispatchers.Main) {
-                        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
-                            if(itemList.isNotEmpty()){
-                                state = RunState.RUNNING
-                                programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
-                                traverseList()
-                            }
-                            else
-                                Utils.UtilsObject.showUpdatedToast(
-                                    getString(R.string.project_is_empty),
-                                    baseContext
-                                )
-                        } else {
-                            Utils.UtilsObject.showUpdatedToast(
-                                getString(R.string.not_connected_to_bt_device_warning),
-                                baseContext
-                            )
-                        }
-                    }
-                }
-
-                openDialog = savedInstanceState.getString("openDialog")?.let { OpenDialog.valueOf(it) }!!
-                changeIntentNotNull = savedInstanceState.getBoolean("changeIntentNotNull")
-
-                var intentToChangeTo : Intent? = null
-                if(changeIntentNotNull){
-                    intentToChangeTo = Intent(this, SavedProjectsActivity::class.java)
-                }
-
-                when(openDialog){
-                    OpenDialog.DIALOG_INPUT_NAME -> {
-                        inputText = savedInstanceState.getString("inputText")
-                        displayDialogInputName(intentToChangeTo, inputText)
-                    }
-                    OpenDialog.DIALOG_NAME_EXISTS_WARNING -> {
-                        inputtedTextExists = savedInstanceState.getString("inputtedTextExists")
-                        displayDialogNameExistsWarning(inputtedTextExists!!, intentToChangeTo)
-                    }
-                    OpenDialog.DIALOG_NAME_BLANK_WARNING -> displayDialogNameBlankWarning(intentToChangeTo)
-                    OpenDialog.DIALOG_ASK_IF_WANT_TO_SAVE -> displayDialogAskIfWantToSave(intentToChangeTo!!)
-                    OpenDialog.DIALOG_DELETE_PROJECT -> displayDialogDeleteProject()
-                    OpenDialog.DIALOG_CHANGE_PARAMETER -> {
-                        inputText = savedInstanceState.getString("inputText")
-                        changeItemParameterDialog(alertParameterPosition, inputText)
-                    }
-                }
-            }
-        }
-
         adapter = ProgrammingRecyclerAdapter(itemList, this)
         programming_recycle_view.adapter = adapter
 
-        itemTouchHelper = ItemTouchHelper(simpleCallback)
+        itemTouchHelper = ItemTouchHelper(recyclerSimpleCallback)
         itemTouchHelper.attachToRecyclerView(programming_recycle_view)
     }
 
@@ -278,7 +196,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
 
         /*Reset button*/
-        programming_reset_btn.setOnClickListener {  //Stop coroutine and reset list traversal
+        programming_reset_btn.setOnClickListener {
             job?.cancel()
             resetListTraverse()
         }
@@ -289,7 +207,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 if (projectName != newProjectStandardName || itemList.isNotEmpty()) {
                     displayDialogDeleteProject()
                 } else {
-                    Utils.UtilsObject.showUpdatedToast("Project is empty, nothing to delete", this)
+                    Utils.UtilsObject.showUpdatedToast(getString(R.string.empty_project_delete_button_toast), this)
                 }
             }
         }
@@ -344,6 +262,387 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 showUnselectedButtonsHideSelectedButtons()
             }
         }
+    }
+
+    /*Get information (if any) that may have been passed to this activity from another*/
+    private fun checkForIntentExtra(){
+        val intent = intent
+        if (intent.hasExtra("SAVED_PROJECT_MANAGER")) {
+            saveFilesManager =
+                intent.getSerializableExtra("SAVED_PROJECT_MANAGER") as SaveFilesManager
+            projectName = saveFilesManager.getNameOfLastOpenedProject().toString()
+
+            val loadedProject = saveFilesManager.getProject(projectName, this)
+
+            if (loadedProject != null) {
+                itemList = loadedProject
+            }
+
+        } else {
+            val lastOpenProject = saveFilesManager.getNameOfLastOpenedProject()
+            if (lastOpenProject != null) {
+                val loadedProject = saveFilesManager.getProject(lastOpenProject, this)
+
+                if (loadedProject != null) {
+                    itemList = loadedProject
+                    projectName = lastOpenProject
+                }
+
+            } else {
+                projectName = newProjectStandardName
+            }
+
+        }
+    }
+
+    private fun restoreRuntimeConfigurationState(savedInstanceState: Bundle?){
+        /*Restore saved state if there is any. Affects runtime configuration changes*/
+        if (savedInstanceState != null) {
+            val savedStates =
+                savedInstanceState.getParcelable<ProgrammingSavedState>("savedStateObject")
+
+            if (savedStates != null) {
+                itemList = savedStates.itemList
+                itemIdCounter = savedStates.itemIdCounter
+                selectedItemsList = savedStates.selectedList
+                alertParameterPosition = savedStates.positionAlertDialog
+
+                if (savedInstanceState.getString("traversingList") == "true"){
+                    job = GlobalScope.launch(Dispatchers.Main) {
+                        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+                            if(itemList.isNotEmpty()){
+                                state = RunState.RUNNING
+                                programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
+                                traverseList()
+                            }
+                            else
+                                Utils.UtilsObject.showUpdatedToast(
+                                    getString(R.string.project_is_empty),
+                                    baseContext
+                                )
+                        } else {
+                            Utils.UtilsObject.showUpdatedToast(
+                                getString(R.string.not_connected_to_bt_device_warning),
+                                baseContext
+                            )
+                        }
+                    }
+                }
+
+                openDialog = savedInstanceState.getString("openDialog")?.let { OpenDialog.valueOf(it) }!!
+                changeIntentNotNull = savedInstanceState.getBoolean("changeIntentNotNull")
+
+                var intentToChangeTo : Intent? = null
+                if(changeIntentNotNull){
+                    intentToChangeTo = Intent(this, SavedProjectsActivity::class.java)
+                }
+
+                when(openDialog){
+                    OpenDialog.DIALOG_INPUT_NAME -> {
+                        inputText = savedInstanceState.getString("inputText")
+                        displayDialogInputName(intentToChangeTo, inputText)
+                    }
+                    OpenDialog.DIALOG_NAME_EXISTS_WARNING -> {
+                        inputtedTextExists = savedInstanceState.getString("inputtedTextExists")
+                        displayDialogNameExistsWarning(inputtedTextExists!!, intentToChangeTo)
+                    }
+                    OpenDialog.DIALOG_NAME_BLANK_WARNING -> displayDialogNameBlankWarning(intentToChangeTo)
+                    OpenDialog.DIALOG_ASK_IF_WANT_TO_SAVE -> displayDialogAskIfWantToSave(intentToChangeTo!!)
+                    OpenDialog.DIALOG_DELETE_PROJECT -> displayDialogDeleteProject()
+                    OpenDialog.DIALOG_CHANGE_PARAMETER -> {
+                        inputText = savedInstanceState.getString("inputText")
+                        changeItemParameterDialog(alertParameterPosition, inputText)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupRecyclerSimpleCallback(){
+        /*For rearranging RecyclerView*/
+        recyclerSimpleCallback = object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP.or(
+                ItemTouchHelper.DOWN
+            ), 0
+        ) {
+            override fun onMove(    //Handles reordering and movement in recyclerview
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                val startPosition = viewHolder.adapterPosition
+                val endPosition = target.adapterPosition
+
+                Collections.swap(itemList, startPosition, endPosition)
+                recyclerView.adapter?.notifyItemMoved(startPosition, endPosition)
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                //No swipe
+            }
+
+            /*Disable longPress so longClicks are reserved for hold to delete function. Move by calling startDrag()*/
+            override fun isLongPressDragEnabled(): Boolean {
+                return false
+            }
+        }
+    }
+
+    private fun setupSpinners() {
+        driveBlocksSpinnerList = createSpinnerDrivingBlocks()
+        spinnerDriveAdapter = ProgrammingSpinnerAdapter(driveBlocksSpinnerList, this)
+        programming_spinner_driving.adapter = spinnerDriveAdapter
+        programming_spinner_driving.setSelection(0, false)
+
+        modulesBlocksSpinnerList = createSpinnerModuleBlocks()
+        spinnerModulesAdapter = ProgrammingSpinnerAdapter(modulesBlocksSpinnerList, this)
+        programming_spinner_modules.adapter = spinnerModulesAdapter
+        programming_spinner_modules.setSelection(0, false)
+
+        //Ugly way to do it, should not initialize a new SaveCustomDragDropBlockManager, rather use the one in the main thread
+        customBlocksSpinnerList = SaveCustomDragDropBlockManager(this).getArrayWithCustomDragDropBlocks().clone() as ArrayList<DragDropBlock>
+        spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinnerList, this)
+        spinnerCustomAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
+        customBlocksSpinnerList.add(
+            0, DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_custom, "Custom", "Null", 1.0,
+                1.0, DragDropBlock.e_type.CUSTOM, false, 0
+            )
+        )
+
+        programming_spinner_custom.adapter = spinnerCustomAdapter
+        programming_spinner_custom.setSelection(0, false)
+
+        /*So we can scroll to the added item*/
+        val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
+
+        /*When an item is selected. Three similar setups for onItemSelectedListener*/
+        programming_spinner_driving.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (position != 0) { //We shouldn't add the title block
+                    val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
+                    block.idNumber =
+                        itemIdCounter++    //Increment after adding id
+                    itemList.add(block)
+                    adapter.notifyItemInserted(adapter.itemCount)
+                    recycler.scrollToPosition(adapter.itemCount-1)
+                    programming_spinner_driving.setSelection(
+                        0,
+                        false
+                    )//Make title block stay on top
+                }
+            }
+        }
+
+        programming_spinner_modules.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (position != 0) {
+                    val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
+                    block.idNumber =
+                        itemIdCounter++
+                    itemList.add(block)
+                    adapter.notifyItemInserted(adapter.itemCount)
+                    recycler.scrollToPosition(adapter.itemCount-1)
+                    programming_spinner_modules.setSelection(0, false)
+                }
+            }
+        }
+
+        programming_spinner_custom.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (position != 0) {
+                    val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
+                    block.idNumber =
+                        itemIdCounter++
+                    itemList.add(block)
+                    adapter.notifyItemInserted(adapter.itemCount)
+                    recycler.scrollToPosition(adapter.itemCount-1)
+                    programming_spinner_custom.setSelection(0, false)
+                }
+            }
+        }
+    }
+
+    private fun populateModulesSpinnerList(
+        num: Int,
+        type: DragDropBlock.e_type
+    ): ArrayList<DragDropBlock> {
+        val list = ArrayList<DragDropBlock>()
+
+        for (i in 0 until num) {
+            val drawable = when (i) {
+                0 -> R.drawable.ic_baseline_highlight_24
+                1 -> R.drawable.ic_baseline_highlight_24
+                2 -> R.drawable.ic_baseline_surround_sound_24
+                else -> R.drawable.ic_arrow_left
+            }
+            when (i) {
+                0 -> {
+                    val item = DragDropBlock(
+                        R.drawable.ic_drag_dots,
+                        drawable,
+                        "LED Turn on",
+                        "Command",
+                        1.0,
+                        1.0,
+                        type,
+                        false,
+                        0
+                    )
+                    list.add(item)
+                }
+                1 -> {
+                    val item = DragDropBlock(
+                        R.drawable.ic_drag_dots,
+                        drawable,
+                        "LED Turn off",
+                        "Command",
+                        1.0,
+                        1.0,
+                        type,
+                        false,
+                        0
+                    )
+                    list.add(item)
+                }
+                2 -> {
+                    val item = DragDropBlock(
+                        R.drawable.ic_drag_dots,
+                        drawable,
+                        "Buzzer buzz",
+                        "Command",
+                        1.0,
+                        1.0,
+                        type,
+                        true,
+                        0
+                    )
+                    list.add(item)
+                }
+            }
+        }
+        return list
+    }
+
+    private fun createSpinnerModuleBlocks(): ArrayList<DragDropBlock>{
+        val list = ArrayList<DragDropBlock>()
+        list.add(
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_baseline_highlight_24, getString(R.string.module_spinner_led_on), "Not implemented",
+                1.0, 1.0, DragDropBlock.e_type.MODULE, false, 0
+            )
+        )
+
+        list.add(
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_baseline_highlight_24, getString(R.string.module_spinner_led_off), "Not implemented",
+                1.0, 1.0, DragDropBlock.e_type.MODULE, false, 0
+            )
+        )
+
+        list.add(
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_baseline_surround_sound_24, getString(R.string.module_spinner_buzzer), "Not implemented",
+                1.0, 1.0, DragDropBlock.e_type.MODULE, true, 0
+            )
+        )
+
+        list.add(
+            0,   //Unused object. Shown only in title. Cannot be added to itemList
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_modules, getString( R.string.module_spinner_title), "Null", 1.0,
+                1.0, DragDropBlock.e_type.MODULE, false, 0
+            )
+        )
+
+        return list
+    }
+
+    private fun createSpinnerDrivingBlocks(): ArrayList<DragDropBlock> {
+        val list = ArrayList<DragDropBlock>()
+
+        list.add(
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_arrow_up, getString(R.string.drive_spinner_forward), "2", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, true, 0
+            )
+        )
+
+        list.add(
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_arrow_right, getString(R.string.drive_spinner_turn_right), "6", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, true, 0
+            )
+        )
+
+        list.add(
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_arrow_down, getString(R.string.drive_spinner_reverse), "8", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, true, 0
+            )
+        )
+
+        list.add(
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_arrow_left, getString(R.string.drive_spinner_turn_left), "4", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, true, 0
+            )
+        )
+
+        list.add(
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_stop, getString(R.string.drive_spinner_stop), "5", 1.0,
+                0.0, DragDropBlock.e_type.DRIVE, true, 0
+            )
+        )
+
+        list.add(
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_gear, getString(R.string.drive_spinner_gear_up), "u", 0.0,
+                0.0, DragDropBlock.e_type.DRIVE, false, 0
+            )
+        )
+
+        list.add(
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_gear, getString(R.string.drive_spinner_gear_down), "d", 0.0,
+                0.0, DragDropBlock.e_type.DRIVE, false, 0
+            )
+        )
+
+        list.add(
+            0,   //Unused object. Shown only in title. Cannot be added to itemList
+            DragDropBlock(
+                R.drawable.ic_drag_dots, R.drawable.ic_drive, getString( R.string.drive_spinner_title), "Null", 1.0,
+                1.0, DragDropBlock.e_type.DRIVE, false, 0
+            )
+        )
+        return list
     }
 
     private fun showUnselectedButtonsHideSelectedButtons(){
@@ -474,265 +773,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogWantToSave.setNegativeButton(R.string.no, dialogClickListener)
         dialogWantToSave.setCancelable(false)
         dialogWantToSave.create().show()
-    }
-
-    private fun populateModulesSpinnerList(
-        num: Int,
-        type: DragDropBlock.e_type
-    ): ArrayList<DragDropBlock> {
-        val list = ArrayList<DragDropBlock>()
-
-        for (i in 0 until num) {
-            val drawable = when (i) {
-                0 -> R.drawable.ic_baseline_highlight_24
-                1 -> R.drawable.ic_baseline_highlight_24
-                2 -> R.drawable.ic_baseline_surround_sound_24
-                else -> R.drawable.ic_arrow_left
-            }
-            when (i) {
-                0 -> {
-                    val item = DragDropBlock(
-                        R.drawable.ic_drag_dots,
-                        drawable,
-                        "LED Turn on",
-                        "Command",
-                        1.0,
-                        1.0,
-                        type,
-                        false,
-                        0
-                    )
-                    list.add(item)
-                }
-                1 -> {
-                    val item = DragDropBlock(
-                        R.drawable.ic_drag_dots,
-                        drawable,
-                        "LED Turn off",
-                        "Command",
-                        1.0,
-                        1.0,
-                        type,
-                        false,
-                        0
-                    )
-                    list.add(item)
-                }
-                2 -> {
-                    val item = DragDropBlock(
-                        R.drawable.ic_drag_dots,
-                        drawable,
-                        "Buzzer buzz",
-                        "Command",
-                        1.0,
-                        1.0,
-                        type,
-                        true,
-                        0
-                    )
-                    list.add(item)
-                }
-            }
-        }
-        return list
-    }
-
-    /*Creating a list containing all drive blocks for the drive spinner*/
-    private fun createSpinnerDrivingBlocks(): ArrayList<DragDropBlock> {
-        val list = ArrayList<DragDropBlock>()
-
-        list.add(
-            DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_arrow_up, "Drive forward", "2", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, true, 0
-            )
-        )
-
-        list.add(
-            DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_arrow_right, "Turn right", "6", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, true, 0
-            )
-        )
-
-        list.add(
-            DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_arrow_down, "Reverse", "8", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, true, 0
-            )
-        )
-
-        list.add(
-            DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_arrow_left, "Turn left", "4", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, true, 0
-            )
-        )
-
-        list.add(
-            DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_stop, "Stop", "5", 1.0,
-                0.0, DragDropBlock.e_type.DRIVE, true, 0
-            )
-        )
-
-        list.add(
-            DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_gear, "Gear up", "u", 0.0,
-                0.0, DragDropBlock.e_type.DRIVE, false, 0
-            )
-        )
-
-        list.add(
-            DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_gear, "Gear down", "d", 0.0,
-                0.0, DragDropBlock.e_type.DRIVE, false, 0
-            )
-        )
-
-        list.add(
-            0,   //Unused object. Shown only in title. Cannot be added to itemList
-            DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_drive, "Driving", "Null", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, false, 0
-            )
-        )
-        return list
-    }
-
-    /*May want to limit number of chars in each spinner item. Affects the size of the spinners*/
-    private fun setupSpinners() {
-        driveBlocksSpinnerList = createSpinnerDrivingBlocks()
-        spinnerDriveAdapter = ProgrammingSpinnerAdapter(driveBlocksSpinnerList, this)
-        programming_spinner_driving.adapter = spinnerDriveAdapter
-        programming_spinner_driving.setSelection(0, false)
-
-        modulesBlocksSpinnerList = populateModulesSpinnerList(3, DragDropBlock.e_type.MODULE)
-        spinnerModulesAdapter = ProgrammingSpinnerAdapter(modulesBlocksSpinnerList, this)
-        modulesBlocksSpinnerList.add(
-            0, DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_modules, "Modules", "Null",
-                1.0, 1.0, DragDropBlock.e_type.MODULE, false, 0
-            )
-        )
-
-        programming_spinner_modules.adapter = spinnerModulesAdapter
-        programming_spinner_modules.setSelection(0, false)
-
-        //Ugly way to do it, should not initialize a new SaveCustomDragDropBlockManager, rather use the one in the main thread
-        customBlocksSpinnerList = SaveCustomDragDropBlockManager(this).getArrayWithCustomDragDropBlocks().clone() as ArrayList<DragDropBlock>
-        spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinnerList, this)
-        spinnerCustomAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
-        customBlocksSpinnerList.add(
-            0, DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_custom, "Custom", "Null", 1.0,
-                1.0, DragDropBlock.e_type.CUSTOM, false, 0
-            )
-        )
-
-        programming_spinner_custom.adapter = spinnerCustomAdapter
-        programming_spinner_custom.setSelection(0, false)
-
-        /*So we can scroll to the added item*/
-        val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
-
-        programming_spinner_driving.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                if (position != 0) { //We shouldn't add the title block
-                    val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
-                    block.idNumber =
-                        itemIdCounter++    //Increment after adding id. No worries about itemIdCounter overflow.
-                    itemList.add(block)
-                    adapter.notifyItemInserted(adapter.itemCount)
-                    recycler.scrollToPosition(adapter.itemCount-1)
-                    programming_spinner_driving.setSelection(
-                        0,
-                        false
-                    )//Make title block stay on top
-                }
-            }
-        }
-
-        programming_spinner_modules.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                if (position != 0) {
-                    val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
-                    block.idNumber =
-                        itemIdCounter++
-                    itemList.add(block)
-                    adapter.notifyItemInserted(adapter.itemCount)
-                    recycler.scrollToPosition(adapter.itemCount-1)
-                    programming_spinner_modules.setSelection(0, false)
-                }
-            }
-        }
-
-        programming_spinner_custom.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                if (position != 0) {
-                    val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
-                    block.idNumber =
-                        itemIdCounter++
-                    itemList.add(block)
-                    adapter.notifyItemInserted(adapter.itemCount)
-                    recycler.scrollToPosition(adapter.itemCount-1)
-                    programming_spinner_custom.setSelection(0, false)
-                }
-            }
-        }
-    }
-
-    /*For rearranging recyclerview*/
-    private var simpleCallback = object : ItemTouchHelper.SimpleCallback(
-        ItemTouchHelper.UP.or(
-            ItemTouchHelper.DOWN
-        ), ItemTouchHelper.RIGHT
-    ) {
-        override fun onMove(    //Handles reordering and movement in recyclerview
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
-        ): Boolean {
-            val startPosition = viewHolder.adapterPosition
-            val endPosition = target.adapterPosition
-
-            Collections.swap(itemList, startPosition, endPosition)
-            recyclerView.adapter?.notifyItemMoved(startPosition, endPosition)
-            return true
-        }
-
-        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            //No swipe
-        }
-
-        /*Disable longPress so longClicks are reserved for hold to delete function. Move by calling startDrag()*/
-        override fun isLongPressDragEnabled(): Boolean {
-            return false
-        }
     }
 
     /*When touching dragDots*/
