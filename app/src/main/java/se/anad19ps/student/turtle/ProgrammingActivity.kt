@@ -35,7 +35,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         PAUSE
     }
 
-    private enum class OpenDialog{
+    private enum class OpenDialog {
         DIALOG_INPUT_NAME,
         DIALOG_NAME_BLANK_WARNING,
         DIALOG_NAME_EXISTS_WARNING,
@@ -45,53 +45,54 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         NONE
     }
 
-    companion object{
-        private var openDialog = OpenDialog.NONE
-
-        private var alertParameterPosition: Int = -1
-
-		private var blocksAreSelected = false //Marks if a click should add to deleteList
-		private var selectedItemsList = ArrayList<DragDropBlock>()
-
-        private lateinit var newProjectStandardName : String
-
-        private lateinit var adapter: ProgrammingRecyclerAdapter
-
-        private lateinit var spinnerDriveAdapter: ProgrammingSpinnerAdapter
-        private lateinit var spinnerModulesAdapter: ProgrammingSpinnerAdapter
-        private lateinit var spinnerCustomAdapter: ProgrammingSpinnerAdapter
-
-        private var itemList = ArrayList<DragDropBlock>()   //List for items in RecyclerView
-        private var itemIdCounter: Long =
-            1  //Used to assign unique id to each dragDropBlock. 0 reserved for non added
-
-        private var driveBlocksSpinnerList =
-            mutableListOf<DragDropBlock>() //Lists for items in spinners
-        private var modulesBlocksSpinnerList = mutableListOf<DragDropBlock>()
-        private var customBlocksSpinnerList = mutableListOf<DragDropBlock>()
-
-        private lateinit var itemTouchHelper: ItemTouchHelper   //For RecyclerView drag and drop. Receives events from RecyclerView
-
-        private lateinit var state: RunState    //State for iteration through list. Needed for play, pause and stop
-        private val sem = Semaphore(1)  //Can force the state machine to halt coroutine when pausing
-
-        private lateinit var saveFilesManager: SaveFilesManager
-        private lateinit var projectName: String
-        private lateinit var customCommandManager: SaveCustomDragDropBlockManager
-
-        private lateinit var recyclerSimpleCallback: ItemTouchHelper.SimpleCallback
-
-        /*Start coroutine from button click. Traverse list*/
-        private var job: Job? = null
-
-        var traversingList : Boolean = false
+    companion object {
+        var traversingList: Boolean = false
     }
 
+    private var openDialog = OpenDialog.NONE
 
+    private var alertParameterPosition: Int = -1
+
+    private var blocksAreSelected = false //Marks if a click should add to deleteList
+    private var selectedItemsList = ArrayList<DragDropBlock>()
+
+    private lateinit var newProjectStandardName: String
+
+    private lateinit var recycleViewAdapter: ProgrammingRecyclerAdapter
+
+    private lateinit var spinnerDriveAdapter: ProgrammingSpinnerAdapter
+    private lateinit var spinnerModulesAdapter: ProgrammingSpinnerAdapter
+    private lateinit var spinnerCustomAdapter: ProgrammingSpinnerAdapter
+
+    private var recycleViewItemList = ArrayList<DragDropBlock>()
+
+    /*Used to assign unique id to each dragDropBlock. 0 reserved for non added. Needed because
+    kotlin seems to do some optimization making all items with same data get removed, edited etc
+    at the same time*/
+    private var itemIdCounter: Long = 1
+
+    private var driveBlocksSpinnerList =
+        mutableListOf<DragDropBlock>() //Lists for items in spinners
+    private var modulesBlocksSpinnerList = mutableListOf<DragDropBlock>()
+    private var customBlocksSpinnerList = mutableListOf<DragDropBlock>()
+
+    private lateinit var itemTouchHelper: ItemTouchHelper   //For RecyclerView drag and drop. Receives events from RecyclerView
+
+    private lateinit var state: RunState    //State for iteration through list. Needed for play, pause and stop
+    private val sem = Semaphore(1)  //Can force the state machine to halt coroutine when pausing
+
+    private lateinit var saveFilesManager: SaveFilesManager
+    private lateinit var projectName: String
+    private lateinit var customCommandManager: SaveCustomDragDropBlockManager
+
+    private lateinit var recyclerSimpleCallback: ItemTouchHelper.SimpleCallback
+
+    /*Start coroutine from button click. Traverse list*/
+    private var traverseListCoroutine: Job? = null
     /*For saving information about runtime configuration*/
-    private var inputText : String? = null
-    private var inputtedTextExists : String? = null
-    private var changeIntentNotNull : Boolean = false
+    private var inputText: String? = null
+    private var inputtedTextExists: String? = null
+    private var changeIntentNotNull: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,9 +107,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         Thread(Runnable {
             setupSpinners()
             setupButtons()
+            apiDependentConfigurations()
         }).start()
 
-        setupRecyclerSimpleCallback()
+        setupRecyclerSimpleCallback()   //Enables RecyclerView drag and drop
         restoreRuntimeConfigurationState(savedInstanceState)
 
         newProjectStandardName = getString(R.string.new_project)
@@ -117,37 +119,56 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         checkForIntentExtra()
 
+        if(recycleViewItemList.count() > 0) {
+            /*The way it works when loading lists is that last element has highest id number.
+        * We want to start counting from there.*/
+            itemIdCounter = recycleViewItemList[recycleViewItemList.count() - 1].idNumber + 1
+        }
 
         /*Setting RecyclerView layout to linear*/
         val layoutManager = LinearLayoutManager(this)
         programming_recycle_view.layoutManager = layoutManager
 
-        adapter = ProgrammingRecyclerAdapter(itemList, this)
-        programming_recycle_view.adapter = adapter
+        recycleViewAdapter = ProgrammingRecyclerAdapter(recycleViewItemList, this)
+        programming_recycle_view.adapter = recycleViewAdapter
 
         itemTouchHelper = ItemTouchHelper(recyclerSimpleCallback)
         itemTouchHelper.attachToRecyclerView(programming_recycle_view)
+
+
     }
 
     /*Save necessary states and variables for run time configuration changes*/
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        val itemListClone : ArrayList<DragDropBlock> = itemList.clone() as ArrayList<DragDropBlock>
-        val selectedItemsListClone : ArrayList<DragDropBlock> = selectedItemsList.clone() as ArrayList<DragDropBlock>
+        val itemListClone: ArrayList<DragDropBlock> = recycleViewItemList.clone() as ArrayList<DragDropBlock>
+        val selectedItemsListClone: ArrayList<DragDropBlock> =
+            selectedItemsList.clone() as ArrayList<DragDropBlock>
 
         val saveStates =
-            ProgrammingSavedState(itemListClone, selectedItemsListClone, itemIdCounter, alertParameterPosition)
+            ProgrammingSavedState(
+                itemListClone,
+                selectedItemsListClone,
+                itemIdCounter,
+                alertParameterPosition
+            )
         outState.putParcelable("savedStateObject", saveStates)
         outState.putString("traversingList", traversingList.toString())
         outState.putString("openDialog", openDialog.toString())
         outState.putBoolean("changeIntentNotNull", changeIntentNotNull)
 
-        when(openDialog){
+        when (openDialog) {
             OpenDialog.DIALOG_INPUT_NAME -> outState.putString("inputText", inputText)
-            OpenDialog.DIALOG_NAME_EXISTS_WARNING -> outState.putString("inputtedTextExists", inputtedTextExists)
+            OpenDialog.DIALOG_NAME_EXISTS_WARNING -> outState.putString(
+                "inputtedTextExists",
+                inputtedTextExists
+            )
             OpenDialog.DIALOG_CHANGE_PARAMETER -> {
                 outState.putString("inputText", inputText)
+            }
+            else -> {
+                //No action
             }
         }
     }
@@ -157,56 +178,80 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_text_view_current_project.text = projectName
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (traverseListCoroutine != null) {    //Cancel
+            traverseListCoroutine!!.cancel()
+        }
+    }
+
+    private fun apiDependentConfigurations() {
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            programming_delete_btn.elevation = 10f
+            programming_reset_btn.elevation = 10f
+            programming_play_or_pause_button.elevation = 10f
+            programming_load_button.elevation = 10f
+            programming_save_button.elevation = 10f
+            programming_delete_btn_selected.elevation = 10f
+        }
+    }
+
     private fun setupButtons() {
         /*Play button*/
         programming_play_or_pause_button.setOnClickListener {
-            if (state == RunState.IDLE) {
-                job = GlobalScope.launch(Dispatchers.Main) {
-                    if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
-                        if(itemList.isNotEmpty()){
-                            state = RunState.RUNNING
-                            programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
-                            traverseList()
-                        }
-                        else
+            when (state) {
+                RunState.IDLE -> {  //When play button is first pressed
+                    traverseListCoroutine = GlobalScope.launch(Dispatchers.Main) {
+                        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+                            if (recycleViewItemList.isNotEmpty()) {
+                                state = RunState.RUNNING
+                                programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
+                                traverseList()
+                            } else
+                                Utils.UtilsObject.showUpdatedToast(
+                                    getString(R.string.project_is_empty),
+                                    baseContext
+                                )
+                        } else {
                             Utils.UtilsObject.showUpdatedToast(
-                                getString(R.string.project_is_empty),
+                                getString(R.string.not_connected_to_bt_device_warning),
                                 baseContext
                             )
-                    } else {
-                        Utils.UtilsObject.showUpdatedToast(
-                            getString(R.string.not_connected_to_bt_device_warning),
-                            baseContext
-                        )
+                        }
                     }
                 }
-            } else if (state == RunState.PAUSE) {
-                if (sem.availablePermits == 0) {
-                    sem.release()   //Used to avoid idle wait in traverseList
-                    traversingList = true
+                RunState.PAUSE -> {
+                    if (sem.availablePermits == 0) {
+                        sem.release()   //Used to avoid idle wait in traverseList
+                        traversingList = true
+                    }
+                    programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
+                    state = RunState.RUNNING
                 }
-                programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
-                state = RunState.RUNNING
-            } else if (state == RunState.RUNNING) {
-                programming_play_or_pause_button.setImageResource(R.drawable.ic_play_arrow)
-                state = RunState.PAUSE
-                traversingList = false
+                RunState.RUNNING -> {
+                    programming_play_or_pause_button.setImageResource(R.drawable.ic_play_arrow)
+                    state = RunState.PAUSE
+                    traversingList = false
+                }
             }
         }
 
         /*Reset button*/
         programming_reset_btn.setOnClickListener {
-            job?.cancel()
+            traverseListCoroutine?.cancel()
             resetListTraverse()
         }
 
         /*Delete button*/
         programming_delete_btn.setOnClickListener {
-            if(!blocksAreSelected) {
-                if (projectName != newProjectStandardName || itemList.isNotEmpty()) {
+            if (!blocksAreSelected) {
+                if (projectName != newProjectStandardName || recycleViewItemList.isNotEmpty()) {
                     displayDialogDeleteProject()
                 } else {
-                    Utils.UtilsObject.showUpdatedToast(getString(R.string.empty_project_delete_button_toast), this)
+                    Utils.UtilsObject.showUpdatedToast(
+                        getString(R.string.empty_project_delete_button_toast),
+                        this
+                    )
                 }
             }
         }
@@ -215,7 +260,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_load_button.setOnClickListener {
             val newIntent = Intent(this, SavedProjectsActivity::class.java)
 
-            if (projectName != newProjectStandardName || itemList.isNotEmpty()) {
+            if (projectName != newProjectStandardName || recycleViewItemList.isNotEmpty()) {
                 displayDialogAskIfWantToSave(newIntent)
             } else {
                 newIntent.putExtra("SAVED_PROJECT_MANAGER", saveFilesManager)
@@ -225,7 +270,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
 
         programming_save_button.setOnClickListener {
-            if (projectName != newProjectStandardName || itemList.isNotEmpty()) {
+            if (projectName != newProjectStandardName || recycleViewItemList.isNotEmpty()) {
                 displayDialogInputName()
             } else {
                 Utils.UtilsObject.showUpdatedToast(
@@ -235,11 +280,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             }
         }
 
-        programming_delete_btn_selected.setOnClickListener{
+        programming_delete_btn_selected.setOnClickListener {
             if (selectedItemsList.isNotEmpty()) {
                 val indexes = ArrayList<Int>()  //To record indexed that should be deleted
 
-                itemList.forEachIndexed { index, dragDropBlock -> //Record indexes
+                recycleViewItemList.forEachIndexed { index, dragDropBlock -> //Record indexes
                     if (selectedItemsList.contains(dragDropBlock)) {
                         indexes.add(index)
                     }
@@ -250,8 +295,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
                 for (i in 0 until indexes.size) {
                     //deleteList[itemList[indexes[i]]]?.card_drag_drop?.setCardBackgroundColor(Color.WHITE)   //Reset holders to standard color
-                    itemList.removeAt(indexes[i])
-                    adapter.notifyDataSetChanged()
+                    recycleViewItemList.removeAt(indexes[i])
+                    recycleViewAdapter.notifyDataSetChanged()
                     //adapter.notifyItemRemoved(indexes[i])
                 }
 
@@ -264,7 +309,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     /*Get information (if any) that may have been passed to this activity from another*/
-    private fun checkForIntentExtra(){
+    private fun checkForIntentExtra() {
         val intent = intent
         if (intent.hasExtra("SAVED_PROJECT_MANAGER")) {
             saveFilesManager =
@@ -274,7 +319,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             val loadedProject = saveFilesManager.getProject(projectName, this)
 
             if (loadedProject != null) {
-                itemList = loadedProject
+                recycleViewItemList = loadedProject
             }
 
         } else {
@@ -283,7 +328,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 val loadedProject = saveFilesManager.getProject(lastOpenProject, this)
 
                 if (loadedProject != null) {
-                    itemList = loadedProject
+                    recycleViewItemList = loadedProject
                     projectName = lastOpenProject
                 }
 
@@ -294,27 +339,26 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
     }
 
-    private fun restoreRuntimeConfigurationState(savedInstanceState: Bundle?){
-        /*Restore saved state if there is any. Affects runtime configuration changes*/
+    /*Restore saved state if there is any. Affects runtime configuration changes*/
+    private fun restoreRuntimeConfigurationState(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             val savedStates =
                 savedInstanceState.getParcelable<ProgrammingSavedState>("savedStateObject")
 
             if (savedStates != null) {
-                itemList = savedStates.itemList
+                recycleViewItemList = savedStates.itemList
                 itemIdCounter = savedStates.itemIdCounter
                 selectedItemsList = savedStates.selectedList
                 alertParameterPosition = savedStates.positionAlertDialog
 
-                if (savedInstanceState.getString("traversingList") == "true"){
-                    job = GlobalScope.launch(Dispatchers.Main) {
+                if (savedInstanceState.getString("traversingList") == "true") {
+                    traverseListCoroutine = GlobalScope.launch(Dispatchers.Main) {
                         if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
-                            if(itemList.isNotEmpty()){
+                            if (recycleViewItemList.isNotEmpty()) {
                                 state = RunState.RUNNING
                                 programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
                                 traverseList()
-                            }
-                            else
+                            } else
                                 Utils.UtilsObject.showUpdatedToast(
                                     getString(R.string.project_is_empty),
                                     baseContext
@@ -328,15 +372,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     }
                 }
 
-                openDialog = savedInstanceState.getString("openDialog")?.let { OpenDialog.valueOf(it) }!!
+                openDialog =
+                    savedInstanceState.getString("openDialog")?.let { OpenDialog.valueOf(it) }!!
                 changeIntentNotNull = savedInstanceState.getBoolean("changeIntentNotNull")
 
-                var intentToChangeTo : Intent? = null
-                if(changeIntentNotNull){
+                var intentToChangeTo: Intent? = null
+                if (changeIntentNotNull) {
                     intentToChangeTo = Intent(this, SavedProjectsActivity::class.java)
                 }
 
-                when(openDialog){
+                when (openDialog) {
                     OpenDialog.DIALOG_INPUT_NAME -> {
                         inputText = savedInstanceState.getString("inputText")
                         displayDialogInputName(intentToChangeTo, inputText)
@@ -345,20 +390,27 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         inputtedTextExists = savedInstanceState.getString("inputtedTextExists")
                         displayDialogNameExistsWarning(inputtedTextExists!!, intentToChangeTo)
                     }
-                    OpenDialog.DIALOG_NAME_BLANK_WARNING -> displayDialogNameBlankWarning(intentToChangeTo)
-                    OpenDialog.DIALOG_ASK_IF_WANT_TO_SAVE -> displayDialogAskIfWantToSave(intentToChangeTo!!)
+                    OpenDialog.DIALOG_NAME_BLANK_WARNING -> displayDialogNameBlankWarning(
+                        intentToChangeTo
+                    )
+                    OpenDialog.DIALOG_ASK_IF_WANT_TO_SAVE -> displayDialogAskIfWantToSave(
+                        intentToChangeTo!!
+                    )
                     OpenDialog.DIALOG_DELETE_PROJECT -> displayDialogDeleteProject()
                     OpenDialog.DIALOG_CHANGE_PARAMETER -> {
                         inputText = savedInstanceState.getString("inputText")
                         changeItemParameterDialog(alertParameterPosition, inputText)
+                    }
+                    else -> {
+                        //No action
                     }
                 }
             }
         }
     }
 
-    private fun setupRecyclerSimpleCallback(){
-        /*For rearranging RecyclerView*/
+    /*For rearranging items in RecyclerView*/
+    private fun setupRecyclerSimpleCallback() {
         recyclerSimpleCallback = object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP.or(
                 ItemTouchHelper.DOWN
@@ -372,7 +424,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 val startPosition = viewHolder.adapterPosition
                 val endPosition = target.adapterPosition
 
-                Collections.swap(itemList, startPosition, endPosition)
+                Collections.swap(recycleViewItemList, startPosition, endPosition)
                 recyclerView.adapter?.notifyItemMoved(startPosition, endPosition)
                 return true
             }
@@ -400,7 +452,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_modules.setSelection(0, false)
 
         //Ugly way to do it, should not initialize a new SaveCustomDragDropBlockManager, rather use the one in the main thread
-        customBlocksSpinnerList = SaveCustomDragDropBlockManager(this).getArrayWithCustomDragDropBlocks().clone() as ArrayList<DragDropBlock>
+        customBlocksSpinnerList =
+            SaveCustomDragDropBlockManager(this).getArrayWithCustomDragDropBlocks()
+                .clone() as ArrayList<DragDropBlock>
         spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinnerList, this)
         spinnerCustomAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
         customBlocksSpinnerList.add(
@@ -431,9 +485,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
                     block.idNumber =
                         itemIdCounter++    //Increment after adding id
-                    itemList.add(block)
-                    adapter.notifyItemInserted(adapter.itemCount)
-                    recycler.scrollToPosition(adapter.itemCount-1)
+                    recycleViewItemList.add(block)
+                    recycleViewAdapter.notifyItemInserted(recycleViewAdapter.itemCount)
+                    recycler.scrollToPosition(recycleViewAdapter.itemCount - 1)
                     programming_spinner_driving.setSelection(
                         0,
                         false
@@ -456,9 +510,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
                     block.idNumber =
                         itemIdCounter++
-                    itemList.add(block)
-                    adapter.notifyItemInserted(adapter.itemCount)
-                    recycler.scrollToPosition(adapter.itemCount-1)
+                    recycleViewItemList.add(block)
+                    recycleViewAdapter.notifyItemInserted(recycleViewAdapter.itemCount)
+                    recycler.scrollToPosition(recycleViewAdapter.itemCount - 1)
                     programming_spinner_modules.setSelection(0, false)
                 }
             }
@@ -478,104 +532,71 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
                     block.idNumber =
                         itemIdCounter++
-                    itemList.add(block)
-                    adapter.notifyItemInserted(adapter.itemCount)
-                    recycler.scrollToPosition(adapter.itemCount-1)
+                    recycleViewItemList.add(block)
+                    recycleViewAdapter.notifyItemInserted(recycleViewAdapter.itemCount)
+                    recycler.scrollToPosition(recycleViewAdapter.itemCount - 1)
                     programming_spinner_custom.setSelection(0, false)
                 }
             }
         }
     }
 
-    private fun populateModulesSpinnerList(
-        num: Int,
-        type: DragDropBlock.e_type
-    ): ArrayList<DragDropBlock> {
-        val list = ArrayList<DragDropBlock>()
-
-        for (i in 0 until num) {
-            val drawable = when (i) {
-                0 -> R.drawable.ic_baseline_highlight_24
-                1 -> R.drawable.ic_baseline_highlight_24
-                2 -> R.drawable.ic_baseline_surround_sound_24
-                else -> R.drawable.ic_arrow_left
-            }
-            when (i) {
-                0 -> {
-                    val item = DragDropBlock(
-                        R.drawable.ic_drag_dots,
-                        drawable,
-                        "LED Turn on",
-                        "Command",
-                        1.0,
-                        1.0,
-                        type,
-                        false,
-                        0
-                    )
-                    list.add(item)
-                }
-                1 -> {
-                    val item = DragDropBlock(
-                        R.drawable.ic_drag_dots,
-                        drawable,
-                        "LED Turn off",
-                        "Command",
-                        1.0,
-                        1.0,
-                        type,
-                        false,
-                        0
-                    )
-                    list.add(item)
-                }
-                2 -> {
-                    val item = DragDropBlock(
-                        R.drawable.ic_drag_dots,
-                        drawable,
-                        "Buzzer buzz",
-                        "Command",
-                        1.0,
-                        1.0,
-                        type,
-                        true,
-                        0
-                    )
-                    list.add(item)
-                }
-            }
-        }
-        return list
-    }
-
-    private fun createSpinnerModuleBlocks(): ArrayList<DragDropBlock>{
+    private fun createSpinnerModuleBlocks(): ArrayList<DragDropBlock> {
         val list = ArrayList<DragDropBlock>()
         list.add(
             DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_baseline_highlight_24, getString(R.string.module_spinner_led_on), "Not implemented",
-                1.0, 1.0, DragDropBlock.e_type.MODULE, false, 0
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_baseline_highlight_24,
+                getString(R.string.module_spinner_led_on),
+                "Not implemented",
+                1.0,
+                1.0,
+                DragDropBlock.e_type.MODULE,
+                false,
+                0
             )
         )
 
         list.add(
             DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_baseline_highlight_24, getString(R.string.module_spinner_led_off), "Not implemented",
-                1.0, 1.0, DragDropBlock.e_type.MODULE, false, 0
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_baseline_highlight_24,
+                getString(R.string.module_spinner_led_off),
+                "Not implemented",
+                1.0,
+                1.0,
+                DragDropBlock.e_type.MODULE,
+                false,
+                0
             )
         )
 
         list.add(
             DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_baseline_surround_sound_24, getString(R.string.module_spinner_buzzer), "Not implemented",
-                1.0, 1.0, DragDropBlock.e_type.MODULE, true, 0
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_baseline_surround_sound_24,
+                getString(R.string.module_spinner_buzzer),
+                "Not implemented",
+                1.0,
+                1.0,
+                DragDropBlock.e_type.MODULE,
+                true,
+                0
             )
         )
 
         list.add(
             0,   //Unused object. Shown only in title. Cannot be added to itemList
             DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_modules, getString( R.string.module_spinner_title), "Null", 1.0,
-                1.0, DragDropBlock.e_type.MODULE, false, 0
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_modules,
+                getString(R.string.module_spinner_title),
+                "Null",
+                1.0,
+                1.0,
+                DragDropBlock.e_type.MODULE,
+                false,
+                0
             )
         )
 
@@ -587,69 +608,125 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         list.add(
             DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_arrow_up, getString(R.string.drive_spinner_forward), "2", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, true, 0
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_arrow_up,
+                getString(R.string.drive_spinner_forward),
+                "2",
+                1.0,
+                1.0,
+                DragDropBlock.e_type.DRIVE,
+                true,
+                0
             )
         )
 
         list.add(
             DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_arrow_right, getString(R.string.drive_spinner_turn_right), "6", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, true, 0
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_arrow_right,
+                getString(R.string.drive_spinner_turn_right),
+                "6",
+                1.0,
+                1.0,
+                DragDropBlock.e_type.DRIVE,
+                true,
+                0
             )
         )
 
         list.add(
             DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_arrow_down, getString(R.string.drive_spinner_reverse), "8", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, true, 0
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_arrow_down,
+                getString(R.string.drive_spinner_reverse),
+                "8",
+                1.0,
+                1.0,
+                DragDropBlock.e_type.DRIVE,
+                true,
+                0
             )
         )
 
         list.add(
             DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_arrow_left, getString(R.string.drive_spinner_turn_left), "4", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, true, 0
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_arrow_left,
+                getString(R.string.drive_spinner_turn_left),
+                "4",
+                1.0,
+                1.0,
+                DragDropBlock.e_type.DRIVE,
+                true,
+                0
             )
         )
 
         list.add(
             DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_stop, getString(R.string.drive_spinner_stop), "5", 1.0,
-                0.0, DragDropBlock.e_type.DRIVE, true, 0
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_stop,
+                getString(R.string.drive_spinner_stop),
+                "5",
+                1.0,
+                0.0,
+                DragDropBlock.e_type.DRIVE,
+                true,
+                0
             )
         )
 
         list.add(
             DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_gear, getString(R.string.drive_spinner_gear_up), "u", 0.0,
-                0.0, DragDropBlock.e_type.DRIVE, false, 0
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_gear,
+                getString(R.string.drive_spinner_gear_up),
+                "u",
+                0.0,
+                0.0,
+                DragDropBlock.e_type.DRIVE,
+                false,
+                0
             )
         )
 
         list.add(
             DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_gear, getString(R.string.drive_spinner_gear_down), "d", 0.0,
-                0.0, DragDropBlock.e_type.DRIVE, false, 0
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_gear,
+                getString(R.string.drive_spinner_gear_down),
+                "d",
+                0.0,
+                0.0,
+                DragDropBlock.e_type.DRIVE,
+                false,
+                0
             )
         )
 
         list.add(
             0,   //Unused object. Shown only in title. Cannot be added to itemList
             DragDropBlock(
-                R.drawable.ic_drag_dots, R.drawable.ic_drive, getString( R.string.drive_spinner_title), "Null", 1.0,
-                1.0, DragDropBlock.e_type.DRIVE, false, 0
+                R.drawable.ic_drag_dots,
+                R.drawable.ic_drive,
+                getString(R.string.drive_spinner_title),
+                "Null",
+                1.0,
+                1.0,
+                DragDropBlock.e_type.DRIVE,
+                false,
+                0
             )
         )
         return list
     }
 
-    private fun showUnselectedButtonsHideSelectedButtons(){
+    private fun showUnselectedButtonsHideSelectedButtons() {
         programming_button_area_not_selected.visibility = View.VISIBLE
         programming_button_area_selected.visibility = View.GONE
     }
 
-    private fun showSelectedButtonsHideUnselectedButtons(){
+    private fun showSelectedButtonsHideUnselectedButtons() {
         programming_button_area_selected.visibility = View.VISIBLE
         programming_button_area_not_selected.visibility = View.GONE
     }
@@ -674,10 +751,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     Log.e("FILE_LOG", "Yes clicked, project deleted")
 
                     saveFilesManager.deleteProject(projectName, this)
-                    itemList.clear()
+                    recycleViewItemList.clear()
                     projectName = newProjectStandardName
                     programming_text_view_current_project.text = projectName
-                    adapter.notifyDataSetChanged()
+                    recycleViewAdapter.notifyDataSetChanged()
                 }
             }
         }
@@ -688,7 +765,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     // This and saveProjectAndChangeActivity() are basically the same code, could reuse code if i could make a return inside the dialog click listeners, but that seems to not be possible
-    private fun displayDialogInputName(intent : Intent? = null, savedInputText : String? = null) {
+    private fun displayDialogInputName(intent: Intent? = null, savedInputText: String? = null) {
         changeIntentNotNull = intent != null
 
         openDialog = OpenDialog.DIALOG_INPUT_NAME
@@ -698,10 +775,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogInputNameBuilder.setTitle(R.string.enter_project_name)
         dialogInputNameBuilder.setMessage(R.string.enter_project_name_warning)
 
-        if(savedInputText == null){
+        if (savedInputText == null) {
             dialogInputName.dialogTextFieldName.setText(projectName)
-        }
-        else{
+        } else {
             dialogInputName.dialogTextFieldName.setText(savedInputText)
         }
 
@@ -717,7 +793,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         displayDialogNameBlankWarning(intent)
                     } else if (saveFilesManager.saveProject(
                             dialogInputName.dialogTextFieldName.text.toString(),
-                            itemList,
+                            recycleViewItemList,
                             false,
                             this
                         )
@@ -726,13 +802,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         projectName = dialogInputName.dialogTextFieldName.text.toString()
                         programming_text_view_current_project.text = projectName
 
-                        if(intent != null){
+                        if (intent != null) {
                             startActivity(intent)
                             finish()
                         }
 
                     } else {
-                        displayDialogNameExistsWarning(dialogInputName.dialogTextFieldName.text.toString(), intent)
+                        displayDialogNameExistsWarning(
+                            dialogInputName.dialogTextFieldName.text.toString(),
+                            intent
+                        )
                     }
                 }
             }
@@ -743,10 +822,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogInputNameBuilder.show()
 
         dialogInputName!!.dialogTextFieldName.doAfterTextChanged {
-            inputText = dialogInputName!!.dialogTextFieldName.text.toString()
+            inputText = dialogInputName.dialogTextFieldName.text.toString()
         }
     }
-
 
     //Asking user if it wants to save project, and then changes activity.
     private fun displayDialogAskIfWantToSave(intent: Intent) {
@@ -774,27 +852,23 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogWantToSave.create().show()
     }
 
-    /*When touching dragDots*/
-    override fun onDragDots(view: RecyclerView.ViewHolder) {
-        itemTouchHelper.startDrag(view) //onMove from ItemTouchHelper.simpleCallback will be accessed through startDrag
-    }
-
-    /*Used to mark item for deletion*/
+    /*Clicking an item in the RecyclerView*/
     override fun onItemClick(position: Int) {
+        /*Used for selecting items*/
         if (blocksAreSelected) {
             /*If item is already added to deleteList we want to deselect it*/
-            if (selectedItemsList.contains(itemList[position])) {
-                itemList[position].dragImage = R.drawable.ic_drag_dots
-                selectedItemsList.remove(itemList[position])
-                adapter.notifyDataSetChanged()
+            if (selectedItemsList.contains(recycleViewItemList[position])) {
+                recycleViewItemList[position].dragImage = R.drawable.ic_drag_dots
+                selectedItemsList.remove(recycleViewItemList[position])
+                recycleViewAdapter.notifyDataSetChanged()
                 if (selectedItemsList.isEmpty()) {
                     blocksAreSelected = false
                     showUnselectedButtonsHideSelectedButtons()
                 }
             } else {
-                itemList[position].dragImage = R.drawable.ic_baseline_check_circle_24
-                selectedItemsList.add(itemList[position])
-                adapter.notifyDataSetChanged()
+                recycleViewItemList[position].dragImage = R.drawable.ic_baseline_check_circle_24
+                selectedItemsList.add(recycleViewItemList[position])
+                recycleViewAdapter.notifyDataSetChanged()
             }
         }
     }
@@ -803,16 +877,20 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         changeItemParameterDialog(position)
     }
 
-    /*LongClick activates selection for selection*/
+    /*Used for activating selection by clicking items*/
     override fun onLongClick(position: Int) {
-        /*No need to activate if already activated*/
         if (!blocksAreSelected) {
             showSelectedButtonsHideUnselectedButtons()
-            itemList[position].dragImage = R.drawable.ic_baseline_check_circle_24
-            selectedItemsList.add(itemList[position])
-            adapter.notifyDataSetChanged()
+            recycleViewItemList[position].dragImage = R.drawable.ic_baseline_check_circle_24
+            selectedItemsList.add(recycleViewItemList[position])
+            recycleViewAdapter.notifyDataSetChanged()
             blocksAreSelected = true
         }
+    }
+
+    override fun onDragDots(view: RecyclerView.ViewHolder) {
+        /*onMove from ItemTouchHelper.simpleCallback will be accessed through startDrag*/
+        itemTouchHelper.startDrag(view)
     }
 
     /*Shows an input dialog for changing an items parameter.*/
@@ -825,15 +903,14 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         val dialogLayout = LayoutInflater.from(this).inflate(R.layout.input_dialog_layout, null)
         val editText = dialogLayout.findViewById<EditText>(R.id.input_dialog_text_in)
 
-        if(savedInputText != null){
+        if (savedInputText != null) {
             editText.setText(savedInputText)
-        }
-        else{
-            editText.setText(itemList[position].parameter.toString())
+        } else {
+            editText.setText(recycleViewItemList[position].parameter.toString())
         }
 
         builder.setTitle(getString(R.string.change_parameter))
-        builder.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.okay)) { dialog, which ->
+        builder.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.okay)) { _, _ ->
             updateItemValue(position, editText.text.toString().toDouble())
             alertParameterPosition = -1
             openDialog = OpenDialog.NONE
@@ -841,7 +918,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         builder.setButton(
             AlertDialog.BUTTON_NEGATIVE,
             getString(R.string.cancel)
-        ) { dialog, which ->
+        ) { _, _ ->
             alertParameterPosition = -1
             openDialog = OpenDialog.NONE
         }
@@ -851,9 +928,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         editText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                //Unused
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                //Unused
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -865,9 +944,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     private fun updateItemValue(position: Int, value: Double) {
-        itemList[position].parameter = value
-        itemList[position].displayParameter = value
-        adapter.notifyDataSetChanged()
+        recycleViewItemList[position].parameter = value
+        recycleViewItemList[position].displayParameter = value
+        recycleViewAdapter.notifyDataSetChanged()
     }
 
     private suspend fun traverseList() {
@@ -878,9 +957,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             val secondInMS: Long = 1000
             traversingList = true
 
-            itemList.forEachIndexed { index, item ->
+            recycleViewItemList.forEachIndexed { index, item ->
 
-                if(traversingList){
+                if (traversingList) {
                     recycler.scrollToPosition(index) //Scrolls list so that current item is on screen
 
                     var parameter: Int = item.displayParameter.toInt()
@@ -898,7 +977,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                     parameter--
 
 
-                                    /*Works with Locale but crashes without? Only for Andreas*/
                                     item.displayParameter =
                                         String.format(
                                             Locale.ENGLISH,
@@ -907,14 +985,14 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                         )
                                             .toDouble()
 
-                                    adapter.notifyDataSetChanged()
+                                    recycleViewAdapter.notifyDataSetChanged()
                                 }
                                 RunState.PAUSE -> {
-                                    sem.acquire() //Button pause takes the semaphore. This coroutine will wait for it
+                                    sem.acquire() //Pause button takes the semaphore. This coroutine will wait for it
                                 }
                                 else -> {
                                     state = RunState.IDLE
-                                } //So we go to a known state if something would go wrong
+                                }
                             }
                         }
                     } else {
@@ -927,14 +1005,14 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                 //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
                                 delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
 
-                                adapter.notifyDataSetChanged()
+                                recycleViewAdapter.notifyDataSetChanged()
                             }
                             RunState.PAUSE -> {
-                                sem.acquire() //Button pause takes the semaphore. This coroutine will wait for it
+                                sem.acquire() //Pause button takes the semaphore. This coroutine will wait for it
                             }
                             else -> {
                                 state = RunState.IDLE
-                            } //So we go to a known state if something would go wrong
+                            } //Go to a known state if something would go wrong
                         }
                     }
                 }
@@ -950,9 +1028,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
             resetListTraverse()
             traversingList = false
-        }
-        else
-            Utils.UtilsObject.showUpdatedToast(getString(R.string.bluetooth_client_not_active), this)
+        } else
+            Utils.UtilsObject.showUpdatedToast(
+                getString(R.string.bluetooth_client_not_active),
+                this
+            )
     }
 
     /*Resetting list to its original state*/
@@ -961,13 +1041,13 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             sem.release()
         }
         state = RunState.IDLE
-        for (i in itemList)
+        for (i in recycleViewItemList)
             i.displayParameter = i.parameter
-        adapter.notifyDataSetChanged()
+        recycleViewAdapter.notifyDataSetChanged()
         programming_play_or_pause_button.setImageResource(R.drawable.ic_play_arrow)
     }
 
-    private fun displayDialogNameBlankWarning(intent : Intent? = null){
+    private fun displayDialogNameBlankWarning(intent: Intent? = null) {
         changeIntentNotNull = intent != null
 
         openDialog = OpenDialog.DIALOG_NAME_BLANK_WARNING
@@ -987,7 +1067,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogNameBlankWarning.create().show()
     }
 
-    private fun displayDialogNameExistsWarning(inputNameThatExists : String, intent : Intent? = null){
+    private fun displayDialogNameExistsWarning(
+        inputNameThatExists: String,
+        intent: Intent? = null
+    ) {
         changeIntentNotNull = intent != null
 
         openDialog = OpenDialog.DIALOG_NAME_EXISTS_WARNING
@@ -1006,7 +1089,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 DialogInterface.BUTTON_POSITIVE -> {
                     if (saveFilesManager.saveProject(
                             inputNameThatExists,
-                            itemList,
+                            recycleViewItemList,
                             true,
                             this
                         )
@@ -1020,7 +1103,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                             inputNameThatExists
                         programming_text_view_current_project.text = projectName
 
-                        if(intent != null){
+                        if (intent != null) {
                             startActivity(intent)
                             finish()
                         }
@@ -1032,12 +1115,5 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogNameExistsWarning.setNegativeButton(R.string.no, dialogClickListener)
         dialogNameExistsWarning.setCancelable(false)
         dialogNameExistsWarning.create().show()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if(job != null){
-            job!!.cancel()
-        }
     }
 }

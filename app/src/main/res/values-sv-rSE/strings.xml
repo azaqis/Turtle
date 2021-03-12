@@ -124,4 +124,10 @@
 
     <string name="drag_dots_image_description">Drag här symbol</string>
     <string name="direction_image_description">Riktningssymbol</string>
+    <string name="programming_delete_selected_btn_description">Radera markeradeknapp</string>
+    <string name="programming_save_btn_description">Sparaknapp</string>
+    <string name="programming_load_btn_description">Laddaknapp</string>
+    <string name="programming_play_or_pause_btn_description">Spela och pausaknapp</string>
+    <string name="programming_reset_btn_description">Återställknapp</string>
+    <string name="programming_delete_btn_description">Radera projektknapp</string>
 </resources>
