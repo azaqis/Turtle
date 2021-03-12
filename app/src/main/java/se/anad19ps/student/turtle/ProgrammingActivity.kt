@@ -61,9 +61,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private lateinit var recycleViewAdapter: ProgrammingRecyclerAdapter
 
-        private var itemIdCounter: Long =
-            1  //Used to assign unique id to each dragDropBlock. 0 reserved for non added
-
     private lateinit var spinnerDriveAdapter: ProgrammingSpinnerAdapter
     private lateinit var spinnerModulesAdapter: ProgrammingSpinnerAdapter
     private lateinit var spinnerCustomAdapter: ProgrammingSpinnerAdapter
@@ -1123,13 +1120,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     fun isProjectModified() : Boolean{
-        return itemList != saveFilesManager.getProject(projectName, this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if(job != null){
-            job!!.cancel()
-        }
+        return recycleViewItemList != saveFilesManager.getProject(projectName, this)
     }
 }
