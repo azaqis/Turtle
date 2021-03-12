@@ -158,6 +158,15 @@
 
     <string name="drag_dots_image_description">Drag here symbol</string>
     <string name="direction_image_description">Direction symbol</string>
+    <string name="programming_delete_selected_btn_description">Delete selected button</string>
+    <string name="programming_save_btn_description">Save button</string>
+    <string name="programming_load_btn_description">Load button</string>
+    <string name="programming_play_or_pause_btn_description">Play and pause button</string>
+    <string name="programming_reset_btn_description">Reset button</string>
+    <string name="programming_delete_btn_description">Delete project button</string>
 
+    programming_delete_btn
+
+    programming_reset_btn
 
 </resources>

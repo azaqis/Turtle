@@ -62,7 +62,6 @@
         android:id="@+id/programming_text_view_current_project"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="PLACEHOLDER TEXT"
         android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@id/programming_button_area"
         app:layout_constraintEnd_toEndOf="parent"
@@ -98,12 +97,11 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_baseline_delete_24"
-                android:background="@drawable/rounded_button"
-                android:backgroundTint="#FE5F55"
+                android:background="@drawable/rounded_button_delete"
                 android:scaleType="fitCenter"
                 android:padding="10dp"
-                android:elevation="10dp"
-                android:layout_margin="10dp"/>
+                android:layout_margin="10dp"
+                android:contentDescription="@string/programming_delete_btn_description" />
 
             <ImageButton
                 android:id="@+id/programming_reset_btn"
@@ -113,8 +111,8 @@
                 android:background="@drawable/rounded_button"
                 android:scaleType="fitCenter"
                 android:padding="10dp"
-                android:elevation="10dp"
-                android:layout_margin="10dp"/>
+                android:layout_margin="10dp"
+                android:contentDescription="@string/programming_reset_btn_description" />
 
             <ImageButton
                 android:id="@+id/programming_play_or_pause_button"
@@ -124,8 +122,8 @@
                 android:background="@drawable/rounded_button"
                 android:scaleType="fitCenter"
                 android:padding="20dp"
-                android:elevation="10dp"
-                android:layout_margin="10dp"/>
+                android:layout_margin="10dp"
+                android:contentDescription="@string/programming_play_or_pause_btn_description" />
 
             <ImageButton
                 android:id="@+id/programming_load_button"
@@ -135,8 +133,8 @@
                 android:background="@drawable/rounded_button"
                 android:scaleType="fitCenter"
                 android:padding="10dp"
-                android:elevation="10dp"
-                android:layout_margin="10dp"/>
+                android:layout_margin="10dp"
+                android:contentDescription="@string/programming_load_btn_description" />
 
             <ImageButton
                 android:id="@+id/programming_save_button"
@@ -146,8 +144,8 @@
                 android:background="@drawable/rounded_button"
                 android:scaleType="fitCenter"
                 android:padding="10dp"
-                android:elevation="10dp"
-                android:layout_margin="10dp"/>
+                android:layout_margin="10dp"
+                android:contentDescription="@string/programming_save_btn_description" />
         </LinearLayout>
 
         <LinearLayout
@@ -167,13 +165,12 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:src="@drawable/ic_baseline_delete_24"
-                android:background="@drawable/rounded_button"
-                android:backgroundTint="#FE5F55"
+                android:background="@drawable/rounded_button_delete"
                 android:scaleType="fitCenter"
                 android:padding="10dp"
-                android:elevation="10dp"
                 android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"/>
+                android:layout_marginTop="5dp"
+                android:contentDescription="@string/programming_delete_selected_btn_description" />
 
         </LinearLayout>
 
