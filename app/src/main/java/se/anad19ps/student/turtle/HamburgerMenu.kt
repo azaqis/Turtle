@@ -82,6 +82,29 @@ class HamburgerMenu(){
                         con.finish()
                     }
                     else
+                        /*
+                        if(){
+                            val dialogWantToSave = android.app.AlertDialog.Builder(con)
+                            dialogWantToSave.setTitle("Leaving unsaved project")
+                            dialogWantToSave.setMessage("Do you really want to leave this unsaved project. All progress will be lost if you continue!")
+                            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                                when (which) {
+                                    DialogInterface.BUTTON_NEGATIVE -> {
+                                        drawerLayout.closeDrawer(GravityCompat.START)
+                                    }
+                                    DialogInterface.BUTTON_POSITIVE -> {
+                                        val intent = Intent(con, ProgrammingActivity::class.java)
+                                        startActivity(con, intent, null)
+                                        con.finish()
+                                    }
+                                }
+                            }
+                            dialogWantToSave.setPositiveButton(R.string.change_view, dialogClickListener)
+                            dialogWantToSave.setNegativeButton(R.string.stay, dialogClickListener)
+                            dialogWantToSave.create().show()
+                        }
+
+                         */
                         drawerLayout.closeDrawer(GravityCompat.START)
                 }
                 R.id.drawerItemRemoteController -> {
@@ -143,7 +166,6 @@ class HamburgerMenu(){
                 */
             }
             override fun onDrawerOpened(view: View) {
-                //drawerLayout.visibility = View.VISIBLE
             }
             override fun onDrawerClosed(view: View) {
                 drawerLayout.visibility = View.INVISIBLE
@@ -165,13 +187,4 @@ class HamburgerMenu(){
             true
         }
     }
-    /*
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (toggle.onOptionsItemSelected(item)) {
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-    */
 }

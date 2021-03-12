@@ -62,6 +62,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         private lateinit var spinnerCustomAdapter: ProgrammingSpinnerAdapter
 
         private var itemList = ArrayList<DragDropBlock>()   //List for items in RecyclerView
+
         private var itemIdCounter: Long =
             1  //Used to assign unique id to each dragDropBlock. 0 reserved for non added
 
@@ -83,14 +84,15 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         private var job: Job? = null
 
         var traversingList : Boolean = false
+
     }
 
     private var inputText : String? = null
     private var inputtedTextExists : String? = null
     private var changeIntentNotNull : Boolean = false
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_programming)
 
@@ -996,6 +998,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogNameExistsWarning.setNegativeButton(R.string.no, dialogClickListener)
         dialogNameExistsWarning.setCancelable(false)
         dialogNameExistsWarning.create().show()
+    }
+
+    fun isProjectModified() : Boolean{
+        return itemList != saveFilesManager.getProject(projectName, this)
     }
 
     override fun onDestroy() {
