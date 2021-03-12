@@ -107,4 +107,7 @@
     <string name="bluetooth_client_not_active">Bluetooth-klienten är ej aktiv</string>
     <string name="new_project">Nytt projekt</string>
     <string name="spinner_image">spinnerImage</string>
+
+    <string name="drag_dots_image_description">Drag här symbol</string>
+    <string name="direction_image_description">Riktningssymbol</string>
 </resources>
