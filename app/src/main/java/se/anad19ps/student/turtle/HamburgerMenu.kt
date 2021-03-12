@@ -25,10 +25,9 @@ class HamburgerMenu(){
             MANAGE_CUSTOM_DRAG_DROP_BLOCKS_ACTIVITY,
             NOT_DEFINED
         }
+        private var currentActivity : ActivityNumber = ActivityNumber.NOT_DEFINED
 
         private lateinit var toggle: ActionBarDrawerToggle
-
-        private var currentActivity : ActivityNumber = ActivityNumber.NOT_DEFINED
     }
 
     fun setUpHamburgerMenu(
@@ -46,20 +45,13 @@ class HamburgerMenu(){
         )
 
         fun setCurrentActivity(){
-            if(con is SelectBluetoothDeviceActivity){
-                currentActivity = ActivityNumber.SELECT_BLUETOOTH_DEVICE_ACTIVITY
+            currentActivity = when (con){
+                is SelectBluetoothDeviceActivity -> ActivityNumber.SELECT_BLUETOOTH_DEVICE_ACTIVITY
+                is ProgrammingActivity -> ActivityNumber.PROGRAMMING_ACTIVITY
+                is ControllerActivity -> ActivityNumber.CONTROLLER_ACTIVITY
+                is ManageCustomDragDropBlocksActivity -> ActivityNumber.MANAGE_CUSTOM_DRAG_DROP_BLOCKS_ACTIVITY
+                else -> ActivityNumber.NOT_DEFINED
             }
-            else if(con is ProgrammingActivity) {
-                currentActivity = ActivityNumber.PROGRAMMING_ACTIVITY
-            }
-            else if(con is ControllerActivity){
-                currentActivity = ActivityNumber.CONTROLLER_ACTIVITY
-            }
-            else if(con is ManageCustomDragDropBlocksActivity){
-                currentActivity = ActivityNumber.MANAGE_CUSTOM_DRAG_DROP_BLOCKS_ACTIVITY
-            }
-            else
-                currentActivity = ActivityNumber.NOT_DEFINED
         }
 
         fun changeIntent(it : MenuItem){
@@ -82,6 +74,29 @@ class HamburgerMenu(){
                         con.finish()
                     }
                     else
+                        /*
+                        if(){
+                            val dialogWantToSave = android.app.AlertDialog.Builder(con)
+                            dialogWantToSave.setTitle("Leaving unsaved project")
+                            dialogWantToSave.setMessage("Do you really want to leave this unsaved project. All progress will be lost if you continue!")
+                            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                                when (which) {
+                                    DialogInterface.BUTTON_NEGATIVE -> {
+                                        drawerLayout.closeDrawer(GravityCompat.START)
+                                    }
+                                    DialogInterface.BUTTON_POSITIVE -> {
+                                        val intent = Intent(con, ProgrammingActivity::class.java)
+                                        startActivity(con, intent, null)
+                                        con.finish()
+                                    }
+                                }
+                            }
+                            dialogWantToSave.setPositiveButton(R.string.change_view, dialogClickListener)
+                            dialogWantToSave.setNegativeButton(R.string.stay, dialogClickListener)
+                            dialogWantToSave.create().show()
+                        }
+
+                         */
                         drawerLayout.closeDrawer(GravityCompat.START)
                 }
                 R.id.drawerItemRemoteController -> {
@@ -143,7 +158,6 @@ class HamburgerMenu(){
                 */
             }
             override fun onDrawerOpened(view: View) {
-                //drawerLayout.visibility = View.VISIBLE
             }
             override fun onDrawerClosed(view: View) {
                 drawerLayout.visibility = View.INVISIBLE
@@ -165,13 +179,4 @@ class HamburgerMenu(){
             true
         }
     }
-    /*
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (toggle.onOptionsItemSelected(item)) {
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-    */
 }

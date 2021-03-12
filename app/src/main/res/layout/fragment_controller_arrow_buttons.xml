@@ -25,7 +25,7 @@
             android:layout_marginBottom="4sp">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonAvoidObstacles"
+                android:id="@+id/button_avoid_obstacles"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -33,7 +33,7 @@
                 android:layout_margin="4dp"/>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonStop"
+                android:id="@+id/button_stop"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -41,7 +41,7 @@
                 android:layout_margin="4dp"/>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonLineFollower"
+                android:id="@+id/button_line_follower"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/line_follow"
@@ -58,7 +58,7 @@
             android:layout_marginBottom="20sp">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonGearUp"
+                android:id="@+id/button_gear_up"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/gear_up"
@@ -66,7 +66,7 @@
                 android:layout_margin="4dp"/>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonUp"
+                android:id="@+id/button_up"
                 android:layout_width="80sp"
                 android:layout_height="80sp"
                 android:background="@drawable/controller_arrow_button_up"
@@ -74,7 +74,7 @@
                 android:layout_marginRight="20sp"/>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonGearDown"
+                android:id="@+id/button_gear_down"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/gear_down"
@@ -91,13 +91,13 @@
 
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonLeft"
+                android:id="@+id/button_left"
                 android:layout_width="80sp"
                 android:layout_height="80sp"
                 android:background="@drawable/controller_arrow_button_left"/>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonDown"
+                android:id="@+id/button_down"
                 android:layout_width="80sp"
                 android:layout_height="80sp"
                 android:background="@drawable/controller_arrow_button_down"
@@ -105,7 +105,7 @@
                 android:layout_marginRight="20sp"/>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonRight"
+                android:id="@+id/button_right"
                 android:layout_width="80sp"
                 android:layout_height="80sp"
                 android:background="@drawable/controller_arrow_button_right" />

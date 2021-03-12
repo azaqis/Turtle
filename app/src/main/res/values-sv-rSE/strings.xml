@@ -85,7 +85,7 @@
     <string name="refresh">Uppdatera</string>
     <string name="avoidance">Undvikande</string>
     <string name="stop">Stop</string>
-    <string name="line_follow">Linje-följande</string>
+    <string name="line_follow">Följ linjen</string>
     <string name="gear_up">Växla upp</string>
     <string name="gear_down">Växla ner</string>
     <string name="clear_list">Töm listan</string>

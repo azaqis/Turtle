@@ -8,9 +8,10 @@ import kotlinx.android.synthetic.main.activity_select_bluetooth_device.*
 import java.io.IOException
 import java.io.OutputStream
 
-class BluetoothClient(device: BluetoothDevice, uiactivity: Activity) : Thread() {
+class BluetoothClient(device: BluetoothDevice, activityUI: Activity) : Thread() {
+
     private val socket = device.createRfcommSocketToServiceRecord(device.uuids?.get(0)!!.uuid)
-    private val activityUI = uiactivity
+    private val activity = activityUI
     private lateinit var outputStream: OutputStream
 
     override fun run() {
@@ -19,11 +20,14 @@ class BluetoothClient(device: BluetoothDevice, uiactivity: Activity) : Thread() 
             this.socket.connect()
         } catch (e: IOException) {
             Log.d("BT.Client", "Connection failed")
-            Utils.UtilsObject.showUpdatedToast(activityUI.getString(R.string.connection_failed), activityUI.applicationContext)
+            Utils.UtilsObject.showUpdatedToast(
+                activity.getString(R.string.connection_failed),
+                activity.applicationContext
+            )
             SelectBluetoothDeviceActivity.bluetoothConnectionThreadActive = false
-            this.activityUI.runOnUiThread {
-                activityUI.progressBar.visibility = View.INVISIBLE
-                activityUI.refreshBluetoothDevicesButton.visibility = View.VISIBLE
+            this.activity.runOnUiThread {
+                activity.progressBar.visibility = View.INVISIBLE
+                activity.refreshBluetoothDevicesButton.visibility = View.VISIBLE
             }
         }
 
@@ -39,7 +43,9 @@ class BluetoothClient(device: BluetoothDevice, uiactivity: Activity) : Thread() 
                     SelectBluetoothDeviceActivity.messageRecieved = String(
                         SelectBluetoothDeviceActivity.inputBuffer, 0, bytesBuffer
                     )
-                    Utils.UtilsObject.bluetoothReceiveStringReady(SelectBluetoothDeviceActivity.messageRecieved!!)
+                    Utils.UtilsObject.bluetoothReceiveStringReady(
+                        SelectBluetoothDeviceActivity.messageRecieved!!
+                    )
                 } catch (e: IOException) {
                     Log.e("BT.Client", "Error reading Input Stream. ", e)
                 }

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
@@ -60,6 +61,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private lateinit var recycleViewAdapter: ProgrammingRecyclerAdapter
 
+        private var itemIdCounter: Long =
+            1  //Used to assign unique id to each dragDropBlock. 0 reserved for non added
+
     private lateinit var spinnerDriveAdapter: ProgrammingSpinnerAdapter
     private lateinit var spinnerModulesAdapter: ProgrammingSpinnerAdapter
     private lateinit var spinnerCustomAdapter: ProgrammingSpinnerAdapter
@@ -84,6 +88,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private lateinit var saveFilesManager: SaveFilesManager
     private lateinit var projectName: String
     private lateinit var customCommandManager: SaveCustomDragDropBlockManager
+        var traversingList : Boolean = false
 
     private lateinit var recyclerSimpleCallback: ItemTouchHelper.SimpleCallback
 
@@ -94,8 +99,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private var inputtedTextExists: String? = null
     private var changeIntentNotNull: Boolean = false
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_programming)
 
@@ -1115,5 +1120,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogNameExistsWarning.setNegativeButton(R.string.no, dialogClickListener)
         dialogNameExistsWarning.setCancelable(false)
         dialogNameExistsWarning.create().show()
+    }
+
+    fun isProjectModified() : Boolean{
+        return itemList != saveFilesManager.getProject(projectName, this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(job != null){
+            job!!.cancel()
+        }
     }
 }
