@@ -113,9 +113,9 @@ class SaveCustomDragDropBlockManager(con: Context) {
         var dragImageReadFromFile: Int = -1
         var parameterReadFromFile: Double = -1.0
         var textReadFromFile = ""
-        var type: DragDropBlock.e_type = DragDropBlock.e_type.CUSTOM
-        var parameterEnable = false
-        var idNumber: Long = 0
+        var typeReadFromFile: DragDropBlock.e_type = DragDropBlock.e_type.CUSTOM
+        var parameterEnableReadFromFile = false
+        var idNumberReadFromFile: Long = 0
 
         File(context.filesDir, customDragDropBlockSaveFile).useLines { lines ->
             lines.forEach {
@@ -126,9 +126,9 @@ class SaveCustomDragDropBlockManager(con: Context) {
                     3 -> dragImageReadFromFile = it.toInt()
                     4 -> parameterReadFromFile = it.toDouble()
                     5 -> textReadFromFile = it
-                    6 -> type = DragDropBlock.e_type.valueOf(it)
-                    7 -> parameterEnable = it.toBoolean()
-                    8 -> idNumber = it.toLong()
+                    6 -> typeReadFromFile = DragDropBlock.e_type.valueOf(it)
+                    7 -> parameterEnableReadFromFile = it.toBoolean()
+                    8 -> idNumberReadFromFile = it.toLong()
                 }
                 if (count < 7) {
                     count++
@@ -143,9 +143,9 @@ class SaveCustomDragDropBlockManager(con: Context) {
                             commandReadFromFile,
                             parameterReadFromFile,
                             displayParameterReadFromFile,
-                            type,
-                            parameterEnable,
-                            idNumber
+                            typeReadFromFile,
+                            parameterEnableReadFromFile,
+                            idNumberReadFromFile
                         )
                     )
                 }

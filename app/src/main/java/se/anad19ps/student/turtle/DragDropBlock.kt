@@ -9,11 +9,11 @@ data class DragDropBlock(
     var dragImage: Int,
     val directionImage: Int,
     var text: String,
-    val command: String,
+    var command: String,
     var parameter: Double,
     var displayParameter: Double,
     val type: e_type,
-    val parameterEnabled : Boolean,
+    var parameterEnabled : Boolean,
     var idNumber : Long
 ) : Parcelable, Serializable{
     constructor(parcel: Parcel) : this(
