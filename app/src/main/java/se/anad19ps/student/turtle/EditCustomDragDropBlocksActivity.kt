@@ -39,7 +39,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
             oldDragDropBlock = saveCustomDragDropBlockManager.getDragDropBlockByName(nameFromExtra)
 
             if (oldDragDropBlock != null) {
-                editTextDragDropBlockName.setText(oldDragDropBlock!!.text)
+                create_custom_dadb_édit_text_name.setText(oldDragDropBlock!!.text)
                 checkBox.isChecked = oldDragDropBlock!!.parameterEnabled
                 editTextDragDropBlockCommand.setText(oldDragDropBlock!!.command)
             } else {
@@ -49,7 +49,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         }
 
         if (savedInstanceState != null) {
-            editTextDragDropBlockName.setText(savedInstanceState.getString("inputName"))
+            create_custom_dadb_édit_text_name.setText(savedInstanceState.getString("inputName"))
             checkBox.isChecked = savedInstanceState.getBoolean("parameterEnabled")
             editTextDragDropBlockCommand.setText(savedInstanceState.getString("inputCommand"))
             openDialog =
@@ -68,7 +68,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val inputName: String = editTextDragDropBlockName.text.toString()
+        val inputName: String = create_custom_dadb_édit_text_name.text.toString()
         val parameterEnabled: Boolean = checkBox.isChecked
         val inputCommand: String = editTextDragDropBlockCommand.text.toString()
 
@@ -87,7 +87,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
             if (oldDragDropBlock != null) {
                 val dragImage = oldDragDropBlock!!.dragImage
                 val directionImage = oldDragDropBlock!!.directionImage
-                val text = editTextDragDropBlockName.text.toString()
+                val text = create_custom_dadb_édit_text_name.text.toString()
                 val command = editTextDragDropBlockCommand.text.toString()
                 val parameter = oldDragDropBlock!!.parameter
                 val displayParameter = oldDragDropBlock!!.displayParameter
