@@ -69,7 +69,7 @@ class SaveCustomDragDropBlockManager(con: Context) {
             val index = arrayWithDragDropBlockNames.indexOf(oldName)
 
             if (index != -1) {
-                arrayWithDragDropBlockNames[index] = updatedDragDropBlock.text
+                arrayWithDragDropBlockNames[index].replace(oldName, newName)
                 arrayWithDragDropBlocks[index] = updatedDragDropBlock
             }
 
@@ -103,6 +103,7 @@ class SaveCustomDragDropBlockManager(con: Context) {
 
     fun loadCustomDragDropBlocks() {
         arrayWithDragDropBlocks.clear()
+        arrayWithDragDropBlockNames.clear()
 
         var count = 0
 
@@ -148,6 +149,7 @@ class SaveCustomDragDropBlockManager(con: Context) {
                             idNumberReadFromFile
                         )
                     )
+                    arrayWithDragDropBlockNames.add(textReadFromFile)
                 }
             }
         }
@@ -159,6 +161,17 @@ class SaveCustomDragDropBlockManager(con: Context) {
 
     fun getDragDropBlockByName(name: String): DragDropBlock? {
         return if (dragAndDropBlockNameExist(name)) {
+
+            Log.e("CUSTOM_LOG", "Array with custom DragDropBlock names contains this amount of names:" +  arrayWithDragDropBlockNames.size)
+
+            for(name in arrayWithDragDropBlockNames){
+                Log.e("CUSTOM_LOG", "Array with custom DragDropBlock names contained name:" +  name)
+            }
+
+            for(block in arrayWithDragDropBlocks){
+                Log.e("CUSTOM_LOG", "Array with custom DragDropBlock contained block:" +  block.text)
+            }
+
             val index = arrayWithDragDropBlockNames.indexOf(name)
             arrayWithDragDropBlocks[index]
         } else {

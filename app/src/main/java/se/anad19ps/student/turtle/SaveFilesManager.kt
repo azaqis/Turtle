@@ -105,6 +105,13 @@ class SaveFilesManager(con : Context) {
         fwProjectSaveFile.close()
     }
 
+    private fun saveAllProjectsToFile(){
+        for(projectName in arrayWithProjectNames){
+            val index = arrayWithProjectNames.indexOf(projectName)
+            saveProjectToFile(projectName, arrayWithProjects[index])
+        }
+    }
+
     private fun projectNameExist(name : String) : Boolean{
         return arrayWithProjectNames.contains(name)
     }
@@ -264,9 +271,9 @@ class SaveFilesManager(con : Context) {
     }
 
     fun updateCustomDragDropBlocksInAllProjects(oldDragDropBlock : DragDropBlock, updatedDragDropBlock : DragDropBlock){
+        var hasDoneModification = false
         for(projectName in arrayWithProjectNames){
             val indexOfProject = arrayWithProjectNames.indexOf(projectName)
-            var hasDoneModification = false
             for(dragDropBlock in arrayWithProjects[indexOfProject]){
                 if(dragDropBlock.text == oldDragDropBlock.text){
                     dragDropBlock.text = updatedDragDropBlock.text
@@ -275,9 +282,9 @@ class SaveFilesManager(con : Context) {
                     hasDoneModification = true
                 }
             }
-            if(hasDoneModification){
-                saveProject(projectName, arrayWithProjects[indexOfProject], true)
-            }
+        }
+        if(hasDoneModification){
+            saveAllProjectsToFile()
         }
     }
 }
