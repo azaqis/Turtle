@@ -115,8 +115,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                     ) {
                         saveFilesManager.updateCustomDragDropBlocksInAllProjects(
                             oldDragDropBlock!!,
-                            updatedDragDropBlock,
-                            this
+                            updatedDragDropBlock
                         )
                         finish()
                     } else {
