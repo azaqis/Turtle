@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
 
 
+@Suppress("UNCHECKED_CAST")
 class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
     companion object {
@@ -130,7 +131,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         select_bluetooth_device_list_view_paired_devices.adapter = pairedDevicesNameListViewAdapter
 
         select_bluetooth_device_list_view_paired_devices.onItemClickListener =
-            AdapterView.OnItemClickListener { _, v, position, _ ->
+            AdapterView.OnItemClickListener { _, _, position, _ ->
                 val device: BluetoothDevice = pairedDevicesList[position]
                 //Here the app tries to connect with the device chosen in the listview
                 Utils.UtilsObject.showUpdatedToast(
