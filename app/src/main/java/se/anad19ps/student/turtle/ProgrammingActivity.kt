@@ -27,7 +27,7 @@ import kotlinx.coroutines.sync.Semaphore
 import java.util.*
 import kotlin.collections.ArrayList
 
-
+@Suppress("UNCHECKED_CAST")
 class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.ItemClickListener {
     private enum class RunState {
         IDLE,
@@ -335,19 +335,15 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
             val loadedProject = saveFilesManager.getProject(projectName)
 
-            if (loadedProject != null) {
-                recyclerViewItemList = loadedProject
-            }
+            recyclerViewItemList = loadedProject
 
         } else {
             val lastOpenProject = saveFilesManager.getNameOfLastOpenedProject()
             if (lastOpenProject != null) {
                 val loadedProject = saveFilesManager.getProject(lastOpenProject)
 
-                if (loadedProject != null) {
-                    recyclerViewItemList = loadedProject
-                    projectName = lastOpenProject
-                }
+                recyclerViewItemList = loadedProject
+                projectName = lastOpenProject
 
             } else {
                 projectName = newProjectStandardName
