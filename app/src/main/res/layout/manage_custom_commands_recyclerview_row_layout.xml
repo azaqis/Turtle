@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
+    android:id="@+id/manage_custom_commands_recyclerview_row_layout_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
@@ -11,7 +11,7 @@
     app:cardCornerRadius="10dp">
 
     <LinearLayout
-        android:id="@+id/relative_layout"
+        android:id="@+id/manage_custom_commands_recyclerview_row_layout_relative_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp">
@@ -23,7 +23,7 @@
             android:layout_gravity="center">
 
             <ImageView
-                android:id="@+id/image_view"
+                android:id="@+id/manage_custom_commands_recyclerview_row_layout_image_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -38,14 +38,14 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_title"
+                android:id="@+id/manage_custom_commands_recyclerview_row_layout_text_view_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textSize="20sp"/>
 
             <TextView
-                android:id="@+id/text_view_description"
+                android:id="@+id/manage_custom_commands_recyclerview_row_layout_text_view_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"

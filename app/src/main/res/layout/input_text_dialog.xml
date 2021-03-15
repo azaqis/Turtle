@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <EditText
-        android:id="@+id/dialogTextFieldName"
+        android:id="@+id/input_text_dialog_layout_dialog_text_field_name"
         android:hint="@string/enter_text"
         android:inputType="textPersonName"
         android:layout_width="match_parent"

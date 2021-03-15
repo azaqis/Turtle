@@ -780,9 +780,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogInputNameBuilder.setMessage(R.string.enter_project_name_warning)
 
         if (savedInputText == null) {
-            dialogInputName.dialogTextFieldName.setText(projectName)
+            dialogInputName.input_text_dialog_layout_dialog_text_field_name.setText(projectName)
         } else {
-            dialogInputName.dialogTextFieldName.setText(savedInputText)
+            dialogInputName.input_text_dialog_layout_dialog_text_field_name.setText(savedInputText)
         }
 
         val inputNameDialogClickListener = DialogInterface.OnClickListener { _, which ->
@@ -793,16 +793,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     Log.e("FILE_LOG", "Cancel clicked, project not saves")
                 }
                 DialogInterface.BUTTON_POSITIVE -> {
-                    if (dialogInputName.dialogTextFieldName.text.toString().isBlank()) {
+                    if (dialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString().isBlank()) {
                         displayDialogNameBlankWarning(intent)
                     } else if (saveFilesManager.saveProject(
-                            dialogInputName.dialogTextFieldName.text.toString(),
+                            dialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString(),
                             recyclerViewItemList,
                             false
                         )
                     ) {
                         Utils.UtilsObject.showUpdatedToast(getString(R.string.project_saved), this)
-                        projectName = dialogInputName.dialogTextFieldName.text.toString()
+                        projectName = dialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString()
                         programming_text_view_current_project.text = projectName
 
                         if (intent != null) {
@@ -812,7 +812,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
                     } else {
                         displayDialogNameExistsWarning(
-                            dialogInputName.dialogTextFieldName.text.toString(),
+                            dialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString(),
                             intent
                         )
                     }
@@ -824,8 +824,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogInputNameBuilder.setCancelable(false)
         dialogInputNameBuilder.show()
 
-        dialogInputName!!.dialogTextFieldName.doAfterTextChanged {
-            inputText = dialogInputName.dialogTextFieldName.text.toString()
+        dialogInputName!!.input_text_dialog_layout_dialog_text_field_name.doAfterTextChanged {
+            inputText = dialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString()
         }
     }
 
@@ -905,7 +905,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         val builder = AlertDialog.Builder(this).create()
         val dialogLayout = LayoutInflater.from(this).inflate(R.layout.input_dialog_layout, null)
-        val editText = dialogLayout.findViewById<EditText>(R.id.input_dialog_text_in)
+        val editText = dialogLayout.findViewById<EditText>(R.id.input_dialog_layout_text_in)
 
         if (savedInputText != null) {
             editText.setText(savedInputText)
@@ -942,7 +942,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 /*Button is enabled if no non numeric chars in editText*/
                 builder.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = !s.isNullOrBlank()
-                inputText = dialogLayout.input_dialog_text_in.text.toString()
+                inputText = dialogLayout.input_dialog_layout_text_in.text.toString()
             }
         })
     }
