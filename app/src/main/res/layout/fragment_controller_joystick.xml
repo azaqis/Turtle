@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ControllerJoystickFragment"
     android:background="@color/PrimaryDark"
-    android:orientation="horizontal"
-    android:gravity="center"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:gravity="center"
+    android:orientation="horizontal"
+    tools:context=".ControllerJoystickFragment">
 
     <se.anad19ps.student.turtle.JoystickView
         android:id="@+id/fragment_controller_joystick_joystick"

@@ -2,16 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-        <EditText
-            android:id="@+id/input_dialog_layout_text_in"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/input_dialog_hint"
-            android:textSize="16sp"
-            android:layout_marginHorizontal="20dp"
-            android:inputType="numberDecimal"
-            android:maxLength = "@integer/maxDigitsParameterEdit"
-            android:importantForAutofill="no"/>
+
+    <EditText
+        android:id="@+id/input_dialog_layout_text_in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:hint="@string/input_dialog_hint"
+        android:importantForAutofill="no"
+        android:inputType="numberDecimal"
+        android:maxLength="@integer/maxDigitsParameterEdit"
+        android:textSize="16sp" />
 
 
 </LinearLayout>

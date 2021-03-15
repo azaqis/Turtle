@@ -1,64 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_drag_drop"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="5dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="3dp"
->
+    app:cardElevation="3dp">
+
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/constraintLayout">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/card_drag_drop_image_drag_dots"
             android:layout_width="40dp"
             android:layout_height="50dp"
+            android:contentDescription="@string/drag_dots_image_description"
             android:src="@drawable/ic_drag_dots"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:contentDescription="@string/drag_dots_image_description" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
-            app:layout_constrainedWidth="true"
+            android:id="@+id/card_drag_drop_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/card_drag_drop_text"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/card_drag_drop_image_drag_dots"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/card_drag_drop_image_direction"/>
+            app:layout_constraintEnd_toStartOf="@id/card_drag_drop_image_direction"
+            app:layout_constraintStart_toEndOf="@id/card_drag_drop_image_drag_dots"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/card_drag_drop_image_direction"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_arrow_up"
             android:layout_marginEnd="10dp"
+            android:contentDescription="@string/direction_image_description"
+            android:src="@drawable/ic_arrow_up"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/card_drag_drop_button"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/direction_image_description" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/card_drag_drop_button"
             android:layout_width="70dp"
             android:layout_height="match_parent"
             android:background="@drawable/programming_card_parameter_button_drive"
-            android:scaleType="fitCenter"
             android:padding="10dp"
+            android:scaleType="fitCenter"
             android:textColor="@color/white"
 
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

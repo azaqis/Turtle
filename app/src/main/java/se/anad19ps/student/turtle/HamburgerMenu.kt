@@ -15,19 +15,19 @@ import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
 import com.google.android.material.navigation.NavigationView
 
 
-
 class HamburgerMenu {
 
 
-    companion object{
-        private enum class ActivityNumber{
+    companion object {
+        private enum class ActivityNumber {
             SELECT_BLUETOOTH_DEVICE_ACTIVITY,
             PROGRAMMING_ACTIVITY,
             CONTROLLER_ACTIVITY,
             MANAGE_CUSTOM_DRAG_DROP_BLOCKS_ACTIVITY,
             NOT_DEFINED
         }
-        private var currentActivity : ActivityNumber = ActivityNumber.NOT_DEFINED
+
+        private var currentActivity: ActivityNumber = ActivityNumber.NOT_DEFINED
 
         private lateinit var actionBarToggle: ActionBarDrawerToggle
     }
@@ -46,8 +46,8 @@ class HamburgerMenu {
             R.string.close
         )
 
-        fun updateAndSetCurrentActivity(){
-            currentActivity = when (con){
+        fun updateAndSetCurrentActivity() {
+            currentActivity = when (con) {
                 is SelectBluetoothDeviceActivity -> ActivityNumber.SELECT_BLUETOOTH_DEVICE_ACTIVITY
                 is ProgrammingActivity -> ActivityNumber.PROGRAMMING_ACTIVITY
                 is ControllerActivity -> ActivityNumber.CONTROLLER_ACTIVITY
@@ -56,45 +56,41 @@ class HamburgerMenu {
             }
         }
 
-        fun changeIntent(it : MenuItem){
+        fun changeIntent(it: MenuItem) {
             updateAndSetCurrentActivity()
 
             when (it.itemId) {
                 R.id.drawerItemBluetoothConnect -> {
-                    if(currentActivity == ActivityNumber.SELECT_BLUETOOTH_DEVICE_ACTIVITY){
+                    if (currentActivity == ActivityNumber.SELECT_BLUETOOTH_DEVICE_ACTIVITY) {
                         drawerLayout.closeDrawer(GravityCompat.START)
-                    }
-                    else{
+                    } else {
                         val intent = Intent(con, SelectBluetoothDeviceActivity::class.java)
                         startActivity(con, intent, null)
                         con.finish()
                     }
                 }
                 R.id.drawerItemProgramming -> {
-                    if(currentActivity == ActivityNumber.PROGRAMMING_ACTIVITY){
+                    if (currentActivity == ActivityNumber.PROGRAMMING_ACTIVITY) {
                         drawerLayout.closeDrawer(GravityCompat.START)
-                    }
-                    else{
+                    } else {
                         val intent = Intent(con, ProgrammingActivity::class.java)
                         startActivity(con, intent, null)
                         con.finish()
                     }
                 }
                 R.id.drawerItemRemoteController -> {
-                    if(currentActivity == ActivityNumber.CONTROLLER_ACTIVITY){
+                    if (currentActivity == ActivityNumber.CONTROLLER_ACTIVITY) {
                         drawerLayout.closeDrawer(GravityCompat.START)
-                    }
-                    else{
+                    } else {
                         val intent = Intent(con, ControllerActivity::class.java)
                         startActivity(con, intent, null)
                         con.finish()
                     }
                 }
                 R.id.drawerItemManageCommands -> {
-                    if(currentActivity == ActivityNumber.MANAGE_CUSTOM_DRAG_DROP_BLOCKS_ACTIVITY){
+                    if (currentActivity == ActivityNumber.MANAGE_CUSTOM_DRAG_DROP_BLOCKS_ACTIVITY) {
                         drawerLayout.closeDrawer(GravityCompat.START)
-                    }
-                    else{
+                    } else {
                         val intent = Intent(con, ManageCustomDragDropBlocksActivity::class.java)
                         startActivity(con, intent, null)
                         con.finish()
@@ -103,8 +99,8 @@ class HamburgerMenu {
             }
         }
 
-        fun checkIfInProgrammingAndProjectActive(it : MenuItem){
-            if (currentActivity == ActivityNumber.PROGRAMMING_ACTIVITY && Utils.UtilsObject.programmingIsTraversingList()){
+        fun checkIfInProgrammingAndProjectActive(it: MenuItem) {
+            if (currentActivity == ActivityNumber.PROGRAMMING_ACTIVITY && Utils.UtilsObject.programmingIsTraversingList()) {
                 val dialogWantToSave = android.app.AlertDialog.Builder(con)
                 dialogWantToSave.setTitle(R.string.changing_activity_while_traversinglist)
                 dialogWantToSave.setMessage(R.string.change_activity_or_stay_traverselist)
@@ -125,9 +121,9 @@ class HamburgerMenu {
             }
         }
 
-        fun checkIfInProgrammingAndIfProjectIsModified(it : MenuItem){
-            if(currentActivity == ActivityNumber.PROGRAMMING_ACTIVITY && Utils.UtilsObject.getIsProjectModified()){
-                if(it.itemId != R.id.drawerItemProgramming){
+        fun checkIfInProgrammingAndIfProjectIsModified(it: MenuItem) {
+            if (currentActivity == ActivityNumber.PROGRAMMING_ACTIVITY && Utils.UtilsObject.getIsProjectModified()) {
+                if (it.itemId != R.id.drawerItemProgramming) {
                     val dialogWantToSave = android.app.AlertDialog.Builder(con)
                     dialogWantToSave.setTitle(R.string.leaving_unsaved_project)
                     dialogWantToSave.setMessage(R.string.leaving_unsaved_project_warning)
@@ -144,11 +140,9 @@ class HamburgerMenu {
                     dialogWantToSave.setPositiveButton(R.string.change_view, dialogClickListener)
                     dialogWantToSave.setNegativeButton(R.string.stay, dialogClickListener)
                     dialogWantToSave.create().show()
-                }
-                else
+                } else
                     drawerLayout.closeDrawer(GravityCompat.START)
-            }
-            else
+            } else
                 changeIntent(it)
         }
 
@@ -164,8 +158,10 @@ class HamburgerMenu {
                 super.onDrawerSlide(view, v)
                 */
             }
+
             override fun onDrawerOpened(view: View) {
             }
+
             override fun onDrawerClosed(view: View) {
                 drawerLayout.visibility = View.INVISIBLE
             }

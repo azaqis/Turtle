@@ -25,7 +25,12 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_custom_dragdropblocks)
 
-        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburger_menu_icon)
+        HamburgerMenu().setUpHamburgerMenu(
+            this,
+            drawer_layout_nav_view,
+            drawer_layout,
+            hamburger_menu_icon
+        )
 
         manage_custom_dadb_recycler_view.layoutManager = LinearLayoutManager(this)
         recyclerViewAdapter =

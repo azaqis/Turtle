@@ -57,7 +57,7 @@ class Utils {
             view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
         }
 
-        fun getIsProjectModified() : Boolean{
+        fun getIsProjectModified(): Boolean {
             return ProgrammingActivity.isProjectModified()
         }
     }

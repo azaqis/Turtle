@@ -9,7 +9,7 @@ class SaveCustomDragDropBlockManager(con: Context) {
     companion object {
         private const val CUSTOM_DRAG_DROP_BLOCK_SAVE_FILE = "customDragDropBlockSaveFile.txt"
         private const val EMPTY_STRING = ""
-        private const val NEW_LINE_STRING ="\n"
+        private const val NEW_LINE_STRING = "\n"
 
         private lateinit var context: Context
 

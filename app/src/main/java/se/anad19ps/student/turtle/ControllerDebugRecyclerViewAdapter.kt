@@ -10,7 +10,8 @@ class ControllerDebugRecyclerViewAdapter(private var strings: List<String>) :
     RecyclerView.Adapter<ControllerDebugRecyclerViewAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val itemString: TextView = itemView.findViewById(R.id.fragment_controller_debug_row_layout_text_view_debug)
+        val itemString: TextView =
+            itemView.findViewById(R.id.fragment_controller_debug_row_layout_text_view_debug)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

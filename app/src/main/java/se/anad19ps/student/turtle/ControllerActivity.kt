@@ -28,7 +28,12 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_controller)
 
-        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburger_menu_icon)
+        HamburgerMenu().setUpHamburgerMenu(
+            this,
+            drawer_layout_nav_view,
+            drawer_layout,
+            hamburger_menu_icon
+        )
 
         setupTopFragment()
         setupSpinnerAdapters()
@@ -108,7 +113,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         }
     }
 
-    private fun getConvertedPercentageToString(percentageMoved: Int) : String{
+    private fun getConvertedPercentageToString(percentageMoved: Int): String {
         var movedString: String = percentageMoved.toString()
 
         if (movedString.length == 1)

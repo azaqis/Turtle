@@ -526,7 +526,6 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         bluetoothAdapter.cancelDiscovery()
-        bluetoothConnectionThreadActive = false
         unregisterReceiver(discoverReceiver)
     }
 }
