@@ -164,9 +164,8 @@
     <string name="programming_play_or_pause_btn_description">Play and pause button</string>
     <string name="programming_reset_btn_description">Reset button</string>
     <string name="programming_delete_btn_description">Delete project button</string>
-
     <string name="hamburger_menu_description">Menu button</string>
-    <string name="manage_custom_command_image_description">Menu button</string>
+    <string name="manage_custom_command_image_description">Custom block image</string>
 
     programming_delete_btn
 
