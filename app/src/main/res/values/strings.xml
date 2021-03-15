@@ -165,6 +165,9 @@
     <string name="programming_reset_btn_description">Reset button</string>
     <string name="programming_delete_btn_description">Delete project button</string>
 
+    <string name="hamburger_menu_description">Menu button</string>
+    <string name="manage_custom_command_image_description">Menu button</string>
+
     programming_delete_btn
 
     programming_reset_btn

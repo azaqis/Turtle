@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
@@ -85,7 +84,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private lateinit var saveFilesManager: SaveFilesManager
     private lateinit var projectName: String
     private lateinit var customCommandManager: SaveCustomDragDropBlockManager
-        var traversingList : Boolean = false
+    private var traversingList : Boolean = false
 
     private lateinit var recyclerSimpleCallback: ItemTouchHelper.SimpleCallback
 

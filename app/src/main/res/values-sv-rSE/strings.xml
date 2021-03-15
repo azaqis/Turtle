@@ -130,4 +130,6 @@
     <string name="programming_play_or_pause_btn_description">Spela och pausaknapp</string>
     <string name="programming_reset_btn_description">Återställknapp</string>
     <string name="programming_delete_btn_description">Radera projektknapp</string>
+
+    <string name="hamburger_menu_description">Menyknapp</string>
 </resources>
