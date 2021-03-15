@@ -94,8 +94,7 @@ class SavedProjectsActivity : AppCompatActivity() {
         savedProjectsListView.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, position, _ ->
                 val intent = Intent(this, ProgrammingActivity::class.java)
-                savedFilesManager.getProject(savedFilesManager.getArrayWithNames()[position], this)
-                intent.putExtra("SAVED_PROJECT_MANAGER", savedFilesManager)
+                intent.putExtra("PROJECT_NAME", savedFilesManager.getArrayWithNames()[position])
                 startActivity(intent)
                 finish()
             }
@@ -126,16 +125,10 @@ class SavedProjectsActivity : AppCompatActivity() {
                         }
                         savedFilesManager.createNewEmptyProject(
                             viewDialogInputName.dialogTextFieldName.text.toString(),
-                            false,
-                            this
+                            false
                         ) -> {
                             val intent = Intent(this, ProgrammingActivity::class.java)
-
-                            savedFilesManager.getProject(
-                                viewDialogInputName.dialogTextFieldName.text.toString(),
-                                this
-                            )
-                            intent.putExtra("SAVED_PROJECT_MANAGER", savedFilesManager)
+                            intent.putExtra("PROJECT_NAME", viewDialogInputName.dialogTextFieldName.text.toString())
                             startActivity(intent)
                             finish()
                         }
@@ -192,15 +185,12 @@ class SavedProjectsActivity : AppCompatActivity() {
                 DialogInterface.BUTTON_POSITIVE -> {
                     if (savedFilesManager.createNewEmptyProject(
                             inputNameThatExists,
-                            true,
-                            this
-
+                            true
                         )
                     ) {
                         val intent = Intent(this, ProgrammingActivity::class.java)
 
-                        savedFilesManager.getProject(inputNameThatExists, this)
-                        intent.putExtra("SAVED_PROJECT_MANAGER", savedFilesManager)
+                        intent.putExtra("PROJECT_NAME", inputNameThatExists)
 
                         startActivity(intent)
                         finish()

@@ -7,7 +7,7 @@ import android.widget.Button
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_create_custom_dragdropblock.checkBox
 import kotlinx.android.synthetic.main.activity_create_custom_dragdropblock.editTextDragDropBlockCommand
-import kotlinx.android.synthetic.main.activity_create_custom_dragdropblock.editTextDragDropBlockName
+import kotlinx.android.synthetic.main.activity_create_custom_dragdropblock.create_custom_dadb_édit_text_name
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
 
@@ -32,7 +32,7 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
         saveCustomDragDropBlockManager = SaveCustomDragDropBlockManager(this)
 
         if (savedInstanceState != null) {
-            editTextDragDropBlockName.setText(savedInstanceState.getString("inputName"))
+            create_custom_dadb_édit_text_name.setText(savedInstanceState.getString("inputName"))
             checkBox.isChecked = savedInstanceState.getBoolean("parameterEnabled")
             editTextDragDropBlockCommand.setText(savedInstanceState.getString("inputCommand"))
 
@@ -68,7 +68,7 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
         val buttonSave = findViewById<Button>(R.id.createCustomCommandsButtonSave)
         buttonSave.setBackgroundColor(ContextCompat.getColor(this, R.color.PrimaryColor))
         buttonSave.setOnClickListener {
-            val name = editTextDragDropBlockName.text.toString()
+            val name = create_custom_dadb_édit_text_name.text.toString()
             val parameterEnabled = checkBox.isChecked
             val command = editTextDragDropBlockCommand.text.toString()
 

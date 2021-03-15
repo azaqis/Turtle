@@ -84,6 +84,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private lateinit var saveFilesManager: SaveFilesManager
     private lateinit var projectName: String
     private lateinit var customCommandManager: SaveCustomDragDropBlockManager
+
     private var traversingList : Boolean = false
 
     private lateinit var recyclerSimpleCallback: ItemTouchHelper.SimpleCallback
@@ -264,7 +265,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             if (projectName != newProjectStandardName || recycleViewItemList.isNotEmpty()) {
                 displayDialogAskIfWantToSave(newIntent)
             } else {
-                newIntent.putExtra("SAVED_PROJECT_MANAGER", saveFilesManager)
                 startActivity(newIntent)
             }
 
@@ -312,12 +312,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     /*Get information (if any) that may have been passed to this activity from another*/
     private fun checkForIntentExtra() {
         val intent = intent
-        if (intent.hasExtra("SAVED_PROJECT_MANAGER")) {
-            saveFilesManager =
-                intent.getSerializableExtra("SAVED_PROJECT_MANAGER") as SaveFilesManager
-            projectName = saveFilesManager.getNameOfLastOpenedProject().toString()
+        if (intent.hasExtra("PROJECT_NAME")) {
+            projectName =
+                intent.getSerializableExtra("PROJECT_NAME").toString()
 
-            val loadedProject = saveFilesManager.getProject(projectName, this)
+            val loadedProject = saveFilesManager.loadProject(projectName)
 
             if (loadedProject != null) {
                 recycleViewItemList = loadedProject
@@ -326,7 +325,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         } else {
             val lastOpenProject = saveFilesManager.getNameOfLastOpenedProject()
             if (lastOpenProject != null) {
-                val loadedProject = saveFilesManager.getProject(lastOpenProject, this)
+                val loadedProject = saveFilesManager.loadProject(lastOpenProject)
 
                 if (loadedProject != null) {
                     recycleViewItemList = loadedProject
@@ -751,7 +750,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     Utils.UtilsObject.showUpdatedToast(getString(R.string.project_deleted), this)
                     Log.e("FILE_LOG", "Yes clicked, project deleted")
 
-                    saveFilesManager.deleteProject(projectName, this)
+                    saveFilesManager.deleteProject(projectName)
                     recycleViewItemList.clear()
                     projectName = newProjectStandardName
                     programming_text_view_current_project.text = projectName
@@ -795,8 +794,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     } else if (saveFilesManager.saveProject(
                             dialogInputName.dialogTextFieldName.text.toString(),
                             recycleViewItemList,
-                            false,
-                            this
+                            false
                         )
                     ) {
                         Utils.UtilsObject.showUpdatedToast(getString(R.string.project_saved), this)
@@ -1091,8 +1089,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     if (saveFilesManager.saveProject(
                             inputNameThatExists,
                             recycleViewItemList,
-                            true,
-                            this
+                            true
                         )
                     ) {
                         Utils.UtilsObject.showUpdatedToast(
@@ -1119,6 +1116,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     fun isProjectModified() : Boolean{
-        return recycleViewItemList != saveFilesManager.getProject(projectName, this)
+        return recycleViewItemList != saveFilesManager.loadProject(projectName)
     }
 }

@@ -6,20 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".CreateCustomDragDropBlocksActivity">
 
-
     <LinearLayout
-        android:id="@+id/linearLayoutTop"
+        android:id="@+id/create_custom_dadb_top_level_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <include
-            android:id="@+id/createCustomCommandsTopBar"
-            layout="@layout/top_bar">
-        </include>
+            android:id="@+id/create_custom_dadb_top_bar"
+            layout="@layout/top_bar"/>
 
         <LinearLayout
-            android:id="@+id/linearLayout1"
+            android:id="@+id/create_custom_dadb_top_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -27,8 +25,8 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
                 android:layout_marginStart="20dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp">
 
@@ -37,21 +35,22 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/create_custom_dadb_text_view_name"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="20dp"
                         android:layout_weight="2"
-                        android:text="@string/name"/>
+                        android:gravity="center_vertical"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="0dp"
+                        android:text="@string/name" />
 
                     <EditText
-                        android:id="@+id/editTextDragDropBlockName"
+                        android:id="@+id/create_custom_dadb_édit_text_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
                         android:layout_weight="5"
-                        android:inputType="textPersonName"/>
+                        android:inputType="textPersonName" />
 
                 </LinearLayout>
 
@@ -61,12 +60,12 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
+            android:id="@+id/controller_top_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp">
+            android:layout_marginEnd="20dp"
+            android:orientation="horizontal">
 
             <CheckBox
                 android:id="@+id/checkBox"
@@ -82,7 +81,7 @@
             android:layout_margin="20dp">
 
             <LinearLayout
-                android:id="@+id/linearLayout3"
+                android:id="@+id/controller_bottom_linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -101,7 +100,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="5"
-                    android:inputType="textPersonName"/>
+                    android:inputType="textPersonName" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
@@ -116,23 +115,22 @@
                 android:id="@+id/createCustomCommandsButtonSave"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_margin="10dp"
-                android:text="@string/save"/>
+                android:layout_weight="1"
+                android:text="@string/save" />
+
             <Button
                 android:id="@+id/createCustomCommandsButtonCancel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_margin="10dp"
-                android:text="@string/cancel"/>
+                android:layout_weight="1"
+                android:text="@string/cancel" />
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <include
-        layout="@layout/drawer_layout">
-    </include>
+    <include layout="@layout/drawer_layout"></include>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,7 +33,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
     }
 
     private fun setupSpinnerAdapters() {
-        val spinnerSpinnerController = findViewById<Spinner>(R.id.spinnerController)
+        val spinnerSpinnerController = findViewById<Spinner>(R.id.controller_spinner_bottom)
         val adapterSpinnerController = ArrayAdapter.createFromResource(
             this,
             R.array.controllerSpinnerController, R.layout.controller_spinner_layout
@@ -68,7 +68,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         val managerBottomFragment = supportFragmentManager
         val transaction = managerBottomFragment.beginTransaction()
 
-        transaction.replace(R.id.fragment_bottom, bottomFragment)
+        transaction.replace(R.id.controller_fragment_bottom, bottomFragment)
         transaction.addToBackStack(null)
         transaction.commit()
     }
@@ -79,7 +79,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         val managerTopFragment = supportFragmentManager
         val transaction = managerTopFragment.beginTransaction()
 
-        transaction.replace(R.id.fragment_top, topFragment)
+        transaction.replace(R.id.controller_fragment_top, topFragment)
         transaction.addToBackStack(null)
         transaction.commit()
     }
