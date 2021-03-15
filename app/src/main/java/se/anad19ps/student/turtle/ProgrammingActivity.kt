@@ -68,7 +68,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         private var openDialog = OpenDialog.NONE
 
-        private var alertParameterPosition: Int = -1
+        private const val NO_POSITION = -1
+        private var alertParameterPosition: Int = NO_POSITION
 
         private var blocksAreSelected = false //Marks if a click should add to deleteList
         private var selectedItemsList = ArrayList<DragDropBlock>()
@@ -919,14 +920,14 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         builder.setTitle(getString(R.string.change_parameter))
         builder.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.okay)) { _, _ ->
             updateItemValue(position, editText.text.toString().toDouble())
-            alertParameterPosition = -1
+            alertParameterPosition = NO_POSITION
             openDialog = OpenDialog.NONE
         }
         builder.setButton(
             AlertDialog.BUTTON_NEGATIVE,
             getString(R.string.cancel)
         ) { _, _ ->
-            alertParameterPosition = -1
+            alertParameterPosition = NO_POSITION
             openDialog = OpenDialog.NONE
         }
         builder.setView(dialogLayout)
