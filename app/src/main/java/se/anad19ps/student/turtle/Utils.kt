@@ -56,6 +56,10 @@ class Utils {
         fun vibrate(view: View) {
             view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
         }
+
+        fun getIsProjectModified() : Boolean{
+            return ProgrammingActivity.isProjectModified()
+        }
     }
 }
 

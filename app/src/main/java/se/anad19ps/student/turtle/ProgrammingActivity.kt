@@ -48,57 +48,65 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     companion object {
         var traversingList: Boolean = false
 
-        /*fun isProjectModified() : Boolean{
-            return recyclerViewItemList != saveFilesManager.loadProject(projectName)
-        }*/
+        fun isProjectModified() : Boolean{
+            val savedList = saveFilesManager.loadProject(projectName)
+            if(recyclerViewItemList.size != savedList.size)
+                return true
+
+            var index = 0
+            for(block in recyclerViewItemList){
+                if(block != savedList[index])
+                    return true
+                index+=1
+            }
+            return false
+        }
+
+        private var openDialog = OpenDialog.NONE
+
+        private var alertParameterPosition: Int = -1
+
+        private var blocksAreSelected = false //Marks if a click should add to deleteList
+        private var selectedItemsList = ArrayList<DragDropBlock>()
+
+        private lateinit var newProjectStandardName: String
+
+        private lateinit var recycleViewAdapter: ProgrammingRecyclerAdapter
+
+        private lateinit var spinnerDriveAdapter: ProgrammingSpinnerAdapter
+        private lateinit var spinnerModulesAdapter: ProgrammingSpinnerAdapter
+        private lateinit var spinnerCustomAdapter: ProgrammingSpinnerAdapter
+
+        private var recyclerViewItemList = ArrayList<DragDropBlock>()
+
+        /*Used to assign unique id to each dragDropBlock. 0 reserved for non added. Needed because
+        kotlin seems to do some optimization making all items with same data get removed, edited etc
+        at the same time*/
+        private var itemIdCounter: Long = 1
+
+        private var driveBlocksSpinnerList =
+            mutableListOf<DragDropBlock>() //Lists for items in spinners
+        private var modulesBlocksSpinnerList = mutableListOf<DragDropBlock>()
+        private var customBlocksSpinnerList = mutableListOf<DragDropBlock>()
+
+        private lateinit var itemTouchHelper: ItemTouchHelper   //For RecyclerView drag and drop. Receives events from RecyclerView
+
+        private lateinit var state: RunState    //State for iteration through list. Needed for play, pause and stop
+        private val sem = Semaphore(1)  //Can force the state machine to halt coroutine when pausing
+
+        private lateinit var saveFilesManager: SaveFilesManager
+        private lateinit var projectName: String
+        private lateinit var customCommandManager: SaveCustomDragDropBlockManager
+
+        private lateinit var recyclerSimpleCallback: ItemTouchHelper.SimpleCallback
+
+        /*Start coroutine from button click. Traverse list*/
+        private var traverseListCoroutine: Job? = null
+        /*For saving information about runtime configuration*/
+        private var inputText: String? = null
+        private var inputtedTextExists: String? = null
+        private var changeIntentNotNull: Boolean = false
     }
-
-    private var openDialog = OpenDialog.NONE
-
-    private var alertParameterPosition: Int = -1
-
-    private var blocksAreSelected = false //Marks if a click should add to deleteList
-    private var selectedItemsList = ArrayList<DragDropBlock>()
-
-    private lateinit var newProjectStandardName: String
-
-    private lateinit var recycleViewAdapter: ProgrammingRecyclerAdapter
-
-    private lateinit var spinnerDriveAdapter: ProgrammingSpinnerAdapter
-    private lateinit var spinnerModulesAdapter: ProgrammingSpinnerAdapter
-    private lateinit var spinnerCustomAdapter: ProgrammingSpinnerAdapter
-
-    private var recyclerViewItemList = ArrayList<DragDropBlock>()
-
-    /*Used to assign unique id to each dragDropBlock. 0 reserved for non added. Needed because
-    kotlin seems to do some optimization making all items with same data get removed, edited etc
-    at the same time*/
-    private var itemIdCounter: Long = 1
-
-    private var driveBlocksSpinnerList =
-        mutableListOf<DragDropBlock>() //Lists for items in spinners
-    private var modulesBlocksSpinnerList = mutableListOf<DragDropBlock>()
-    private var customBlocksSpinnerList = mutableListOf<DragDropBlock>()
-
-    private lateinit var itemTouchHelper: ItemTouchHelper   //For RecyclerView drag and drop. Receives events from RecyclerView
-
-    private lateinit var state: RunState    //State for iteration through list. Needed for play, pause and stop
-    private val sem = Semaphore(1)  //Can force the state machine to halt coroutine when pausing
-
-    private lateinit var saveFilesManager: SaveFilesManager
-    private lateinit var projectName: String
-    private lateinit var customCommandManager: SaveCustomDragDropBlockManager
-
-    private var traversingList : Boolean = false
-
-    private lateinit var recyclerSimpleCallback: ItemTouchHelper.SimpleCallback
-
-    /*Start coroutine from button click. Traverse list*/
-    private var traverseListCoroutine: Job? = null
-    /*For saving information about runtime configuration*/
-    private var inputText: String? = null
-    private var inputtedTextExists: String? = null
-    private var changeIntentNotNull: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -321,7 +329,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             projectName =
                 intent.getSerializableExtra("PROJECT_NAME").toString()
 
-            val loadedProject = saveFilesManager.loadProject(projectName)
+            val loadedProject = saveFilesManager.getProject(projectName)
 
             if (loadedProject != null) {
                 recyclerViewItemList = loadedProject
@@ -330,7 +338,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         } else {
             val lastOpenProject = saveFilesManager.getNameOfLastOpenedProject()
             if (lastOpenProject != null) {
-                val loadedProject = saveFilesManager.loadProject(lastOpenProject)
+                val loadedProject = saveFilesManager.getProject(lastOpenProject)
 
                 if (loadedProject != null) {
                     recyclerViewItemList = loadedProject
