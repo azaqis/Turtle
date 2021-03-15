@@ -56,17 +56,17 @@ class ProgrammingRecyclerAdapter(
 
         /*Choose appropriate graphics depending on type of block and if parameter is enabled*/
         when (itemList[position].type) {
-            DragDropBlock.e_type.DRIVE ->
+            DragDropBlock.BlockType.DRIVE ->
                 if (parameterEnabled)
                     holder.parameterButton.setBackgroundResource(R.drawable.programming_card_parameter_button_drive)
                 else
                     holder.parameterButton.setBackgroundResource(R.drawable.programming_card_parameter_button_drive_filled)
-            DragDropBlock.e_type.MODULE ->
+            DragDropBlock.BlockType.MODULE ->
                 if (parameterEnabled)
                     holder.parameterButton.setBackgroundResource(R.drawable.programming_card_parameter_button_module)
                 else
                     holder.parameterButton.setBackgroundResource(R.drawable.programming_card_parameter_button_module_filled)
-            DragDropBlock.e_type.CUSTOM ->
+            DragDropBlock.BlockType.CUSTOM ->
                 if (parameterEnabled)
                     holder.parameterButton.setBackgroundResource(R.drawable.programming_card_parameter_button_custom)
                 else

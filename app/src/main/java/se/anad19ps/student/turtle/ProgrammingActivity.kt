@@ -27,7 +27,7 @@ import kotlinx.coroutines.sync.Semaphore
 import java.util.*
 import kotlin.collections.ArrayList
 
-
+@Suppress("UNCHECKED_CAST")
 class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.ItemClickListener {
     private enum class RunState {
         IDLE,
@@ -198,7 +198,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     override fun onDestroy() {
         super.onDestroy()
-        if (traverseListCoroutine != null) {    //Cancel
+        if (traverseListCoroutine != null) {
             traverseListCoroutine!!.cancel()
         }
     }
@@ -312,10 +312,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 indexes.reverse()   //So largest index is first. This way we don't need to change index after every removal
 
                 for (i in 0 until indexes.size) {
-                    //deleteList[itemList[indexes[i]]]?.card_drag_drop?.setCardBackgroundColor(Color.WHITE)   //Reset holders to standard color
                     recyclerViewItemList.removeAt(indexes[i])
                     recyclerViewAdapter.notifyDataSetChanged()
-                    //adapter.notifyItemRemoved(indexes[i])
                 }
 
                 selectedItemsList.clear()
@@ -335,19 +333,15 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
             val loadedProject = saveFilesManager.getProject(projectName)
 
-            if (loadedProject != null) {
-                recyclerViewItemList = loadedProject
-            }
+            recyclerViewItemList = loadedProject
 
         } else {
             val lastOpenProject = saveFilesManager.getNameOfLastOpenedProject()
             if (lastOpenProject != null) {
                 val loadedProject = saveFilesManager.getProject(lastOpenProject)
 
-                if (loadedProject != null) {
-                    recyclerViewItemList = loadedProject
-                    projectName = lastOpenProject
-                }
+                recyclerViewItemList = loadedProject
+                projectName = lastOpenProject
 
             } else {
                 projectName = newProjectStandardName
@@ -475,7 +469,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         customBlocksSpinnerList.add(    //This is the title block. Always on top. Cannot be added to list.
             0, DragDropBlock(
                 R.drawable.ic_drag_dots, R.drawable.ic_custom, "Custom", "Null", 1.0,
-                1.0, DragDropBlock.e_type.CUSTOM, false, 0
+                1.0, DragDropBlock.BlockType.CUSTOM, false, 0
             )
         )
         programming_spinner_custom.adapter = spinnerCustomAdapter
@@ -565,7 +559,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Not implemented",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.MODULE,
+                DragDropBlock.BlockType.MODULE,
                 false,
                 0
             )
@@ -579,7 +573,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Not implemented",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.MODULE,
+                DragDropBlock.BlockType.MODULE,
                 false,
                 0
             )
@@ -593,7 +587,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Not implemented",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.MODULE,
+                DragDropBlock.BlockType.MODULE,
                 true,
                 0
             )
@@ -608,7 +602,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Null",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.MODULE,
+                DragDropBlock.BlockType.MODULE,
                 false,
                 0
             )
@@ -628,7 +622,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "2",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 true,
                 0
             )
@@ -642,7 +636,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "6",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 true,
                 0
             )
@@ -656,7 +650,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "8",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 true,
                 0
             )
@@ -670,7 +664,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "4",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 true,
                 0
             )
@@ -684,7 +678,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "5",
                 1.0,
                 0.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 true,
                 0
             )
@@ -698,7 +692,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "u",
                 0.0,
                 0.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 false,
                 0
             )
@@ -712,7 +706,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "d",
                 0.0,
                 0.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 false,
                 0
             )
@@ -727,7 +721,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Null",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 false,
                 0
             )

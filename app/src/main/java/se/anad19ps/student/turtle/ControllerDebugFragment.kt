@@ -63,7 +63,7 @@ class ControllerDebugFragment : Fragment() {
         Handler(Looper.getMainLooper()).post {
             if(recyclerViewDebugList != null){
                 recyclerViewDebugList!!.adapter!!.notifyDataSetChanged()
-                recyclerViewDebugList!!.smoothScrollToPosition(debugList.size);
+                recyclerViewDebugList!!.smoothScrollToPosition(debugList.size)
             }
         }
     }

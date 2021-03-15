@@ -18,7 +18,7 @@ RecyclerView.Adapter<ManageCustomDragDropBlocksRecyclerAdapter.ViewHolder>(){
         val itemPicture: ImageView = itemView.findViewById(R.id.manage_custom_commands_recyclerview_row_layout_image_view)
 
         init {
-            itemView.setOnClickListener { v : View ->
+            itemView.setOnClickListener {
                 val intent = Intent(itemView.context, EditCustomDragDropBlocksActivity::class.java)
                 intent.putExtra("NAME_DRAGDDROPBLOCK", itemTitle.text)
                 itemView.context.startActivity(intent)

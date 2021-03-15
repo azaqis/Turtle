@@ -30,21 +30,21 @@ class ProgrammingSpinnerAdapter(
 
         /*Set color on item depending on type*/
         when (item?.type) {
-            DragDropBlock.e_type.DRIVE ->
+            DragDropBlock.BlockType.DRIVE ->
                 view.card_spinner_block_linear_layout.setBackgroundColor(
                     ContextCompat.getColor(
                         context,
                         R.color.SpinnerBackgroundTurquoise
                     )
                 )
-            DragDropBlock.e_type.MODULE ->
+            DragDropBlock.BlockType.MODULE ->
                 view.card_spinner_block_linear_layout.setBackgroundColor(
                     ContextCompat.getColor(
                         context,
                         R.color.SpinnerBackgroundPink
                     )
                 )
-            DragDropBlock.e_type.CUSTOM ->
+            DragDropBlock.BlockType.CUSTOM ->
                 view.card_spinner_block_linear_layout.setBackgroundColor(
                     ContextCompat.getColor(
                         context,
