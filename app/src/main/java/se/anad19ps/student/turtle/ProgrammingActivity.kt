@@ -50,6 +50,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         fun isProjectModified() : Boolean{
             val savedList = saveFilesManager.getProject(projectName)
+
+            for(block in savedList)
+                Log.d("ERORR", block.text)
+
             if(recyclerViewItemList.size != savedList.size)
                 return true
 
@@ -71,7 +75,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         private lateinit var newProjectStandardName: String
 
-        private lateinit var recycleViewAdapter: ProgrammingRecyclerAdapter
+        private lateinit var recyclerViewAdapter: ProgrammingRecyclerAdapter
 
         private lateinit var spinnerDriveAdapter: ProgrammingSpinnerAdapter
         private lateinit var spinnerModulesAdapter: ProgrammingSpinnerAdapter
@@ -143,8 +147,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         val layoutManager = LinearLayoutManager(this)
         programming_recycle_view.layoutManager = layoutManager
 
-        recycleViewAdapter = ProgrammingRecyclerAdapter(recyclerViewItemList, this)
-        programming_recycle_view.adapter = recycleViewAdapter
+        recyclerViewAdapter = ProgrammingRecyclerAdapter(recyclerViewItemList, this)
+        programming_recycle_view.adapter = recyclerViewAdapter
 
         itemTouchHelper = ItemTouchHelper(recyclerSimpleCallback)
         itemTouchHelper.attachToRecyclerView(programming_recycle_view)
@@ -310,7 +314,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 for (i in 0 until indexes.size) {
                     //deleteList[itemList[indexes[i]]]?.card_drag_drop?.setCardBackgroundColor(Color.WHITE)   //Reset holders to standard color
                     recyclerViewItemList.removeAt(indexes[i])
-                    recycleViewAdapter.notifyDataSetChanged()
+                    recyclerViewAdapter.notifyDataSetChanged()
                     //adapter.notifyItemRemoved(indexes[i])
                 }
 
@@ -496,8 +500,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     block.idNumber =
                         itemIdCounter++    //Increment after adding id
                     recyclerViewItemList.add(block)
-                    recycleViewAdapter.notifyItemInserted(recycleViewAdapter.itemCount)
-                    recycler.scrollToPosition(recycleViewAdapter.itemCount - 1)
+                    recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.itemCount)
+                    recycler.scrollToPosition(recyclerViewAdapter.itemCount - 1)
                     programming_spinner_driving.setSelection(
                         0,
                         false
@@ -521,8 +525,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     block.idNumber =
                         itemIdCounter++
                     recyclerViewItemList.add(block)
-                    recycleViewAdapter.notifyItemInserted(recycleViewAdapter.itemCount)
-                    recycler.scrollToPosition(recycleViewAdapter.itemCount - 1)
+                    recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.itemCount)
+                    recycler.scrollToPosition(recyclerViewAdapter.itemCount - 1)
                     programming_spinner_modules.setSelection(0, false)
                 }
             }
@@ -543,8 +547,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     block.idNumber =
                         itemIdCounter++
                     recyclerViewItemList.add(block)
-                    recycleViewAdapter.notifyItemInserted(recycleViewAdapter.itemCount)
-                    recycler.scrollToPosition(recycleViewAdapter.itemCount - 1)
+                    recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.itemCount)
+                    recycler.scrollToPosition(recyclerViewAdapter.itemCount - 1)
                     programming_spinner_custom.setSelection(0, false)
                 }
             }
@@ -764,7 +768,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     recyclerViewItemList.clear()
                     projectName = newProjectStandardName
                     programming_text_view_current_project.text = projectName
-                    recycleViewAdapter.notifyDataSetChanged()
+                    recyclerViewAdapter.notifyDataSetChanged()
                 }
             }
         }
@@ -869,7 +873,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             if (selectedItemsList.contains(recyclerViewItemList[position])) {
                 recyclerViewItemList[position].dragImage = R.drawable.ic_drag_dots
                 selectedItemsList.remove(recyclerViewItemList[position])
-                recycleViewAdapter.notifyDataSetChanged()
+                recyclerViewAdapter.notifyDataSetChanged()
                 if (selectedItemsList.isEmpty()) {
                     blocksAreSelected = false
                     showUnselectedButtonsHideSelectedButtons()
@@ -877,7 +881,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             } else {
                 recyclerViewItemList[position].dragImage = R.drawable.ic_baseline_check_circle_24
                 selectedItemsList.add(recyclerViewItemList[position])
-                recycleViewAdapter.notifyDataSetChanged()
+                recyclerViewAdapter.notifyDataSetChanged()
             }
         }
     }
@@ -892,7 +896,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             showSelectedButtonsHideUnselectedButtons()
             recyclerViewItemList[position].dragImage = R.drawable.ic_baseline_check_circle_24
             selectedItemsList.add(recyclerViewItemList[position])
-            recycleViewAdapter.notifyDataSetChanged()
+            recyclerViewAdapter.notifyDataSetChanged()
             blocksAreSelected = true
         }
     }
@@ -955,7 +959,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     private fun updateItemValue(position: Int, value: Double) {
         recyclerViewItemList[position].parameter = value
         recyclerViewItemList[position].displayParameter = value
-        recycleViewAdapter.notifyDataSetChanged()
+        recyclerViewAdapter.notifyDataSetChanged()
     }
 
     private suspend fun traverseList() {
@@ -993,7 +997,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                         )
                                             .toDouble()
 
-                                    recycleViewAdapter.notifyDataSetChanged()
+                                    recyclerViewAdapter.notifyDataSetChanged()
                                 }
                                 RunState.PAUSE -> {
                                     sem.acquire() //Pause button takes the semaphore. This coroutine will wait for it
@@ -1012,7 +1016,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                 )
                                 delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
 
-                                recycleViewAdapter.notifyDataSetChanged()
+                                recyclerViewAdapter.notifyDataSetChanged()
                             }
                             RunState.PAUSE -> {
                                 sem.acquire() //Pause button takes the semaphore. This coroutine will wait for it
@@ -1050,7 +1054,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         state = RunState.IDLE
         for (i in recyclerViewItemList)
             i.displayParameter = i.parameter
-        recycleViewAdapter.notifyDataSetChanged()
+        recyclerViewAdapter.notifyDataSetChanged()
         programming_play_or_pause_button.setImageResource(R.drawable.ic_play_arrow)
     }
 

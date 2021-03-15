@@ -109,7 +109,7 @@ class HamburgerMenu(){
                 val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                     when (which) {
                         DialogInterface.BUTTON_NEGATIVE -> {
-
+                            drawerLayout.closeDrawer(GravityCompat.START)
                         }
                         DialogInterface.BUTTON_POSITIVE -> {
                             Utils.UtilsObject.stopTraversingList()
@@ -121,14 +121,11 @@ class HamburgerMenu(){
                 dialogWantToSave.setNegativeButton(R.string.stay, dialogClickListener)
                 dialogWantToSave.create().show()
             }
-            else{
-                changeIntent(it)
-            }
         }
 
-        fun checkIfInProgrammingAndIfProjectIsModified(){
-            if(currentActivity == ActivityNumber.PROGRAMMING_ACTIVITY){
-                if(Utils.UtilsObject.getIsProjectModified()){
+        fun checkIfInProgrammingAndIfProjectIsModified(it : MenuItem){
+            if(currentActivity == ActivityNumber.PROGRAMMING_ACTIVITY && Utils.UtilsObject.getIsProjectModified()){
+                if(it.itemId != R.id.drawerItemProgramming){
                     val dialogWantToSave = android.app.AlertDialog.Builder(con)
                     dialogWantToSave.setTitle("Leaving unsaved project")
                     dialogWantToSave.setMessage("Do you really want to leave this unsaved project. All progress will be lost if you continue!")
@@ -138,9 +135,7 @@ class HamburgerMenu(){
                                 drawerLayout.closeDrawer(GravityCompat.START)
                             }
                             DialogInterface.BUTTON_POSITIVE -> {
-                                val intent = Intent(con, ProgrammingActivity::class.java)
-                                startActivity(con, intent, null)
-                                con.finish()
+                                changeIntent(it)
                             }
                         }
                     }
@@ -148,7 +143,11 @@ class HamburgerMenu(){
                     dialogWantToSave.setNegativeButton(R.string.stay, dialogClickListener)
                     dialogWantToSave.create().show()
                 }
+                else
+                    drawerLayout.closeDrawer(GravityCompat.START)
             }
+            else
+                changeIntent(it)
         }
 
 
@@ -183,7 +182,7 @@ class HamburgerMenu(){
         navView.setNavigationItemSelectedListener {
             updateAndSetCurrentActivity()
             checkIfInProgrammingAndProjectActive(it)
-            checkIfInProgrammingAndIfProjectIsModified()
+            checkIfInProgrammingAndIfProjectIsModified(it)
             true
         }
     }
