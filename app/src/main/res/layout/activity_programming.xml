@@ -6,175 +6,173 @@
     android:layout_height="match_parent"
     tools:context=".ProgrammingActivity">
 
-    <include layout="@layout/top_bar"/>
+    <include layout="@layout/top_bar" />
 
     <LinearLayout
+        android:id="@+id/programming_spinner_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:id="@+id/programming_spinner_linear_layout"
-        app:layout_constraintTop_toBottomOf="@+id/top_bar"
-        app:layout_constraintStart_toStartOf="parent"
+        android:weightSum="3"
         app:layout_constraintEnd_toEndOf="parent"
-        android:weightSum="3">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/top_bar">
 
         <Spinner
+            android:id="@+id/programming_spinner_driving"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/programming_spinner_driving"
             android:layout_weight="1"
             android:background="@color/SpinnerBackgroundTurquoise"
             android:entries="@array/list"
-            android:textAlignment="center"/>
+            android:textAlignment="center" />
 
         <Spinner
+            android:id="@+id/programming_spinner_modules"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/programming_spinner_modules"
             android:layout_weight="1"
             android:background="@color/SpinnerBackgroundPink"
             android:entries="@array/list"
-            android:textAlignment="center"/>
+            android:textAlignment="center" />
 
         <Spinner
+            android:id="@+id/programming_spinner_custom"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/programming_spinner_custom"
             android:layout_weight="1"
             android:background="@color/SpinnerBackgroundOrange"
             android:entries="@array/list"
-            android:textAlignment="center"/>
+            android:textAlignment="center" />
 
     </LinearLayout>
 
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/programming_recycle_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/programming_recycle_view"
-        app:layout_constraintTop_toBottomOf="@+id/programming_spinner_linear_layout"
         app:layout_constraintBottom_toTopOf="@+id/programming_text_view_current_project"
-        tools:listitem="@layout/card_drag_drop"/>
+        app:layout_constraintTop_toBottomOf="@+id/programming_spinner_linear_layout"
+        tools:listitem="@layout/card_drag_drop" />
 
     <TextView
         android:id="@+id/programming_text_view_current_project"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/PrimaryDark"
         android:padding="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/PrimaryLight"
         app:layout_constraintBottom_toTopOf="@id/programming_button_area"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/PrimaryDark"
-        android:textColor="@color/PrimaryLight"
-        android:textAlignment="center"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <LinearLayout
         android:id="@+id/programming_button_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/PrimaryDark"
+        android:gravity="center"
         android:orientation="horizontal"
-        android:gravity="center">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:id="@+id/programming_button_area_not_selected"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:background="@color/PrimaryDark"
-            android:gravity="center">
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <ImageButton
                 android:id="@+id/programming_delete_btn"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_baseline_delete_24"
-                android:background="@drawable/rounded_button_delete"
-                android:scaleType="fitCenter"
-                android:padding="10dp"
                 android:layout_margin="10dp"
-                android:contentDescription="@string/programming_delete_btn_description" />
+                android:background="@drawable/rounded_button_delete"
+                android:contentDescription="@string/programming_delete_btn_description"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_baseline_delete_24" />
 
             <ImageButton
                 android:id="@+id/programming_reset_btn"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_restart"
-                android:background="@drawable/rounded_button"
-                android:scaleType="fitCenter"
-                android:padding="10dp"
                 android:layout_margin="10dp"
-                android:contentDescription="@string/programming_reset_btn_description" />
+                android:background="@drawable/rounded_button"
+                android:contentDescription="@string/programming_reset_btn_description"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_restart" />
 
             <ImageButton
                 android:id="@+id/programming_play_or_pause_button"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/ic_play_arrow"
-                android:background="@drawable/rounded_button"
-                android:scaleType="fitCenter"
-                android:padding="20dp"
                 android:layout_margin="10dp"
-                android:contentDescription="@string/programming_play_or_pause_btn_description" />
+                android:background="@drawable/rounded_button"
+                android:contentDescription="@string/programming_play_or_pause_btn_description"
+                android:padding="20dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_play_arrow" />
 
             <ImageButton
                 android:id="@+id/programming_load_button"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_folder"
-                android:background="@drawable/rounded_button"
-                android:scaleType="fitCenter"
-                android:padding="10dp"
                 android:layout_margin="10dp"
-                android:contentDescription="@string/programming_load_btn_description" />
+                android:background="@drawable/rounded_button"
+                android:contentDescription="@string/programming_load_btn_description"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_folder" />
 
             <ImageButton
                 android:id="@+id/programming_save_button"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_baseline_save_alt_24"
-                android:background="@drawable/rounded_button"
-                android:scaleType="fitCenter"
-                android:padding="10dp"
                 android:layout_margin="10dp"
-                android:contentDescription="@string/programming_save_btn_description" />
+                android:background="@drawable/rounded_button"
+                android:contentDescription="@string/programming_save_btn_description"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_baseline_save_alt_24" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/programming_button_area_selected"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:background="@color/PrimaryDark"
             android:gravity="center"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <ImageButton
                 android:id="@+id/programming_delete_btn_selected"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/ic_baseline_delete_24"
-                android:background="@drawable/rounded_button_delete"
-                android:scaleType="fitCenter"
-                android:padding="10dp"
-                android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
-                android:contentDescription="@string/programming_delete_selected_btn_description" />
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/rounded_button_delete"
+                android:contentDescription="@string/programming_delete_selected_btn_description"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_baseline_delete_24" />
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <include
-        layout="@layout/drawer_layout">
-    </include>
+    <include layout="@layout/drawer_layout"></include>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

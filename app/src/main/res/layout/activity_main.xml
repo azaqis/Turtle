@@ -24,12 +24,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <include
-        layout="@layout/top_bar">
-    </include>
+    <include layout="@layout/top_bar"></include>
 
-    <include
-        layout="@layout/drawer_layout">
-    </include>
+    <include layout="@layout/drawer_layout"></include>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

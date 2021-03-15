@@ -7,6 +7,6 @@
         android:id="@+id/fragment_controller_debug_row_layout_text_view_debug"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/PrimaryLight"/>
+        android:textColor="@color/PrimaryLight" />
 
 </LinearLayout>

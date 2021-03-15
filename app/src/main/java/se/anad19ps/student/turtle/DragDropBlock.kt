@@ -12,8 +12,8 @@ data class DragDropBlock(
     var parameter: Double,
     var displayParameter: Double,
     val type: BlockType,
-    var parameterEnabled : Boolean,
-    var idNumber : Long
+    var parameterEnabled: Boolean,
+    var idNumber: Long
 ) : Parcelable {
     enum class BlockType {
         DRIVE,

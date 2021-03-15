@@ -139,7 +139,11 @@ class SaveFilesManager(con: Context) {
 
     fun deleteProject(projectName: String): Boolean {
         if (projectNameExist(projectName)) {
-            if (File(context.filesDir, "$START_OF_PROJECT_SAVE_FILE_NAME$projectName.txt").delete()) {
+            if (File(
+                    context.filesDir,
+                    "$START_OF_PROJECT_SAVE_FILE_NAME$projectName.txt"
+                ).delete()
+            ) {
                 arrayWithProjectNames.remove(projectName)
                 Log.e("FILE_LOG", "Deleted: $projectName")
                 updateNameFile()
@@ -233,7 +237,7 @@ class SaveFilesManager(con: Context) {
         setLastOpenedProject(projectName)
         val index = arrayWithProjectNames.indexOf(projectName)
 
-        return if(index == -1)
+        return if (index == -1)
             ArrayList()
         else
             arrayWithProjects[index].clone() as ArrayList<DragDropBlock>

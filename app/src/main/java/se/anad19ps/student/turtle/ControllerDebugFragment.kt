@@ -16,7 +16,7 @@ class ControllerDebugFragment : Fragment() {
 
     companion object {
         var debugList = mutableListOf<String>()
-        var recyclerViewDebugList : RecyclerView? = null
+        var recyclerViewDebugList: RecyclerView? = null
         var operationsDone = 0
     }
 
@@ -28,7 +28,7 @@ class ControllerDebugFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_controller_debug, container, false)
 
         val btnClear = root.findViewById<Button>(R.id.fragment_controller_debug_button_clear_list)
-        btnClear.setOnClickListener{
+        btnClear.setOnClickListener {
             clearDebugList()
         }
 
@@ -44,24 +44,24 @@ class ControllerDebugFragment : Fragment() {
         updateList()
     }
 
-    fun addStringToDebugList(incomingString : String){
-        if(recyclerViewDebugList != null){
-            operationsDone+=1
+    fun addStringToDebugList(incomingString: String) {
+        if (recyclerViewDebugList != null) {
+            operationsDone += 1
             debugList.add("$operationsDone: $incomingString")
             updateList()
         }
     }
 
-    private fun clearDebugList(){
+    private fun clearDebugList() {
         operationsDone = 0
-        if(debugList.isNotEmpty())
+        if (debugList.isNotEmpty())
             debugList.clear()
         updateList()
     }
 
-    private fun updateList(){
+    private fun updateList() {
         Handler(Looper.getMainLooper()).post {
-            if(recyclerViewDebugList != null){
+            if (recyclerViewDebugList != null) {
                 recyclerViewDebugList!!.adapter!!.notifyDataSetChanged()
                 recyclerViewDebugList!!.smoothScrollToPosition(debugList.size)
             }

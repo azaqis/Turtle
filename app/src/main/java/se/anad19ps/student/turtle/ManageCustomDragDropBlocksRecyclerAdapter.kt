@@ -8,14 +8,21 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class ManageCustomDragDropBlocksRecyclerAdapter (private var titles: List<String>, private var details: List<String>, private var images:List<Int>) :
-RecyclerView.Adapter<ManageCustomDragDropBlocksRecyclerAdapter.ViewHolder>(){
+class ManageCustomDragDropBlocksRecyclerAdapter(
+    private var titles: List<String>,
+    private var details: List<String>,
+    private var images: List<Int>
+) :
+    RecyclerView.Adapter<ManageCustomDragDropBlocksRecyclerAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val itemTitle: TextView = itemView.findViewById(R.id.manage_custom_commands_recyclerview_row_layout_text_view_title)
-        val itemDescription: TextView = itemView.findViewById(R.id.manage_custom_commands_recyclerview_row_layout_text_view_description)
-        val itemPicture: ImageView = itemView.findViewById(R.id.manage_custom_commands_recyclerview_row_layout_image_view)
+        val itemTitle: TextView =
+            itemView.findViewById(R.id.manage_custom_commands_recyclerview_row_layout_text_view_title)
+        val itemDescription: TextView =
+            itemView.findViewById(R.id.manage_custom_commands_recyclerview_row_layout_text_view_description)
+        val itemPicture: ImageView =
+            itemView.findViewById(R.id.manage_custom_commands_recyclerview_row_layout_image_view)
 
         init {
             itemView.setOnClickListener {
@@ -28,7 +35,8 @@ RecyclerView.Adapter<ManageCustomDragDropBlocksRecyclerAdapter.ViewHolder>(){
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.manage_custom_commands_recyclerview_row_layout, parent, false)
+        val v = LayoutInflater.from(parent.context)
+            .inflate(R.layout.manage_custom_commands_recyclerview_row_layout, parent, false)
         return ViewHolder(v)
     }
 

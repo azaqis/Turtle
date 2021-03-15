@@ -37,7 +37,12 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
 
         saveFilesManager = SaveFilesManager(this)
 
-        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburger_menu_icon)
+        HamburgerMenu().setUpHamburgerMenu(
+            this,
+            drawer_layout_nav_view,
+            drawer_layout,
+            hamburger_menu_icon
+        )
 
         if (intent.hasExtra("NAME_DRAGDDROPBLOCK")) {
             val nameFromExtra = intent.getSerializableExtra("NAME_DRAGDDROPBLOCK").toString()
@@ -56,17 +61,19 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         if (savedInstanceState != null) {
             edit_custom_dadb_edit_text_name.setText(savedInstanceState.getString(INPUT_NAME))
             edit_custom_dadb_parameter_check_box.isChecked = savedInstanceState.getBoolean(
-                PARAMETER_ENABLED)
+                PARAMETER_ENABLED
+            )
             edit_custom_dadb_command_edit_text.setText(savedInstanceState.getString(INPUT_COMMAND))
             openDialog =
                 savedInstanceState.getString(OPEN_DIALOG)?.let { OpenDialog.valueOf(it) }!!
             oldDragDropBlock = savedInstanceState.getParcelable(OLD_DRAG_DROP_BLOCK)
 
-            when(openDialog){
+            when (openDialog) {
                 OpenDialog.DIALOG_NAME_EXISTS -> displayDialogNameExists()
                 OpenDialog.DIALOG_NAME_IS_BLANK -> displayDialogNameIsBlank()
                 OpenDialog.DIALOG_CONFIRM_DELETE -> displayDialogConfirmDelete()
-                else -> {}
+                else -> {
+                }
             }
         }
         setUpButtons()
