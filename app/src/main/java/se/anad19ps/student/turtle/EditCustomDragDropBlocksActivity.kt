@@ -32,16 +32,16 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
 
         saveFilesManager = SaveFilesManager(this)
 
-        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburger_menu_icon)
+        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburgerMenuIcon)
 
         if (intent.hasExtra("NAME_DRAGDDROPBLOCK")) {
             val nameFromExtra = intent.getSerializableExtra("NAME_DRAGDDROPBLOCK").toString()
             oldDragDropBlock = saveCustomDragDropBlockManager.getDragDropBlockByName(nameFromExtra)
 
             if (oldDragDropBlock != null) {
-                create_custom_dadb_édit_text_name.setText(oldDragDropBlock!!.text)
-                checkBox.isChecked = oldDragDropBlock!!.parameterEnabled
-                editTextDragDropBlockCommand.setText(oldDragDropBlock!!.command)
+                edit_custom_dadb_edit_text_name.setText(oldDragDropBlock!!.text)
+                edit_custom_dadb_parameter_check_box.isChecked = oldDragDropBlock!!.parameterEnabled
+                edit_custom_dadb_command_edit_text.setText(oldDragDropBlock!!.command)
             } else {
                 //If dragDropBlock is null here the dragDropBlock does not exists. Therefore it is not possible to edit it and therefore finishing this activity. This should not be able to happen
                 finish()
@@ -49,9 +49,9 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         }
 
         if (savedInstanceState != null) {
-            create_custom_dadb_édit_text_name.setText(savedInstanceState.getString("inputName"))
-            checkBox.isChecked = savedInstanceState.getBoolean("parameterEnabled")
-            editTextDragDropBlockCommand.setText(savedInstanceState.getString("inputCommand"))
+            edit_custom_dadb_edit_text_name.setText(savedInstanceState.getString("inputName"))
+            edit_custom_dadb_parameter_check_box.isChecked = savedInstanceState.getBoolean("parameterEnabled")
+            edit_custom_dadb_command_edit_text.setText(savedInstanceState.getString("inputCommand"))
             openDialog =
                 savedInstanceState.getString("openDialog")?.let { OpenDialog.valueOf(it) }!!
             oldDragDropBlock = savedInstanceState.getParcelable("oldDragDropBlock")
@@ -68,9 +68,9 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val inputName: String = create_custom_dadb_édit_text_name.text.toString()
-        val parameterEnabled: Boolean = checkBox.isChecked
-        val inputCommand: String = editTextDragDropBlockCommand.text.toString()
+        val inputName: String = edit_custom_dadb_edit_text_name.text.toString()
+        val parameterEnabled: Boolean = edit_custom_dadb_parameter_check_box.isChecked
+        val inputCommand: String = edit_custom_dadb_command_edit_text.text.toString()
 
         outState.putString("inputName", inputName)
         outState.putString("parameterEnabled", parameterEnabled.toString())
@@ -81,18 +81,18 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
 
     private fun setUpButtons() {
         //Set-up update button
-        val buttonUpdate = findViewById<Button>(R.id.editCustomCommandsButtonUpdate)
+        val buttonUpdate = findViewById<Button>(R.id.edit_custom_dadb_button_update)
         buttonUpdate.setBackgroundColor(ContextCompat.getColor(this, R.color.PrimaryColor))
         buttonUpdate.setOnClickListener {
             if (oldDragDropBlock != null) {
                 val dragImage = oldDragDropBlock!!.dragImage
                 val directionImage = oldDragDropBlock!!.directionImage
-                val text = create_custom_dadb_édit_text_name.text.toString()
-                val command = editTextDragDropBlockCommand.text.toString()
+                val text = edit_custom_dadb_edit_text_name.text.toString()
+                val command = edit_custom_dadb_command_edit_text.text.toString()
                 val parameter = oldDragDropBlock!!.parameter
                 val displayParameter = oldDragDropBlock!!.displayParameter
                 val type = oldDragDropBlock!!.type
-                val parameterEnabled = checkBox.isChecked
+                val parameterEnabled = edit_custom_dadb_parameter_check_box.isChecked
                 val idNumber = oldDragDropBlock!!.idNumber
 
                 if (text.isNotBlank() && command.isNotBlank()) {
@@ -128,14 +128,14 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         }
 
         //Set-up delete button
-        val buttonDelete = findViewById<Button>(R.id.editCustomCommandsButtonDelete)
+        val buttonDelete = findViewById<Button>(R.id.edit_custom_dadb_button_delete)
         buttonDelete.setBackgroundColor(ContextCompat.getColor(this, R.color.PrimaryComplement))
         buttonDelete.setOnClickListener {
             displayDialogConfirmDelete()
         }
 
         //Set-up cancel button
-        val buttonCancel = findViewById<Button>(R.id.editCustomCommandsButtonCancel)
+        val buttonCancel = findViewById<Button>(R.id.edit_custom_dadb_button_cancel)
         buttonCancel.setBackgroundColor(ContextCompat.getColor(this, R.color.GreyedButton))
         buttonCancel.setOnClickListener {
             finish()

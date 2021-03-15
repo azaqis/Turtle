@@ -72,9 +72,9 @@
     <string name="disconnection_requested">Avbrytning av anslutning förfrågad</string>
     <string name="disconnected">Anslutning avbruten</string>
     <string name="not_connected_to_bt_device_warning">Du är inte ansluten till en bluetooth-enhet</string>
-    <string name="name">Namn:</string>
+    <string name="name">Namn</string>
     <string name="enable_parameter">Aktivera parameter</string>
-    <string name="command">Kommand:</string>
+    <string name="command">Kommand</string>
     <string name="update">Uppdatera</string>
     <string name="delete">Radera</string>
     <string name="create">Skapa</string>
@@ -131,5 +131,7 @@
     <string name="programming_reset_btn_description">Återställknapp</string>
     <string name="programming_delete_btn_description">Radera projektknapp</string>
     <string name="hamburger_menu_description">Menyknapp</string>
+    <string name="command_semicolon">Kommand:</string>
+    <string name="name_semicolon">Namn:</string>
     <string name="manage_custom_command_image_description">Custom block bild</string>
 </resources>

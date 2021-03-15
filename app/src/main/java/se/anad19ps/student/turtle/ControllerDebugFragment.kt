@@ -27,12 +27,12 @@ class ControllerDebugFragment : Fragment() {
 
         val root = inflater.inflate(R.layout.fragment_controller_debug, container, false)
 
-        val btnClear = root.findViewById<Button>(R.id.button_clear_list)
+        val btnClear = root.findViewById<Button>(R.id.fragment_controller_debug_button_clear_list)
         btnClear.setOnClickListener{
             clearDebugList()
         }
 
-        recyclerViewDebugList = root.recyclerViewDebug
+        recyclerViewDebugList = root.fragment_controller_debug_recycler_view
         recyclerViewDebugList!!.layoutManager = LinearLayoutManager(activity)
         recyclerViewDebugList!!.adapter = ControllerDebugRecyclerViewAdapter(debugList)
 

@@ -34,7 +34,7 @@ class SavedProjectsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_saved_projects)
-        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburger_menu_icon)
+        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburgerMenuIcon)
 
         savedFilesManager = if (intent.hasExtra("SAVED_PROJECT_MANAGER")) {
             intent.getSerializableExtra("SAVED_PROJECT_MANAGER") as SaveFilesManager
@@ -77,21 +77,21 @@ class SavedProjectsActivity : AppCompatActivity() {
 
     private fun setUpButtonsAndListView() {
         //Set-up create button
-        savedProjectsCreateButton.setBackgroundColor(
+        saved_projects_create_button.setBackgroundColor(
             ContextCompat.getColor(
                 this,
                 R.color.PrimaryColor
             )
         )
-        savedProjectsCreateButton.setOnClickListener {
+        saved_projects_create_button.setOnClickListener {
             displayDialogInputName(null)
         }
 
         //Set-up list view
         savedProjectsListViewAdapter =
             ArrayAdapter(this, android.R.layout.simple_list_item_1, listWithNames)
-        savedProjectsListView.adapter = savedProjectsListViewAdapter
-        savedProjectsListView.onItemClickListener =
+        saved_projects_list_view.adapter = savedProjectsListViewAdapter
+        saved_projects_list_view.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, position, _ ->
                 val intent = Intent(this, ProgrammingActivity::class.java)
                 intent.putExtra("PROJECT_NAME", savedFilesManager.getArrayWithNames()[position])
