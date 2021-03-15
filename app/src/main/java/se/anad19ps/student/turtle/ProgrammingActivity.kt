@@ -438,7 +438,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 //No swipe
             }
 
-            /*Disable longPress so longClicks are reserved for hold to delete function. Move by calling startDrag()*/
+            /*Disable longPress so longClicks are reserved for hold to select function. Move by calling startDrag()*/
             override fun isLongPressDragEnabled(): Boolean {
                 return false
             }
@@ -456,18 +456,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_modules.adapter = spinnerModulesAdapter
         programming_spinner_modules.setSelection(0, false)
 
-        //Ugly way to do it, should not initialize a new SaveCustomDragDropBlockManager, rather use the one in the main thread
         customBlocksSpinnerList =
             SaveCustomDragDropBlockManager(this).getArrayWithCustomDragDropBlocks()
                 .clone() as ArrayList<DragDropBlock>
         spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinnerList, this)
-        customBlocksSpinnerList.add(
+        customBlocksSpinnerList.add(    //This is the title block. Always on top. Cannot be added to list.
             0, DragDropBlock(
                 R.drawable.ic_drag_dots, R.drawable.ic_custom, "Custom", "Null", 1.0,
                 1.0, DragDropBlock.e_type.CUSTOM, false, 0
             )
         )
-
         programming_spinner_custom.adapter = spinnerCustomAdapter
         programming_spinner_custom.setSelection(0, false)
 
@@ -768,7 +766,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogWantToSave.create().show()
     }
 
-    // This and saveProjectAndChangeActivity() are basically the same code, could reuse code if i could make a return inside the dialog click listeners, but that seems to not be possible
     private fun displayDialogInputName(intent: Intent? = null, savedInputText: String? = null) {
         changeIntentNotNull = intent != null
 
@@ -976,7 +973,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                         "7${item.command}$parameter",
                                         this.baseContext
                                     )
-                                    //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
                                     delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
                                     parameter--
 
@@ -1006,7 +1002,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                     "7${item.command}1",
                                     this.baseContext
                                 )
-                                //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
                                 delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
 
                                 recycleViewAdapter.notifyDataSetChanged()

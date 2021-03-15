@@ -21,7 +21,7 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback,
     private var radiusBoundedArea: Float = 0.0f     //Radius for circular bounded area
     private var joystickRadius: Float = 0.0f        //Radius of the joystick
 
-    /*Standard constructor for creating a JoystickView object*/
+    /*Primary constructor for creating a JoystickView object*/
     constructor(context: Context) : super(context) {
         holder.addCallback(this)
         setOnTouchListener(this)
@@ -59,8 +59,6 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback,
 
             paint.color = ContextCompat.getColor(this.context, R.color.PrimaryLight)
             canvas.drawCircle(joystickX, joystickY, joystickRadius, paint)
-
-            /*Unlocks the canvas so that it can be locked and written to again*/
             holder.unlockCanvasAndPost(canvas)
         }
     }
@@ -105,7 +103,7 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback,
                     )
                 }
             } else {    //If not valid press (example released)
-                drawJoystick(originX, originY)  //Reset
+                drawJoystick(originX, originY)
                 joystickCallback.onJoystickMoved(0, 0)
             }
         }
@@ -119,10 +117,10 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback,
 
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-
+        //Unused
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
-
+        //Unused
     }
 }
