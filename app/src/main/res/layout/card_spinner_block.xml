@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="40dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_spinner_item">
+    android:id="@+id/card_spinner_block_top_level_item"
+    android:layout_width="match_parent"
+    android:layout_height="40dp">
+
     <LinearLayout
+        android:id="@+id/card_spinner_block_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/card_spinner_constraint"
         android:background="@color/SpinnerBackgroundTurquoise"
         android:gravity="center">
 
         <ImageView
+            android:id="@+id/card_spinner_block_spinner_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/card_spinner_image"
             android:src="@drawable/ic_arrow_up"
-            app:layout_constraintEnd_toStartOf="@id/card_spinner_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/card_spinner_block_spinner_text"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            android:contentDescription="@string/spinner_image"/>
 
         <TextView
-            android:id="@+id/card_spinner_text"
+            android:id="@+id/card_spinner_block_spinner_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PLACEHOLDER TEXT"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/card_spinner_image"/>
+            app:layout_constraintStart_toEndOf="@id/card_spinner_block_spinner_image"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
 

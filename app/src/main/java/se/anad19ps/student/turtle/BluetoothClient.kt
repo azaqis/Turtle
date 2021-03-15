@@ -26,8 +26,8 @@ class BluetoothClient(device: BluetoothDevice, activityUI: Activity) : Thread() 
             )
             SelectBluetoothDeviceActivity.bluetoothConnectionThreadActive = false
             this.activity.runOnUiThread {
-                activity.progressBar.visibility = View.INVISIBLE
-                activity.refreshBluetoothDevicesButton.visibility = View.VISIBLE
+                activity.select_bluetooth_device_progress_bar.visibility = View.INVISIBLE
+                activity.select_bluetooth_device_button_refresh.visibility = View.VISIBLE
             }
         }
 

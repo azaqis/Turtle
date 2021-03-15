@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,41 +12,37 @@
         android:weightSum="1">
 
         <include
-            android:id="@+id/controller_top_bar"
-            layout="@layout/top_bar"/>
-
+            android:id="@+id/saved_projects_top_bar"
+            layout="@layout/top_bar" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/saved_projects"
                 android:layout_gravity="center_horizontal"
-                android:textSize="20sp"/>
+                android:text="@string/saved_projects"
+                android:textSize="20sp" />
 
             <ListView
-                android:id="@+id/savedProjectsListView"
+                android:id="@+id/saved_projects_list_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
         <Button
-            android:id="@+id/savedProjectsCreateButton"
+            android:id="@+id/saved_projects_create_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/create_new_project"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:text="@string/create_new_project" />
 
     </LinearLayout>
-
-
-
 
     <include layout="@layout/drawer_layout" />
 

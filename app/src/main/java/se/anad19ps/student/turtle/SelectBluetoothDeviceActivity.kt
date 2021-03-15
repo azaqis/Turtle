@@ -73,12 +73,12 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         }
 
         hideProgressShowButton()
-        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
+        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburgerMenuIcon)
 
         initAdapters()
         initFilters()
 
-        refreshBluetoothDevicesButton.setOnClickListener {
+        select_bluetooth_device_button_refresh.setOnClickListener {
             //Check permissions if it is possible to scan
             checkBluetoothAvailability()
             checkFineLocationAllowed()
@@ -126,9 +126,9 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             android.R.layout.simple_list_item_1,
             pairedDevicesNameList
         )
-        selectPairedDeviceList.adapter = pairedDevicesNameListViewAdapter
+        select_bluetooth_device_list_view_paired_devices.adapter = pairedDevicesNameListViewAdapter
 
-        selectPairedDeviceList.onItemClickListener =
+        select_bluetooth_device_list_view_paired_devices.onItemClickListener =
             AdapterView.OnItemClickListener { _, v, position, _ ->
                 val device: BluetoothDevice = pairedDevicesList[position]
                 //Here the app tries to connect with the device chosen in the listview
@@ -149,9 +149,9 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             android.R.layout.simple_list_item_1,
             scannedDevicesNameList
         )
-        selectScannedDeviceList.adapter = scannedDevicesNameListViewAdapter
+        select_bluetooth_device_list_view_scanned_devices.adapter = scannedDevicesNameListViewAdapter
 
-        selectScannedDeviceList.onItemClickListener =
+        select_bluetooth_device_list_view_scanned_devices.onItemClickListener =
             AdapterView.OnItemClickListener { _, v, position, _ ->
                 val device: BluetoothDevice = scannedDevicesList[position]
                 //Here the app tries to bond with the device chosen in the listview
@@ -204,7 +204,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                         pairedDevicesNameList.add(device.address)
                 }
             }
-            selectPairedDeviceList.invalidateViews()
+            select_bluetooth_device_list_view_paired_devices.invalidateViews()
             pairedDevicesNameListViewAdapter.notifyDataSetChanged()
         } else
             Utils.UtilsObject.showUpdatedToast(getString(R.string.no_paired_device_warning), this)
@@ -213,13 +213,13 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
     private fun clearBothScannedLists() {
         scannedDevicesList.clear()
         scannedDevicesNameList.clear()
-        selectScannedDeviceList.invalidateViews()
+        select_bluetooth_device_list_view_scanned_devices.invalidateViews()
     }
 
     private fun clearBothPairedList() {
         pairedDevicesList.clear()
         pairedDevicesNameList.clear()
-        selectPairedDeviceList.invalidateViews()
+        select_bluetooth_device_list_view_paired_devices.invalidateViews()
     }
 
     private fun checkBluetoothAvailability() {
@@ -498,13 +498,13 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
     }
 
     private fun showProgressHideButton() {
-        progressBar.visibility = View.VISIBLE
-        refreshBluetoothDevicesButton.visibility = View.INVISIBLE
+        select_bluetooth_device_progress_bar.visibility = View.VISIBLE
+        select_bluetooth_device_button_refresh.visibility = View.INVISIBLE
     }
 
     private fun hideProgressShowButton() {
-        progressBar.visibility = View.INVISIBLE
-        refreshBluetoothDevicesButton.visibility = View.VISIBLE
+        select_bluetooth_device_progress_bar.visibility = View.INVISIBLE
+        select_bluetooth_device_button_refresh.visibility = View.VISIBLE
     }
 
     override fun onDestroy() {
