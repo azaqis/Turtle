@@ -93,7 +93,7 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
                     command,
                     NEWDRAGDROPBLOCKPARAMETERVALUE,
                     NEWDRAGDROPBLOCKDISPLAYPARAMETERVALUE,
-                    DragDropBlock.e_type.CUSTOM,
+                    DragDropBlock.BlockType.CUSTOM,
                     parameterEnabled,
                     NEWDRAGDROPBLOCKSTANDARDID
                 )

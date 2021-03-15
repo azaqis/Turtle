@@ -3,8 +3,6 @@ package se.anad19ps.student.turtle
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-import java.io.Serializable
-
 @Parcelize
 data class DragDropBlock(
     var dragImage: Int,
@@ -13,11 +11,11 @@ data class DragDropBlock(
     var command: String,
     var parameter: Double,
     var displayParameter: Double,
-    val type: e_type,
+    val type: BlockType,
     var parameterEnabled : Boolean,
     var idNumber : Long
 ) : Parcelable {
-    enum class e_type {
+    enum class BlockType {
         DRIVE,
         MODULE,
         CUSTOM

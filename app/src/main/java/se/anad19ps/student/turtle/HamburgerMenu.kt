@@ -15,7 +15,9 @@ import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
 import com.google.android.material.navigation.NavigationView
 
 
+
 class HamburgerMenu {
+
 
     companion object{
         private enum class ActivityNumber{

@@ -176,7 +176,7 @@ class SaveFilesManager(con: Context) {
             var dragImageReadFromFile: Int = -1
             var parameterReadFromFile: Double = -1.0
             var textReadFromFile = ""
-            var type: DragDropBlock.e_type = DragDropBlock.e_type.CUSTOM
+            var type: DragDropBlock.BlockType = DragDropBlock.BlockType.CUSTOM
             var parameterEnabled = false
             var idNumber: Long = 0
 
@@ -195,7 +195,7 @@ class SaveFilesManager(con: Context) {
                         3 -> dragImageReadFromFile = it.toInt()
                         4 -> parameterReadFromFile = it.toDouble()
                         5 -> textReadFromFile = it
-                        6 -> type = DragDropBlock.e_type.valueOf(it)
+                        6 -> type = DragDropBlock.BlockType.valueOf(it)
                         7 -> parameterEnabled = it.toBoolean()
                     }
                     if (count < 7) {

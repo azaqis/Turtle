@@ -68,7 +68,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         private var openDialog = OpenDialog.NONE
 
-        private var alertParameterPosition: Int = -1
+        private const val NO_POSITION = -1
+        private var alertParameterPosition: Int = NO_POSITION
 
         private var blocksAreSelected = false //Marks if a click should add to deleteList
         private var selectedItemsList = ArrayList<DragDropBlock>()
@@ -198,7 +199,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     override fun onDestroy() {
         super.onDestroy()
-        if (traverseListCoroutine != null) {    //Cancel
+        if (traverseListCoroutine != null) {
             traverseListCoroutine!!.cancel()
         }
     }
@@ -312,10 +313,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 indexes.reverse()   //So largest index is first. This way we don't need to change index after every removal
 
                 for (i in 0 until indexes.size) {
-                    //deleteList[itemList[indexes[i]]]?.card_drag_drop?.setCardBackgroundColor(Color.WHITE)   //Reset holders to standard color
                     recyclerViewItemList.removeAt(indexes[i])
                     recyclerViewAdapter.notifyDataSetChanged()
-                    //adapter.notifyItemRemoved(indexes[i])
                 }
 
                 selectedItemsList.clear()
@@ -471,7 +470,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         customBlocksSpinnerList.add(    //This is the title block. Always on top. Cannot be added to list.
             0, DragDropBlock(
                 R.drawable.ic_drag_dots, R.drawable.ic_custom, "Custom", "Null", 1.0,
-                1.0, DragDropBlock.e_type.CUSTOM, false, 0
+                1.0, DragDropBlock.BlockType.CUSTOM, false, 0
             )
         )
         programming_spinner_custom.adapter = spinnerCustomAdapter
@@ -561,7 +560,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Not implemented",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.MODULE,
+                DragDropBlock.BlockType.MODULE,
                 false,
                 0
             )
@@ -575,7 +574,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Not implemented",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.MODULE,
+                DragDropBlock.BlockType.MODULE,
                 false,
                 0
             )
@@ -589,7 +588,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Not implemented",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.MODULE,
+                DragDropBlock.BlockType.MODULE,
                 true,
                 0
             )
@@ -604,7 +603,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Null",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.MODULE,
+                DragDropBlock.BlockType.MODULE,
                 false,
                 0
             )
@@ -624,7 +623,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "2",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 true,
                 0
             )
@@ -638,7 +637,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "6",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 true,
                 0
             )
@@ -652,7 +651,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "8",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 true,
                 0
             )
@@ -666,7 +665,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "4",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 true,
                 0
             )
@@ -680,7 +679,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "5",
                 1.0,
                 0.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 true,
                 0
             )
@@ -694,7 +693,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "u",
                 0.0,
                 0.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 false,
                 0
             )
@@ -708,7 +707,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "d",
                 0.0,
                 0.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 false,
                 0
             )
@@ -723,7 +722,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 "Null",
                 1.0,
                 1.0,
-                DragDropBlock.e_type.DRIVE,
+                DragDropBlock.BlockType.DRIVE,
                 false,
                 0
             )
@@ -921,14 +920,14 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         builder.setTitle(getString(R.string.change_parameter))
         builder.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.okay)) { _, _ ->
             updateItemValue(position, editText.text.toString().toDouble())
-            alertParameterPosition = -1
+            alertParameterPosition = NO_POSITION
             openDialog = OpenDialog.NONE
         }
         builder.setButton(
             AlertDialog.BUTTON_NEGATIVE,
             getString(R.string.cancel)
         ) { _, _ ->
-            alertParameterPosition = -1
+            alertParameterPosition = NO_POSITION
             openDialog = OpenDialog.NONE
         }
         builder.setView(dialogLayout)
