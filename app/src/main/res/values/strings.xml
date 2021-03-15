@@ -54,9 +54,6 @@
         <item>Controller: Joystick</item>
         <item>Controller: Arrow-buttons</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 
     <string name="connection_failed">Connection failed</string>
     <string name="title_already_exists">Title already exists</string>
@@ -95,7 +92,7 @@
     <string name="project_has_run_through_completely">Project has run through completely!</string>
     <string name="clicked_on">Clicked on</string>
     <string name="please_enter_project_name">Please enter project name</string>
-    <string name="please_wait_still_scanning">Please wait, still scanning...</string>
+    <string name="please_wait_still_scanning">Please wait, still scanning…</string>
     <string name="connecting_to">Connecting to</string>
     <string name="no_paired_device_warning">There are no paired devices on this device</string>
     <string name="bluetooth_is_enabled">Bluetooth is enabled</string>
