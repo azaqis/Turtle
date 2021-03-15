@@ -49,7 +49,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         var traversingList: Boolean = false
 
         fun isProjectModified() : Boolean{
-            val savedList = saveFilesManager.loadProject(projectName)
+            val savedList = saveFilesManager.getProject(projectName)
             if(recyclerViewItemList.size != savedList.size)
                 return true
 
