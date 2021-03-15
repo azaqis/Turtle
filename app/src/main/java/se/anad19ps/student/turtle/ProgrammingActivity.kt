@@ -765,6 +765,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     Utils.UtilsObject.showUpdatedToast(getString(R.string.project_deleted), this)
                     Log.e("FILE_LOG", "Yes clicked, project deleted")
 
+                    if(state == RunState.PAUSE){
+                        traverseListCoroutine?.cancel()
+                        resetListTraverse()
+                    }
+
                     saveFilesManager.deleteProject(projectName)
                     recyclerViewItemList.clear()
                     projectName = newProjectStandardName
