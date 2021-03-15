@@ -24,9 +24,14 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
 
         private var openDialog = OpenDialog.NONE
 
-        const val NEWDRAGDROPBLOCKPARAMETERVALUE = 1.0
-        const val NEWDRAGDROPBLOCKDISPLAYPARAMETERVALUE = 1.0
-        const val NEWDRAGDROPBLOCKSTANDARDID = 1L
+        const val NEW_DRAG_DROP_BLOCK_PARAMETER_VALUE = 1.0
+        const val NEW_DRAG_DROP_BLOCK_DISPLAY_PARAMETER_VALUE = 1.0
+        const val NEW_DRAG_DROP_BLOCK_STANDARD_ID = 1L
+
+        const val INPUT_NAME = "inputName"
+        const val PARAMETER_ENABLED = "parameterEnabled"
+        const val INPUT_COMMAND = "inputCommand"
+        const val OPEN_DIALOG = "openDialog"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,13 +48,13 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
         saveCustomDragDropBlockManager = SaveCustomDragDropBlockManager(this)
 
         if (savedInstanceState != null) {
-            create_custom_dadb_edit_text_name.setText(savedInstanceState.getString("inputName"))
+            create_custom_dadb_edit_text_name.setText(savedInstanceState.getString(INPUT_NAME))
             create_custom_dadb_parameter_check_box.isChecked =
-                savedInstanceState.getBoolean("parameterEnabled")
-            create_custom_dadb_command_edit_text.setText(savedInstanceState.getString("inputCommand"))
+                savedInstanceState.getBoolean(PARAMETER_ENABLED)
+            create_custom_dadb_command_edit_text.setText(savedInstanceState.getString(INPUT_COMMAND))
 
             openDialog =
-                savedInstanceState.getString("openDialog")?.let { OpenDialog.valueOf(it) }!!
+                savedInstanceState.getString(OPEN_DIALOG)?.let { OpenDialog.valueOf(it) }!!
 
             when (openDialog) {
                 OpenDialog.DIALOG_NAME_EXISTS -> displayDialogNameExists()
@@ -70,10 +75,10 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
         val parameterEnabled: Boolean = create_custom_dadb_parameter_check_box.isChecked
         val inputCommand: String = create_custom_dadb_command_edit_text.text.toString()
 
-        outState.putString("inputName", inputName)
-        outState.putString("parameterEnabled", parameterEnabled.toString())
-        outState.putString("inputCommand", inputCommand)
-        outState.putString("openDialog", openDialog.toString())
+        outState.putString(INPUT_NAME, inputName)
+        outState.putString(PARAMETER_ENABLED, parameterEnabled.toString())
+        outState.putString(INPUT_COMMAND, inputCommand)
+        outState.putString(OPEN_DIALOG, openDialog.toString())
     }
 
     private fun setUpButtons() {
@@ -91,11 +96,11 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
                     R.drawable.ic_custom,
                     name,
                     command,
-                    NEWDRAGDROPBLOCKPARAMETERVALUE,
-                    NEWDRAGDROPBLOCKDISPLAYPARAMETERVALUE,
+                    NEW_DRAG_DROP_BLOCK_PARAMETER_VALUE,
+                    NEW_DRAG_DROP_BLOCK_DISPLAY_PARAMETER_VALUE,
                     DragDropBlock.BlockType.CUSTOM,
                     parameterEnabled,
-                    NEWDRAGDROPBLOCKSTANDARDID
+                    NEW_DRAG_DROP_BLOCK_STANDARD_ID
                 )
 
                 if (saveCustomDragDropBlockManager.saveDragDropBlock(dragDropBlock, false)) {

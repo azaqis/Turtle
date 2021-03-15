@@ -36,6 +36,8 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
         private const val REQUEST_CODE_ENABLE_BT: Int = 1
         private const val TAG = "BluetoothActivity"
+        private const val SEMICOLON_SPACE_STRING = ": "
+        private const val TRIPLE_DOTS_STRING = "..."
 
         lateinit var bluetoothAdapter: BluetoothAdapter
         lateinit var clientThread: BluetoothClient
@@ -147,7 +149,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 val device: BluetoothDevice = pairedDevicesList[position]
                 //Here the app tries to connect with the device chosen in the listview
                 Utils.UtilsObject.showUpdatedToast(
-                    getString(R.string.connecting_to) + ": " + device.name + "...",
+                    getString(R.string.connecting_to) + SEMICOLON_SPACE_STRING + device.name + TRIPLE_DOTS_STRING,
                     this
                 )
 
@@ -345,7 +347,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         //Dont bond if it is already bonded, then connect instead
         if (!pairedDevicesList.contains(device)) {
             Utils.UtilsObject.showUpdatedToast(
-                getString(R.string.trying_to_bond_to_device) + ": " + device.name,
+                getString(R.string.trying_to_bond_to_device) + SEMICOLON_SPACE_STRING + device.name,
                 this
             )
             Log.d(TAG, "Trying to bond with " + device.name)
@@ -353,7 +355,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             device.createBond()
         } else {
             Utils.UtilsObject.showUpdatedToast(
-                getString(R.string.connecting_to) + ": " + device.name + "...",
+                getString(R.string.connecting_to) + SEMICOLON_SPACE_STRING + device.name + TRIPLE_DOTS_STRING,
                 this
             )
             Log.d(TAG, "Trying to connect to: " + device.name)
@@ -390,7 +392,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 if (mDevice!!.bondState == BluetoothDevice.BOND_BONDED) {
                     hideProgressShowButton()
                     Utils.UtilsObject.showUpdatedToast(
-                        getString(R.string.connected_to) + ": " + mDevice.name,
+                        getString(R.string.connected_to) + SEMICOLON_SPACE_STRING + mDevice.name,
                         context
                     )
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDED.")
@@ -400,7 +402,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 //Case2: creating a bond
                 if (mDevice.bondState == BluetoothDevice.BOND_BONDING) {
                     Utils.UtilsObject.showUpdatedToast(
-                        getString(R.string.connecting_to) + ": " + mDevice.name + "...",
+                        getString(R.string.connecting_to) + SEMICOLON_SPACE_STRING + mDevice.name + TRIPLE_DOTS_STRING,
                         context
                     )
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDING.")
@@ -428,7 +430,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 val mDevice =
                     intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
                 Utils.UtilsObject.showUpdatedToast(
-                    getString(R.string.connected_to) + ": " + mDevice?.name,
+                    getString(R.string.connected_to) + SEMICOLON_SPACE_STRING + mDevice?.name,
                     context
                 )
             }
@@ -443,7 +445,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 val mDevice =
                     intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
                 Utils.UtilsObject.showUpdatedToast(
-                    getString(R.string.disconnection_requested) + ": " + mDevice?.name,
+                    getString(R.string.disconnection_requested) + SEMICOLON_SPACE_STRING + mDevice?.name,
                     context
                 )
             }
@@ -459,7 +461,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 val mDevice =
                     intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
                 Utils.UtilsObject.showUpdatedToast(
-                    getString(R.string.disconnected) + ": " + mDevice?.name,
+                    getString(R.string.disconnected) + SEMICOLON_SPACE_STRING + mDevice?.name,
                     context
                 )
             }
@@ -524,6 +526,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         bluetoothAdapter.cancelDiscovery()
+        bluetoothConnectionThreadActive = false
         unregisterReceiver(discoverReceiver)
     }
 }

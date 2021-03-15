@@ -20,15 +20,24 @@ class SavedProjectsActivity : AppCompatActivity() {
 
     companion object {
         private enum class OpenDialog {
-            DIALOG_INPUT_NAME, DIALOG_NAME_BLANK_WARNING, DIALOG_NAME_EXISTS_WARNING, NONE
+            DIALOG_INPUT_NAME,
+            DIALOG_NAME_BLANK_WARNING,
+            DIALOG_NAME_EXISTS_WARNING,
+            NONE
         }
 
         private lateinit var savedProjectsListViewAdapter: ArrayAdapter<String>
         private lateinit var savedFilesManager: SaveFilesManager
         private lateinit var listWithNames: ArrayList<String>
+
         private var openDialog = OpenDialog.NONE
         private var inputText: String? = null
         private var inputtedTextExists: String? = null
+
+        private const val OPEN_DIALOG = "openDialog"
+        private const val INPUT_NAME_FROM_TEXT_BOX = "inputNameFromTextBox"
+        private const val INPUT_TEXT_EXIST = "inputTextExist"
+        private const val PROJECT_NAME = "PROJECT_NAME"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,14 +55,14 @@ class SavedProjectsActivity : AppCompatActivity() {
 
         if (savedInstanceState != null) {
             openDialog =
-                savedInstanceState.getString("openDialog")?.let { OpenDialog.valueOf(it) }!!
+                savedInstanceState.getString(OPEN_DIALOG)?.let { OpenDialog.valueOf(it) }!!
 
             when (openDialog) {
                 OpenDialog.DIALOG_INPUT_NAME -> {
-                    displayDialogInputName(savedInstanceState.getString("inputNameFromTextBox"))
+                    displayDialogInputName(savedInstanceState.getString(INPUT_NAME_FROM_TEXT_BOX))
                 }
                 OpenDialog.DIALOG_NAME_EXISTS_WARNING -> displayDialogNameExistsWarning(
-                    savedInstanceState.getString("inputtedTextExists")!!
+                    savedInstanceState.getString(INPUT_TEXT_EXIST)!!
                 )
                 OpenDialog.DIALOG_NAME_BLANK_WARNING -> displayDialogNameBlankWarning()
                 else -> {
@@ -68,12 +77,12 @@ class SavedProjectsActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val openDialogString = openDialog.toString()
-        outState.putString("openDialog", openDialogString)
+        outState.putString(OPEN_DIALOG, openDialogString)
 
         if (openDialog == OpenDialog.DIALOG_INPUT_NAME) {
-            outState.putString("inputNameFromTextBox", inputText)
+            outState.putString(INPUT_NAME_FROM_TEXT_BOX, inputText)
         } else if (openDialog == OpenDialog.DIALOG_NAME_EXISTS_WARNING) {
-            outState.putString("inputtedTextExists", inputtedTextExists)
+            outState.putString(INPUT_TEXT_EXIST, inputtedTextExists)
         }
     }
 
@@ -96,7 +105,7 @@ class SavedProjectsActivity : AppCompatActivity() {
         saved_projects_list_view.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, position, _ ->
                 val intent = Intent(this, ProgrammingActivity::class.java)
-                intent.putExtra("PROJECT_NAME", savedFilesManager.getArrayWithNames()[position])
+                intent.putExtra(PROJECT_NAME, savedFilesManager.getArrayWithNames()[position])
                 startActivity(intent)
                 finish()
             }
@@ -134,7 +143,7 @@ class SavedProjectsActivity : AppCompatActivity() {
                         ) -> {
                             val intent = Intent(this, ProgrammingActivity::class.java)
                             intent.putExtra(
-                                "PROJECT_NAME",
+                                PROJECT_NAME,
                                 viewDialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString()
                             )
                             startActivity(intent)
@@ -199,7 +208,7 @@ class SavedProjectsActivity : AppCompatActivity() {
                     ) {
                         val intent = Intent(this, ProgrammingActivity::class.java)
 
-                        intent.putExtra("PROJECT_NAME", inputNameThatExists)
+                        intent.putExtra(PROJECT_NAME, inputNameThatExists)
 
                         startActivity(intent)
                         finish()

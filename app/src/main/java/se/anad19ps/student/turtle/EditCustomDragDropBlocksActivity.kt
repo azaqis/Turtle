@@ -12,16 +12,21 @@ import kotlinx.android.synthetic.main.top_bar.*
 class EditCustomDragDropBlocksActivity : AppCompatActivity() {
 
     companion object {
-        private lateinit var saveCustomDragDropBlockManager: SaveCustomDragDropBlockManager
-        private var oldDragDropBlock: DragDropBlock? = null
-
         private enum class OpenDialog {
             DIALOG_NAME_EXISTS, DIALOG_NAME_IS_BLANK, DIALOG_CONFIRM_DELETE, NONE
         }
 
         private var openDialog = OpenDialog.NONE
+        private var oldDragDropBlock: DragDropBlock? = null
 
+        private lateinit var saveCustomDragDropBlockManager: SaveCustomDragDropBlockManager
         private lateinit var saveFilesManager: SaveFilesManager
+
+        private const val INPUT_NAME = "inputName"
+        private const val PARAMETER_ENABLED = "parameterEnabled"
+        private const val INPUT_COMMAND = "inputCommand"
+        private const val OPEN_DIALOG = "openDialog"
+        private const val OLD_DRAG_DROP_BLOCK = "oldDragDropBlock"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,12 +54,13 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         }
 
         if (savedInstanceState != null) {
-            edit_custom_dadb_edit_text_name.setText(savedInstanceState.getString("inputName"))
-            edit_custom_dadb_parameter_check_box.isChecked = savedInstanceState.getBoolean("parameterEnabled")
-            edit_custom_dadb_command_edit_text.setText(savedInstanceState.getString("inputCommand"))
+            edit_custom_dadb_edit_text_name.setText(savedInstanceState.getString(INPUT_NAME))
+            edit_custom_dadb_parameter_check_box.isChecked = savedInstanceState.getBoolean(
+                PARAMETER_ENABLED)
+            edit_custom_dadb_command_edit_text.setText(savedInstanceState.getString(INPUT_COMMAND))
             openDialog =
-                savedInstanceState.getString("openDialog")?.let { OpenDialog.valueOf(it) }!!
-            oldDragDropBlock = savedInstanceState.getParcelable("oldDragDropBlock")
+                savedInstanceState.getString(OPEN_DIALOG)?.let { OpenDialog.valueOf(it) }!!
+            oldDragDropBlock = savedInstanceState.getParcelable(OLD_DRAG_DROP_BLOCK)
 
             when(openDialog){
                 OpenDialog.DIALOG_NAME_EXISTS -> displayDialogNameExists()
@@ -72,11 +78,11 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         val parameterEnabled: Boolean = edit_custom_dadb_parameter_check_box.isChecked
         val inputCommand: String = edit_custom_dadb_command_edit_text.text.toString()
 
-        outState.putString("inputName", inputName)
-        outState.putString("parameterEnabled", parameterEnabled.toString())
-        outState.putString("inputCommand", inputCommand)
-        outState.putString("openDialog", openDialog.toString())
-        outState.putParcelable("oldDragDropBlock", oldDragDropBlock)
+        outState.putString(INPUT_NAME, inputName)
+        outState.putString(PARAMETER_ENABLED, parameterEnabled.toString())
+        outState.putString(INPUT_COMMAND, inputCommand)
+        outState.putString(OPEN_DIALOG, openDialog.toString())
+        outState.putParcelable(OLD_DRAG_DROP_BLOCK, oldDragDropBlock)
     }
 
     private fun setUpButtons() {

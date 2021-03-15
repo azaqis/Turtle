@@ -16,6 +16,7 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity() {
         private var titlesList = mutableListOf<String>()
         private var descriptionList = mutableListOf<String>()
         private var imagesList = mutableListOf<Int>()
+
         private lateinit var customDragDropBlockManager: SaveCustomDragDropBlockManager
         private lateinit var recyclerViewAdapter: ManageCustomDragDropBlocksRecyclerAdapter
     }

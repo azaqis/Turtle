@@ -17,8 +17,10 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
     companion object {
         private lateinit var bottomFragment: Fragment
         private lateinit var topFragment: Fragment
+
         private var coroutine: Job? = null
         private var coroutineActive: Boolean = false
+
         private const val JOYSTICK_COMMAND = "9"
     }
 

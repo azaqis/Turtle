@@ -12,6 +12,7 @@ class BluetoothClient(device: BluetoothDevice, activityUI: Activity) : Thread() 
 
     private val socket = device.createRfcommSocketToServiceRecord(device.uuids?.get(0)!!.uuid)
     private val activity = activityUI
+
     private lateinit var outputStream: OutputStream
 
     override fun run() {
