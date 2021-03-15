@@ -26,7 +26,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_controller)
 
-        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburgerMenuIcon)
+        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburger_menu_icon)
 
         setupTopFragment()
         setupSpinnerAdapters()

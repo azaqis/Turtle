@@ -73,7 +73,8 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         }
 
         hideProgressShowButton()
-        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburgerMenuIcon)
+
+        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburger_menu_icon)
 
         initAdapters()
         initFilters()

@@ -27,7 +27,7 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_custom_dragdropblock)
 
-        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburgerMenuIcon)
+        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburger_menu_icon)
 
         saveCustomDragDropBlockManager = SaveCustomDragDropBlockManager(this)
 

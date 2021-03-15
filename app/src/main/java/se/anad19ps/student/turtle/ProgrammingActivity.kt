@@ -113,7 +113,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_programming)
 
-        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburgerMenuIcon)
+        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburger_menu_icon)
 
         state = RunState.IDLE
 
@@ -446,7 +446,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 //No swipe
             }
 
-            /*Disable longPress so longClicks are reserved for hold to delete function. Move by calling startDrag()*/
+            /*Disable longPress so longClicks are reserved for hold to select function. Move by calling startDrag()*/
             override fun isLongPressDragEnabled(): Boolean {
                 return false
             }
@@ -464,19 +464,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_spinner_modules.adapter = spinnerModulesAdapter
         programming_spinner_modules.setSelection(0, false)
 
-        //Ugly way to do it, should not initialize a new SaveCustomDragDropBlockManager, rather use the one in the main thread
         customBlocksSpinnerList =
             SaveCustomDragDropBlockManager(this).getArrayWithCustomDragDropBlocks()
                 .clone() as ArrayList<DragDropBlock>
         spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinnerList, this)
-        spinnerCustomAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
-        customBlocksSpinnerList.add(
+        customBlocksSpinnerList.add(    //This is the title block. Always on top. Cannot be added to list.
             0, DragDropBlock(
                 R.drawable.ic_drag_dots, R.drawable.ic_custom, "Custom", "Null", 1.0,
                 1.0, DragDropBlock.e_type.CUSTOM, false, 0
             )
         )
-
         programming_spinner_custom.adapter = spinnerCustomAdapter
         programming_spinner_custom.setSelection(0, false)
 
@@ -777,7 +774,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogWantToSave.create().show()
     }
 
-    // This and saveProjectAndChangeActivity() are basically the same code, could reuse code if i could make a return inside the dialog click listeners, but that seems to not be possible
     private fun displayDialogInputName(intent: Intent? = null, savedInputText: String? = null) {
         changeIntentNotNull = intent != null
 
@@ -789,9 +785,9 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogInputNameBuilder.setMessage(R.string.enter_project_name_warning)
 
         if (savedInputText == null) {
-            dialogInputName.dialogTextFieldName.setText(projectName)
+            dialogInputName.input_text_dialog_layout_dialog_text_field_name.setText(projectName)
         } else {
-            dialogInputName.dialogTextFieldName.setText(savedInputText)
+            dialogInputName.input_text_dialog_layout_dialog_text_field_name.setText(savedInputText)
         }
 
         val inputNameDialogClickListener = DialogInterface.OnClickListener { _, which ->
@@ -802,16 +798,16 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     Log.e("FILE_LOG", "Cancel clicked, project not saves")
                 }
                 DialogInterface.BUTTON_POSITIVE -> {
-                    if (dialogInputName.dialogTextFieldName.text.toString().isBlank()) {
+                    if (dialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString().isBlank()) {
                         displayDialogNameBlankWarning(intent)
                     } else if (saveFilesManager.saveProject(
-                            dialogInputName.dialogTextFieldName.text.toString(),
+                            dialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString(),
                             recyclerViewItemList,
                             false
                         )
                     ) {
                         Utils.UtilsObject.showUpdatedToast(getString(R.string.project_saved), this)
-                        projectName = dialogInputName.dialogTextFieldName.text.toString()
+                        projectName = dialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString()
                         programming_text_view_current_project.text = projectName
 
                         if (intent != null) {
@@ -821,7 +817,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
                     } else {
                         displayDialogNameExistsWarning(
-                            dialogInputName.dialogTextFieldName.text.toString(),
+                            dialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString(),
                             intent
                         )
                     }
@@ -833,8 +829,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         dialogInputNameBuilder.setCancelable(false)
         dialogInputNameBuilder.show()
 
-        dialogInputName!!.dialogTextFieldName.doAfterTextChanged {
-            inputText = dialogInputName.dialogTextFieldName.text.toString()
+        dialogInputName!!.input_text_dialog_layout_dialog_text_field_name.doAfterTextChanged {
+            inputText = dialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString()
         }
     }
 
@@ -914,7 +910,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         val builder = AlertDialog.Builder(this).create()
         val dialogLayout = LayoutInflater.from(this).inflate(R.layout.input_dialog_layout, null)
-        val editText = dialogLayout.findViewById<EditText>(R.id.input_dialog_text_in)
+        val editText = dialogLayout.findViewById<EditText>(R.id.input_dialog_layout_text_in)
 
         if (savedInputText != null) {
             editText.setText(savedInputText)
@@ -951,7 +947,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 /*Button is enabled if no non numeric chars in editText*/
                 builder.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = !s.isNullOrBlank()
-                inputText = dialogLayout.input_dialog_text_in.text.toString()
+                inputText = dialogLayout.input_dialog_layout_text_in.text.toString()
             }
         })
     }
@@ -985,7 +981,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                         "7${item.command}$parameter",
                                         this.baseContext
                                     )
-                                    //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
                                     delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
                                     parameter--
 
@@ -1015,7 +1010,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                                     "7${item.command}1",
                                     this.baseContext
                                 )
-                                //Utils.UtilsObject.showUpdatedToast("72$parameter", this.baseContext)
                                 delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
 
                                 recycleViewAdapter.notifyDataSetChanged()
