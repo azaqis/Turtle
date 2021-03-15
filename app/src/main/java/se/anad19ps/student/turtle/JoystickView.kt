@@ -16,8 +16,12 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback,
 
     private lateinit var joystickCallback: JoystickListener
 
-    private var originX: Float = 0.0f               //X coordinate for center origin of joystick bounded area
-    private var originY: Float = 0.0f               //Y coordinate for center origin of joystick bounded area
+    private val modifyIntervalConst = 50
+
+    private var originX: Float =
+        0.0f               //X coordinate for center origin of joystick bounded area
+    private var originY: Float =
+        0.0f               //Y coordinate for center origin of joystick bounded area
     private var radiusBoundedArea: Float = 0.0f     //Radius for circular bounded area
     private var joystickRadius: Float = 0.0f        //Radius of the joystick
 
@@ -78,7 +82,8 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback,
         if (v == this) {
             if (event != null && event.action != MotionEvent.ACTION_UP) {   //If valid press in valid area
                 val distanceToPressed = kotlin.math.sqrt(
-                    (event.x - originX).toDouble().pow(2.0) + (event.y - originY).toDouble().pow(2.0)
+                    (event.x - originX).toDouble().pow(2.0) + (event.y - originY).toDouble()
+                        .pow(2.0)
                 )
                 if (distanceToPressed > radiusBoundedArea) {
                     /*Calculate unit vector and multiply by radius. Relative to chosen origin.*/
@@ -90,16 +95,18 @@ class JoystickView : SurfaceView, SurfaceHolder.Callback,
                         xCoordinate,
                         yCoordinate
                     )
+
+                    /*Calculations are abbreviated from mapping function. [-1,1] -> [0, 100]*/
                     joystickCallback.onJoystickMoved(   //Function implemented by user of Joystick
-                        50 + (50 * (xCoordinate - originX) / radiusBoundedArea).toInt(),
-                        50 + (50 * (yCoordinate - originY) / radiusBoundedArea).toInt()
+                        modifyIntervalConst + (modifyIntervalConst * (xCoordinate - originX) / radiusBoundedArea).toInt(),
+                        modifyIntervalConst + (modifyIntervalConst * (yCoordinate - originY) / radiusBoundedArea).toInt()
                     )
                     return true
                 } else {    //If press is inside joysticks bounded area
                     drawJoystick(event.x, event.y)
                     joystickCallback.onJoystickMoved(
-                        50 + (50 * (event.x - originX) / radiusBoundedArea).toInt(),
-                        50 + (50 * (event.y - originY) / radiusBoundedArea).toInt()
+                        modifyIntervalConst + (modifyIntervalConst * (event.x - originX) / radiusBoundedArea).toInt(),
+                        modifyIntervalConst + (modifyIntervalConst * (event.y - originY) / radiusBoundedArea).toInt()
                     )
                 }
             } else {    //If not valid press (example released)
