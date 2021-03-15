@@ -165,5 +165,7 @@
     <string name="manage_custom_command_image_description">Custom block image</string>
     <string name="leaving_unsaved_project">Leaving unsaved project</string>
     <string name="leaving_unsaved_project_warning">Do you really want to leave this unsaved project? All progress will be lost if you continue!</string>
+    <string name="now_running">Now running</string>
+    <string name="paused">Paused</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package se.anad19ps.student.turtle
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -131,7 +132,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         /*De loading main thread to avoid slowed start of activity*/
         Thread(Runnable {
             setupSpinners()
-            setupButtons()
+            setupButtons(this)
             apiDependentConfigurations()
         }).start()
 
@@ -221,7 +222,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
     }
 
-    private fun setupButtons() {
+    private fun setupButtons(context : Context) {
         /*Play button*/
         programming_play_or_pause_button.setOnClickListener {
             when (state) {
@@ -230,6 +231,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
                             if (recyclerViewItemList.isNotEmpty()) {
                                 state = RunState.RUNNING
+                                Utils.UtilsObject.showUpdatedToast(getString(R.string.now_running), context)
                                 programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
                                 traverseList()
                             } else
@@ -250,8 +252,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         sem.release()   //Used to avoid idle wait in traverseList
                         traversingList = true
                     }
+                    Utils.UtilsObject.showUpdatedToast(getString(R.string.paused), context)
                     programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
                     state = RunState.RUNNING
+                    traversingList = false
                 }
                 RunState.RUNNING -> {
                     programming_play_or_pause_button.setImageResource(R.drawable.ic_play_arrow)
