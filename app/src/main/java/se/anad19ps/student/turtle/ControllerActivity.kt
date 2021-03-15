@@ -49,7 +49,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
                     position: Int,
                     id: Long
                 ) {
-                    setupItemSelected(position)
+                    onItemSelected(position)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -59,7 +59,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
             }
     }
 
-    private fun setupItemSelected(position: Int) {
+    private fun onItemSelected(position: Int) {
         if (position == 0)
             bottomFragment = ControllerJoystickFragment()
         else if (position == 1)
@@ -69,7 +69,6 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         val transaction = managerBottomFragment.beginTransaction()
 
         transaction.replace(R.id.controller_fragment_bottom, bottomFragment)
-        transaction.addToBackStack(null)
         transaction.commit()
     }
 
@@ -80,7 +79,6 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         val transaction = managerTopFragment.beginTransaction()
 
         transaction.replace(R.id.controller_fragment_top, topFragment)
-        transaction.addToBackStack(null)
         transaction.commit()
     }
 

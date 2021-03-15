@@ -227,7 +227,7 @@ class SaveFilesManager(con: Context) {
     fun getProject(projectName: String): ArrayList<DragDropBlock> {
         setLastOpenedProject(projectName)
         val index = arrayWithProjectNames.indexOf(projectName)
-        return arrayWithProjects[index]
+        return arrayWithProjects[index].clone() as ArrayList<DragDropBlock>
     }
 
     private fun setLastOpenedProject(projectName: String?): Boolean {
