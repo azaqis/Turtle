@@ -52,7 +52,8 @@
                         android:layout_weight="5"
                         android:autofillHints="no"
                         android:hint="@string/name"
-                        android:inputType="textPersonName" />
+                        android:inputType="textPersonName"
+                        android:maxLength="17"/>
 
                 </LinearLayout>
 
@@ -105,7 +106,8 @@
                     android:layout_weight="5"
                     android:autofillHints="no"
                     android:hint="@string/command"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:maxLength="12"/>
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
