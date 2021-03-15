@@ -48,25 +48,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     companion object {
         var traversingList: Boolean = false
 
-        fun isProjectModified() : Boolean{
-            val savedList = saveFilesManager.getProject(projectName)
-
-            for(block in savedList)
-                Log.d("ERORR", block.text)
-
-            if(recyclerViewItemList.size != savedList.size)
-                return true
-
-            var index = 0
-            for(block in recyclerViewItemList){
-                if(block != savedList[index])
-                    return true
-                index+=1
-            }
-            return false
-        }
-
         private var openDialog = OpenDialog.NONE
+
 
         private const val NO_POSITION = -1
         private var alertParameterPosition: Int = NO_POSITION
@@ -75,9 +58,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         private var selectedItemsList = ArrayList<DragDropBlock>()
 
         private lateinit var newProjectStandardName: String
-
         private lateinit var recyclerViewAdapter: ProgrammingRecyclerAdapter
-
         private lateinit var spinnerDriveAdapter: ProgrammingSpinnerAdapter
         private lateinit var spinnerModulesAdapter: ProgrammingSpinnerAdapter
         private lateinit var spinnerCustomAdapter: ProgrammingSpinnerAdapter
@@ -111,6 +92,31 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         private var inputText: String? = null
         private var inputtedTextExists: String? = null
         private var changeIntentNotNull: Boolean = false
+
+        private const val DADB_COMMAND = "7"
+        private const val STOP_COMMAND = "5"
+        private const val DADB_PARAMETER = 1
+        private const val STANDARD_DADB_PARAMETER = 1.0
+        private const val STANDARD_DADB_DISPLAY_PARAMETER = 1.0
+        private const val STANDARD_DADB_ID = 1L
+
+        //Used via Utils into HamburgerMenu
+        fun isProjectModified() : Boolean{
+            val savedList = saveFilesManager.getProject(projectName)
+
+            //First fast check
+            if(recyclerViewItemList.size != savedList.size)
+                return true
+
+            //Second, thorough check
+            var index = 0
+            for(block in recyclerViewItemList){
+                if(block != savedList[index])
+                    return true
+                index+=1
+            }
+            return false
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -558,11 +564,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_baseline_highlight_24,
                 getString(R.string.module_spinner_led_on),
                 "Not implemented",
-                1.0,
-                1.0,
+                STANDARD_DADB_PARAMETER,
+                STANDARD_DADB_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.MODULE,
                 false,
-                0
+                STANDARD_DADB_ID
             )
         )
 
@@ -572,11 +578,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_baseline_highlight_24,
                 getString(R.string.module_spinner_led_off),
                 "Not implemented",
-                1.0,
-                1.0,
+                STANDARD_DADB_DISPLAY_PARAMETER,
+                STANDARD_DADB_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.MODULE,
                 false,
-                0
+                STANDARD_DADB_ID
             )
         )
 
@@ -586,11 +592,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_baseline_surround_sound_24,
                 getString(R.string.module_spinner_buzzer),
                 "Not implemented",
-                1.0,
-                1.0,
+                STANDARD_DADB_PARAMETER,
+                STANDARD_DADB_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.MODULE,
                 true,
-                0
+                STANDARD_DADB_ID
             )
         )
 
@@ -601,11 +607,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_modules,
                 getString(R.string.module_spinner_title),
                 "Null",
-                1.0,
-                1.0,
+                STANDARD_DADB_PARAMETER,
+                STANDARD_DADB_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.MODULE,
                 false,
-                0
+                STANDARD_DADB_ID
             )
         )
 
@@ -621,11 +627,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_arrow_up,
                 getString(R.string.drive_spinner_forward),
                 "2",
-                1.0,
-                1.0,
+                STANDARD_DADB_PARAMETER,
+                STANDARD_DADB_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
                 true,
-                0
+                STANDARD_DADB_ID
             )
         )
 
@@ -635,11 +641,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_arrow_right,
                 getString(R.string.drive_spinner_turn_right),
                 "6",
-                1.0,
-                1.0,
+                STANDARD_DADB_PARAMETER,
+                STANDARD_DADB_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
                 true,
-                0
+                STANDARD_DADB_ID
             )
         )
 
@@ -649,11 +655,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_arrow_down,
                 getString(R.string.drive_spinner_reverse),
                 "8",
-                1.0,
-                1.0,
+                STANDARD_DADB_PARAMETER,
+                STANDARD_DADB_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
                 true,
-                0
+                STANDARD_DADB_ID
             )
         )
 
@@ -663,11 +669,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_arrow_left,
                 getString(R.string.drive_spinner_turn_left),
                 "4",
-                1.0,
-                1.0,
+                STANDARD_DADB_PARAMETER,
+                STANDARD_DADB_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
                 true,
-                0
+                STANDARD_DADB_ID
             )
         )
 
@@ -677,11 +683,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_stop,
                 getString(R.string.drive_spinner_stop),
                 "5",
-                1.0,
-                0.0,
+                STANDARD_DADB_PARAMETER,
+                STANDARD_DADB_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
                 true,
-                0
+                STANDARD_DADB_ID
             )
         )
 
@@ -695,7 +701,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 0.0,
                 DragDropBlock.BlockType.DRIVE,
                 false,
-                0
+                STANDARD_DADB_ID
             )
         )
 
@@ -709,7 +715,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 0.0,
                 DragDropBlock.BlockType.DRIVE,
                 false,
-                0
+                STANDARD_DADB_ID
             )
         )
 
@@ -720,11 +726,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drive,
                 getString(R.string.drive_spinner_title),
                 "Null",
-                1.0,
-                1.0,
+                STANDARD_DADB_PARAMETER,
+                STANDARD_DADB_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
                 false,
-                0
+                STANDARD_DADB_ID
             )
         )
         return list
@@ -1006,7 +1012,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         when (state) {  //State machine
                             RunState.RUNNING -> {
                                 Utils.UtilsObject.bluetoothSendString(
-                                    "7${item.command}1",
+                                    "$DADB_COMMAND${item.command}$DADB_PARAMETER",
                                     this.baseContext
                                 )
                                 delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
@@ -1025,7 +1031,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             }
 
             //Stop the robot
-            Utils.UtilsObject.bluetoothSendString("5", this.baseContext)
+            Utils.UtilsObject.bluetoothSendString(STOP_COMMAND, this.baseContext)
             Utils.UtilsObject.showUpdatedToast(
                 getString(R.string.project_has_run_through_completely),
                 this
