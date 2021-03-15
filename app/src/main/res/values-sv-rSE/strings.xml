@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Turtle</string>
-    <string name="hello_blank_fragment">Hej blank fragment</string>
     <string name="input_dialog_hint">Ange tid</string>
     <string name="title_activity_controller">ControllerActivity</string>
     <string name="menu_slideshow">Bildspel</string>
@@ -17,8 +16,6 @@
     <string name="title_activity_main2">MainActivity</string>
     <string name="close">Stäng</string>
     <string name="open">Öppna</string>
-    <string name="hello_second_fragment">Hej andra fragment. Arg: %1$s</string>
-    <string name="hello_first_fragment">Hej första fragment</string>
     <string name="previous">Föregående</string>
     <string name="next">Nästa</string>
     <string name="second_fragment_label">Andra fragmentet</string>
@@ -134,4 +131,6 @@
     <string name="command_semicolon">Kommand:</string>
     <string name="name_semicolon">Namn:</string>
     <string name="manage_custom_command_image_description">Custom block bild</string>
+    <string name="leaving_unsaved_project">Lämnar osparat projekt</string>
+    <string name="leaving_unsaved_project_warning">Vill du verkligen lämna detta osparade projekt? Allt innehåll kommer att gå förlorat om du fortsätter!</string>
 </resources>

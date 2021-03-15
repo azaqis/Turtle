@@ -43,7 +43,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
         var bluetoothConnectionThreadActive: Boolean = false
         var inputBuffer = ByteArray(1024)
-        var messageRecieved: String? = null
+        var messageReceived: String? = null
         lateinit var clientThread: BluetoothClient
     }
 

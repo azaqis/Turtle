@@ -15,7 +15,7 @@ import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
 import com.google.android.material.navigation.NavigationView
 
 
-class HamburgerMenu(){
+class HamburgerMenu {
 
     companion object{
         private enum class ActivityNumber{
@@ -27,7 +27,7 @@ class HamburgerMenu(){
         }
         private var currentActivity : ActivityNumber = ActivityNumber.NOT_DEFINED
 
-        private lateinit var toggle: ActionBarDrawerToggle
+        private lateinit var actionBarToggle: ActionBarDrawerToggle
     }
 
     fun setUpHamburgerMenu(
@@ -37,7 +37,7 @@ class HamburgerMenu(){
         hamburgerMenuIcon: ImageView
     ) {
 
-        toggle = ActionBarDrawerToggle(
+        actionBarToggle = ActionBarDrawerToggle(
             con as Activity?,
             drawerLayout,
             R.string.open,
@@ -127,8 +127,8 @@ class HamburgerMenu(){
             if(currentActivity == ActivityNumber.PROGRAMMING_ACTIVITY && Utils.UtilsObject.getIsProjectModified()){
                 if(it.itemId != R.id.drawerItemProgramming){
                     val dialogWantToSave = android.app.AlertDialog.Builder(con)
-                    dialogWantToSave.setTitle("Leaving unsaved project")
-                    dialogWantToSave.setMessage("Do you really want to leave this unsaved project. All progress will be lost if you continue!")
+                    dialogWantToSave.setTitle(R.string.leaving_unsaved_project)
+                    dialogWantToSave.setMessage(R.string.leaving_unsaved_project_warning)
                     val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                         when (which) {
                             DialogInterface.BUTTON_NEGATIVE -> {
@@ -151,7 +151,7 @@ class HamburgerMenu(){
         }
 
 
-        drawerLayout.addDrawerListener(toggle)
+        drawerLayout.addDrawerListener(actionBarToggle)
 
         drawerLayout.addDrawerListener(object : DrawerListener {
             override fun onDrawerSlide(view: View, v: Float) {
@@ -171,7 +171,7 @@ class HamburgerMenu(){
             override fun onDrawerStateChanged(i: Int) {}
         })
 
-        toggle.syncState()
+        actionBarToggle.syncState()
         drawerLayout.visibility = View.INVISIBLE
 
         hamburgerMenuIcon.setOnClickListener {

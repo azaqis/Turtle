@@ -7,8 +7,6 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="title_activity_main2">MainActivity</string>
@@ -165,5 +163,7 @@
     <string name="command_semicolon">Command:</string>
     <string name="name_semicolon">Name:</string>
     <string name="manage_custom_command_image_description">Custom block image</string>
+    <string name="leaving_unsaved_project">Leaving unsaved project</string>
+    <string name="leaving_unsaved_project_warning">Do you really want to leave this unsaved project? All progress will be lost if you continue!</string>
 
 </resources>
