@@ -34,7 +34,7 @@ class SavedProjectsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_saved_projects)
-        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
+        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburger_menu_icon)
 
         savedFilesManager = if (intent.hasExtra("SAVED_PROJECT_MANAGER")) {
             intent.getSerializableExtra("SAVED_PROJECT_MANAGER") as SaveFilesManager

@@ -101,7 +101,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_programming)
 
-        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
+        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburger_menu_icon)
 
         state = RunState.IDLE
 
@@ -457,7 +457,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             SaveCustomDragDropBlockManager(this).getArrayWithCustomDragDropBlocks()
                 .clone() as ArrayList<DragDropBlock>
         spinnerCustomAdapter = ProgrammingSpinnerAdapter(customBlocksSpinnerList, this)
-        spinnerCustomAdapter.setDropDownViewResource(R.layout.programming_spinner_modules_dropdown_layout)
         customBlocksSpinnerList.add(
             0, DragDropBlock(
                 R.drawable.ic_drag_dots, R.drawable.ic_custom, "Custom", "Null", 1.0,

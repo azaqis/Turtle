@@ -32,7 +32,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
 
         saveFilesManager = SaveFilesManager(this)
 
-        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
+        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburger_menu_icon)
 
         if (intent.hasExtra("NAME_DRAGDDROPBLOCK")) {
             val nameFromExtra = intent.getSerializableExtra("NAME_DRAGDDROPBLOCK").toString()
