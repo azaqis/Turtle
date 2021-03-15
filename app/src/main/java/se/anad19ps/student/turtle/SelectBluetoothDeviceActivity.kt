@@ -37,15 +37,14 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         private const val REQUEST_CODE_ENABLE_BT: Int = 1
         private const val TAG = "BluetoothActivity"
 
-        //Adapters
-        lateinit var btAdapter: BluetoothAdapter
+        lateinit var bluetoothAdapter: BluetoothAdapter
+        lateinit var clientThread: BluetoothClient
         lateinit var scannedDevicesNameListViewAdapter: ArrayAdapter<String>
         lateinit var pairedDevicesNameListViewAdapter: ArrayAdapter<String>
 
         var bluetoothConnectionThreadActive: Boolean = false
         var inputBuffer = ByteArray(1024)
         var messageReceived: String? = null
-        lateinit var clientThread: BluetoothClient
     }
 
 
@@ -57,7 +56,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             val savedState =
                 savedInstanceState.getParcelable<SelectBluetoothDeviceSavedState>("savedStateObject")
 
-            if (savedState != null){
+            if (savedState != null) {
                 scannedDevicesList.clear()
                 scannedDevicesList.addAll(savedState.scannedDevicesList)
                 pairedDevicesList.clear()
@@ -75,42 +74,55 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
         hideProgressShowButton()
 
-        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburger_menu_icon)
+        HamburgerMenu().setUpHamburgerMenu(
+            this,
+            drawer_layout_nav_view,
+            drawer_layout,
+            hamburger_menu_icon
+        )
 
-        initAdapters()
-        initFilters()
+        setupAdapters()
+        setupFilters()
 
         select_bluetooth_device_button_refresh.setOnClickListener {
-            //Check permissions if it is possible to scan
-            checkBluetoothAvailability()
-            checkFineLocationAllowed()
-
-            //Only scan if BT is enabled, worthless otherwise
-            if (btAdapter.isEnabled) {
-                //If it is already scanning, dont cancel and scan again, just wait for it to finish scanning. If it is done, then scan again
-                if (btAdapter.isDiscovering) {
-                    Utils.UtilsObject.showUpdatedToast(
-                        getString(R.string.please_wait_still_scanning),
-                        this
-                    )
-                } else {
-                    clearBothScannedLists()
-                    clearBothPairedList()
-                    updatePairedDevicesList()
-                    discoverBluetoothDevices()
-                }
-            } else
-            //Clear list to show that even if there were BT-devices, you shouldnt be able to connect to them
-                clearBothScannedLists()
+            onRefreshButtonClicked()
         }
+    }
+
+    private fun onRefreshButtonClicked() {
+        checkBluetoothAvailability()
+        checkFineLocationAllowed()
+
+        //Only scan if BT is enabled, worthless otherwise
+        if (bluetoothAdapter.isEnabled) {
+            //If it is already scanning, dont cancel and scan again, just wait for it to finish scanning.
+            //If it is done, then scan again
+            if (bluetoothAdapter.isDiscovering) {
+                Utils.UtilsObject.showUpdatedToast(
+                    getString(R.string.please_wait_still_scanning),
+                    this
+                )
+            } else {
+                clearBothScannedLists()
+                clearBothPairedList()
+                updatePairedDevicesList()
+                discoverBluetoothDevices()
+            }
+        } else
+        //Clear list to show that even if there were BT-devices, you shouldn't be able to connect to them
+            clearBothScannedLists()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val scannedDevicesListClone : ArrayList<BluetoothDevice> = scannedDevicesList.clone() as ArrayList<BluetoothDevice>
-        val scannedDevicesNameListClone : ArrayList<String> = scannedDevicesNameList.clone() as ArrayList<String>
-        val pairedDevicesListClone : ArrayList<BluetoothDevice> = pairedDevicesList.clone() as ArrayList<BluetoothDevice>
-        val pairedDevicesNameListClone : ArrayList<String> = pairedDevicesNameList.clone() as ArrayList<String>
+        val scannedDevicesListClone: ArrayList<BluetoothDevice> =
+            scannedDevicesList.clone() as ArrayList<BluetoothDevice>
+        val scannedDevicesNameListClone: ArrayList<String> =
+            scannedDevicesNameList.clone() as ArrayList<String>
+        val pairedDevicesListClone: ArrayList<BluetoothDevice> =
+            pairedDevicesList.clone() as ArrayList<BluetoothDevice>
+        val pairedDevicesNameListClone: ArrayList<String> =
+            pairedDevicesNameList.clone() as ArrayList<String>
         val saveState =
             SelectBluetoothDeviceSavedState(
                 scannedDevicesListClone,
@@ -121,7 +133,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         outState.putParcelable("savedStateObject", saveState)
     }
 
-    private fun initAdapters() {
+    private fun setupAdapters() {
         //Init for adapter for paired devices list view
         pairedDevicesNameListViewAdapter = ArrayAdapter(
             this,
@@ -151,21 +163,22 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             android.R.layout.simple_list_item_1,
             scannedDevicesNameList
         )
-        select_bluetooth_device_list_view_scanned_devices.adapter = scannedDevicesNameListViewAdapter
+        select_bluetooth_device_list_view_scanned_devices.adapter =
+            scannedDevicesNameListViewAdapter
 
         select_bluetooth_device_list_view_scanned_devices.onItemClickListener =
-            AdapterView.OnItemClickListener { _, v, position, _ ->
+            AdapterView.OnItemClickListener { _, _, position, _ ->
                 val device: BluetoothDevice = scannedDevicesList[position]
                 //Here the app tries to bond with the device chosen in the listview
                 showProgressHideButton()
-                tryBonding(device, v)
+                bondToDevice(device)
             }
 
         //Init BT Adapter
-        btAdapter = BluetoothAdapter.getDefaultAdapter()
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
     }
 
-    private fun initFilters() {
+    private fun setupFilters() {
         //Intent-filters
         val filterBond = IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
         registerReceiver(pairingReceiver, filterBond)
@@ -185,20 +198,18 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
         //Check permissions
         checkBluetoothAvailability()
-        if (btAdapter.isEnabled && checkFineLocationAllowed()) {
-            //clearBothPairedList()
-            //clearBothScannedLists()
+        if (bluetoothAdapter.isEnabled && checkFineLocationAllowed()) {
             discoverBluetoothDevices()
             updatePairedDevicesList()
         }
     }
 
     private fun updatePairedDevicesList() {
-        val devices: ArrayList<BluetoothDevice>? = getPairedDevices()
+        val devices: ArrayList<BluetoothDevice>? = getInternalPairedDevicesList()
 
         if (devices != null) {
             for (device: BluetoothDevice in devices) {
-                if(!pairedDevicesList.contains(device)){
+                if (!pairedDevicesList.contains(device)) {
                     pairedDevicesList.add(device)
                     if (device.name != null)
                         pairedDevicesNameList.add(device.name)
@@ -226,7 +237,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
     private fun checkBluetoothAvailability() {
         //If there is no adapter, its not possible with BT
-        if (!btAdapter.isEnabled) {
+        if (!bluetoothAdapter.isEnabled) {
             //Permission dialog appears
             val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(intent, REQUEST_CODE_ENABLE_BT)
@@ -285,9 +296,9 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
     }
 
 
-    private fun getPairedDevices(): ArrayList<BluetoothDevice>? {
+    private fun getInternalPairedDevicesList(): ArrayList<BluetoothDevice>? {
         //Make a set that holds all of the pre-paired devices
-        val pairedDevices: Set<BluetoothDevice> = btAdapter.bondedDevices
+        val pairedDevices: Set<BluetoothDevice> = bluetoothAdapter.bondedDevices
 
         val listOfPairedDevices: ArrayList<BluetoothDevice> = ArrayList()
 
@@ -305,11 +316,12 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
     }
 
     private fun discoverBluetoothDevices() {
-        //If the adapter is trying to discover, cancel it first and then start (as you should do cited from developer site)
-        if (btAdapter.isDiscovering) {
-            btAdapter.cancelDiscovery()
+        //If the adapter is trying to discover, cancel it first and then start
+        //(as you should do cited from developer site)
+        if (bluetoothAdapter.isDiscovering) {
+            bluetoothAdapter.cancelDiscovery()
         }
-        btAdapter.startDiscovery()
+        bluetoothAdapter.startDiscovery()
 
         val discoverDevicesIntent = IntentFilter(BluetoothDevice.ACTION_FOUND)
         registerReceiver(discoverReceiver, discoverDevicesIntent)
@@ -317,7 +329,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
     private fun addDeviceToScannedList(device: BluetoothDevice) {
         //If a device is found, add it to the scannedDevicesList
-        if(!scannedDevicesList.contains(device)){
+        if (!scannedDevicesList.contains(device)) {
             scannedDevicesList.add(device)
 
             if (device.name != null)
@@ -329,7 +341,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         }
     }
 
-    private fun tryBonding(device: BluetoothDevice, v: View) {
+    private fun bondToDevice(device: BluetoothDevice) {
         //Dont bond if it is already bonded, then connect instead
         if (!pairedDevicesList.contains(device)) {
             Utils.UtilsObject.showUpdatedToast(
@@ -374,7 +386,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 val mDevice =
                     intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
                 //3 cases:
-                //case1: bonded already
+                //Case1: bonded already
                 if (mDevice!!.bondState == BluetoothDevice.BOND_BONDED) {
                     hideProgressShowButton()
                     Utils.UtilsObject.showUpdatedToast(
@@ -383,9 +395,9 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                     )
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDED.")
                     Log.e(TAG, "BroadcastReceiver: BOND_BONDED." + mDevice.name)
-                    btAdapter.cancelDiscovery()
+                    bluetoothAdapter.cancelDiscovery()
                 }
-                //case2: creating a bond
+                //Case2: creating a bond
                 if (mDevice.bondState == BluetoothDevice.BOND_BONDING) {
                     Utils.UtilsObject.showUpdatedToast(
                         getString(R.string.connecting_to) + ": " + mDevice.name + "...",
@@ -394,7 +406,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDING.")
                     Log.e(TAG, "BroadcastReceiver: BOND_BONDING." + mDevice.name)
                 }
-                //case3: breaking a bond
+                //Case3: breaking a bond
                 if (mDevice.bondState == BluetoothDevice.BOND_NONE) {
                     hideProgressShowButton()
                     Utils.UtilsObject.showUpdatedToast(
@@ -466,7 +478,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
         result.addOnCompleteListener { task ->
             try {
-                val response = task.getResult(ApiException::class.java)
+                task.getResult(ApiException::class.java)
                 // All location settings are satisfied. The client can initialize location
                 // requests here.
             } catch (exception: ApiException) {
@@ -511,7 +523,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        btAdapter.cancelDiscovery()
+        bluetoothAdapter.cancelDiscovery()
         unregisterReceiver(discoverReceiver)
     }
 }
