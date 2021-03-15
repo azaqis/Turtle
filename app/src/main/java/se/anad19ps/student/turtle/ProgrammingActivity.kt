@@ -266,6 +266,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 displayDialogAskIfWantToSave(newIntent)
             } else {
                 startActivity(newIntent)
+                finish()
             }
 
         }
@@ -839,6 +840,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 DialogInterface.BUTTON_NEGATIVE -> {
                     Utils.UtilsObject.showUpdatedToast(getString(R.string.project_not_saved), this)
                     startActivity(intent)
+                    finish()
                 }
                 DialogInterface.BUTTON_POSITIVE -> {
                     displayDialogInputName(intent)
