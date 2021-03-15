@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:src="@drawable/ic_arrow_down"
-                android:contentDescription="TODO" />
+                android:contentDescription="@string/manage_custom_command_image_description" />
 
         </LinearLayout>
 
