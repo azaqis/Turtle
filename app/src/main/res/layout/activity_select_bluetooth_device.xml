@@ -21,7 +21,7 @@
         android:weightSum="2">
 
         <include
-            android:id="@+id/topBar"
+            android:id="@+id/controller_top_bar"
             layout="@layout/top_bar"/>
         <!-- IF we would like to see currently connected device but problem
          is that we cant get info about that from the API, only intent-changes,
@@ -67,7 +67,7 @@
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/topBar" />
+                app:layout_constraintTop_toBottomOf="@+id/controller_top_bar" />
 
             <ListView
                 android:id="@+id/selectPairedDeviceList"

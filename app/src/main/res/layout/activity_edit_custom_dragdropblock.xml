@@ -8,18 +8,18 @@
 
 
     <LinearLayout
-        android:id="@+id/linearLayoutTop"
+        android:id="@+id/create_custom_dadb_top_level_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <include
-            android:id="@+id/createCustomCommandsTopBar"
+            android:id="@+id/create_custom_dadb_top_bar"
             layout="@layout/top_bar">
         </include>
 
         <LinearLayout
-            android:id="@+id/linearLayout1"
+            android:id="@+id/controller_top_level_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -37,7 +37,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/create_custom_dadb_text_view_name"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
@@ -46,7 +46,7 @@
                         android:text="@string/name" />
 
                     <EditText
-                        android:id="@+id/editTextDragDropBlockName"
+                        android:id="@+id/create_custom_dadb_édit_text_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
@@ -61,7 +61,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
+            android:id="@+id/controller_top_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -82,7 +82,7 @@
             android:layout_margin="20dp">
 
             <LinearLayout
-                android:id="@+id/linearLayout3"
+                android:id="@+id/controller_bottom_linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
