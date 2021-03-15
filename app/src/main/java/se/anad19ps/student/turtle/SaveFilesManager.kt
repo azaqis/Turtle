@@ -6,6 +6,7 @@ import java.io.File
 import java.io.FileWriter
 import kotlin.collections.ArrayList
 
+@Suppress("UNCHECKED_CAST")
 class SaveFilesManager(con: Context) {
 
     companion object {

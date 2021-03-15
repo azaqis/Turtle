@@ -17,32 +17,45 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
         private lateinit var saveCustomDragDropBlockManager: SaveCustomDragDropBlockManager
 
         private enum class OpenDialog {
-            DIALOG_NAME_EXISTS, DIALOG_NAME_IS_BLANK, NONE
+            DIALOG_NAME_EXISTS,
+            DIALOG_NAME_IS_BLANK,
+            NONE
         }
 
         private var openDialog = OpenDialog.NONE
+
+        const val NEWDRAGDROPBLOCKPARAMETERVALUE = 1.0
+        const val NEWDRAGDROPBLOCKDISPLAYPARAMETERVALUE = 1.0
+        const val NEWDRAGDROPBLOCKSTANDARDID = 1L
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_custom_dragdropblock)
 
-        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburger_menu_icon)
+        HamburgerMenu().setUpHamburgerMenu(
+            this,
+            drawer_layout_nav_view,
+            drawer_layout,
+            hamburger_menu_icon
+        )
 
         saveCustomDragDropBlockManager = SaveCustomDragDropBlockManager(this)
 
         if (savedInstanceState != null) {
             create_custom_dadb_edit_text_name.setText(savedInstanceState.getString("inputName"))
-            create_custom_dadb_parameter_check_box.isChecked = savedInstanceState.getBoolean("parameterEnabled")
+            create_custom_dadb_parameter_check_box.isChecked =
+                savedInstanceState.getBoolean("parameterEnabled")
             create_custom_dadb_command_edit_text.setText(savedInstanceState.getString("inputCommand"))
 
             openDialog =
                 savedInstanceState.getString("openDialog")?.let { OpenDialog.valueOf(it) }!!
 
-            when(openDialog){
+            when (openDialog) {
                 OpenDialog.DIALOG_NAME_EXISTS -> displayDialogNameExists()
                 OpenDialog.DIALOG_NAME_IS_BLANK -> displayDialogNameIsBlank()
-                else -> {}
+                else -> {
+                }
             }
         }
 
@@ -78,11 +91,11 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
                     R.drawable.ic_custom,
                     name,
                     command,
-                    1.0,
-                    1.0,
+                    NEWDRAGDROPBLOCKPARAMETERVALUE,
+                    NEWDRAGDROPBLOCKDISPLAYPARAMETERVALUE,
                     DragDropBlock.BlockType.CUSTOM,
                     parameterEnabled,
-                    0
+                    NEWDRAGDROPBLOCKSTANDARDID
                 )
 
                 if (saveCustomDragDropBlockManager.saveDragDropBlock(dragDropBlock, false)) {
