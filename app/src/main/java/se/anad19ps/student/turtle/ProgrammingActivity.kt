@@ -317,7 +317,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             projectName =
                 intent.getSerializableExtra("PROJECT_NAME").toString()
 
-            val loadedProject = saveFilesManager.loadProject(projectName)
+            val loadedProject = saveFilesManager.getProject(projectName)
 
             if (loadedProject != null) {
                 recycleViewItemList = loadedProject
@@ -326,7 +326,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         } else {
             val lastOpenProject = saveFilesManager.getNameOfLastOpenedProject()
             if (lastOpenProject != null) {
-                val loadedProject = saveFilesManager.loadProject(lastOpenProject)
+                val loadedProject = saveFilesManager.getProject(lastOpenProject)
 
                 if (loadedProject != null) {
                     recycleViewItemList = loadedProject
@@ -1118,6 +1118,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     fun isProjectModified() : Boolean{
-        return recycleViewItemList != saveFilesManager.loadProject(projectName)
+        return recycleViewItemList != saveFilesManager.getProject(projectName)
     }
 }

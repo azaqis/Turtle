@@ -18,13 +18,6 @@ class SaveFilesManager(con : Context) {
         private var arrayWithProjects = arrayListOf<ArrayList<DragDropBlock>>()
     }
 
-    /*
-   TODO IN THIS FILE
-    - Check if names is logical
-    - Remove static strings and link to strings file instead
-    - Maybe it's dumb to send context in this way? Might send it as a parameter to each function? In that case, it would be possible to use the same instance of SaveFileManager in different activities
-    */
-
     init {
         context = con
 
@@ -34,14 +27,14 @@ class SaveFilesManager(con : Context) {
             File(context.filesDir, projectNamesFile).writeText("")
 
             if(File(context.filesDir, projectNamesFile).isFile){
-                Log.e("FILE_LOG", "projectNames.txt was successfully created")
+                Log.d("FILE_LOG", "projectNames.txt was successfully created")
             }
             else{
-                Log.e("FILE_LOG", "projectNames.txt could not be created")
+                Log.d("FILE_LOG", "projectNames.txt could not be created")
             }
         }
         else{
-            Log.e("FILE_LOG", "projectNames.txt was already created")
+            Log.d("FILE_LOG", "projectNames.txt was already created")
             loadNamesOfProjects()
             loadAllProjects()
         }
@@ -50,10 +43,10 @@ class SaveFilesManager(con : Context) {
         if(!File(context.filesDir, lastOpenProjectFile).isFile){
             File(context.filesDir, lastOpenProjectFile).writeText("")
             if(File(context.filesDir, lastOpenProjectFile).isFile){
-                Log.e("FILE_LOG", "lastOpenProject.txt was successfully created")
+                Log.d("FILE_LOG", "lastOpenProject.txt was successfully created")
             }
             else{
-                Log.e("FILE_LOG", "lastOpenProject.txt could not be created")
+                Log.d("FILE_LOG", "lastOpenProject.txt could not be created")
             }
         }
         else{
@@ -61,36 +54,34 @@ class SaveFilesManager(con : Context) {
         }
     }
 
-    fun createNewEmptyProject(name : String, allowOverWriting: Boolean) : Boolean{
-        return saveProject(name, ArrayList<DragDropBlock>(), allowOverWriting)
+    fun createNewEmptyProject(projectName : String, allowOverWriting: Boolean) : Boolean{
+        return saveProject(projectName, ArrayList(), allowOverWriting)
     }
 
-    fun saveProject(projectName: String, saveDataList: MutableList<DragDropBlock>, allowOverWriting : Boolean) : Boolean{
-        Log.e("FILE_LOG", "Request to save: $projectName")
+    fun saveProject(projectName: String, arrayWithDragDropBlocks: MutableList<DragDropBlock>, allowOverWriting : Boolean) : Boolean{
+        Log.d("FILE_LOG", "Request to save: $projectName")
 
         //Tries to add new project name, if it is not possible to add the new name (due to name already exists) and allowOverWriting is not allowed then saveProject will return false indicating that it could not save project
         if(!addNewName(projectName) && !allowOverWriting){
-            Log.e("FILE_LOG", "Response that name exists $projectName")
+            Log.d("FILE_LOG", "Response that name exists $projectName")
             return false
         }
 
         setLastOpenedProject(projectName)
         val indexOfProject = arrayWithProjectNames.indexOf(projectName)
-        arrayWithProjects.add(indexOfProject, saveDataList as ArrayList<DragDropBlock>)
-        saveProjectToFile(projectName, saveDataList)
+        arrayWithProjects.add(indexOfProject, arrayWithDragDropBlocks as ArrayList<DragDropBlock>)
+        saveProjectToFile(projectName, arrayWithDragDropBlocks)
         return true
     }
 
-    private fun saveProjectToFile(projectName: String, saveDataList: MutableList<DragDropBlock>){
-        Log.e("FILE_LOG", "Saving: $projectName")
+    private fun saveProjectToFile(projectName: String, arrayWithDragDropBlocks: MutableList<DragDropBlock>){
+        Log.d("FILE_LOG", "Saving: $projectName")
 
-        //Creates a file to save project in with the standard start of name + same name as the project
-        File(context.filesDir, "$startOfProjectSaveFilesName$projectName.txt").createNewFile()
-
+        //Creates a fileWriter that saves in a file with the startOfProjectSaveFilesName + same name as the project
         val fwProjectSaveFile = FileWriter(File(context.filesDir, "$startOfProjectSaveFilesName$projectName.txt"), false)
 
-        //Loop through all blocks in saveDataList, on each line in the save file, save a attribute for a DragDropBlock
-        for (data: DragDropBlock in saveDataList) {
+        //Loop through all blocks in arrayWithDragDropBlocks, on each line in the save file, save a attribute for a DragDropBlock
+        for (data: DragDropBlock in arrayWithDragDropBlocks) {
             fwProjectSaveFile.write(data.command + "\n")
             fwProjectSaveFile.write(data.directionImage.toString() + "\n")
             fwProjectSaveFile.write(data.displayParameter.toString() + "\n")
@@ -112,8 +103,8 @@ class SaveFilesManager(con : Context) {
         }
     }
 
-    private fun projectNameExist(name : String) : Boolean{
-        return arrayWithProjectNames.contains(name)
+    private fun projectNameExist(projectName : String) : Boolean{
+        return arrayWithProjectNames.contains(projectName)
     }
 
     private fun addNewName(projectName: String) : Boolean{
@@ -139,13 +130,13 @@ class SaveFilesManager(con : Context) {
         if(projectNameExist(projectName)){
             if(File(context.filesDir, "$startOfProjectSaveFilesName$projectName.txt").delete()){
                 arrayWithProjectNames.remove(projectName)
-                Log.e("FILE_LOG", "Deleted: " + projectName)
+                Log.e("FILE_LOG", "Deleted: $projectName")
                 updateNameFile()
                 setLastOpenedProject(null)
                 return true
             }
         }
-        Log.e("FILE_LOG", "Could not delete: " + projectName)
+        Log.e("FILE_LOG", "Could not delete: $projectName")
         return false
     }
 
@@ -167,20 +158,19 @@ class SaveFilesManager(con : Context) {
         return arrayWithProjectNames
     }
 
-    fun loadAllProjects(){
+    private fun loadAllProjects(){
         for(projectName in arrayWithProjectNames){
-            var count = 0;
+            var count = 0
             val projectItemsList = ArrayList<DragDropBlock>()
-
-            //null would be a better init, but don't know if i can change DragDropBlock to accept null?
-            var commandReadFromFile: String = ""
+            
+            var commandReadFromFile = ""
             var directionImageReadFromFile: Int = -1
             var displayParameterReadFromFile: Double = -1.0
             var dragImageReadFromFile: Int = -1
             var parameterReadFromFile: Double = -1.0
-            var textReadFromFile: String = ""
+            var textReadFromFile = ""
             var type: DragDropBlock.e_type = DragDropBlock.e_type.CUSTOM
-            var parameterEnabled: Boolean = false
+            var parameterEnabled = false
             var idNumber: Long = 0
 
             //Loop through every line in the file. Reading in the same order as we are writing to file in saveProjectToFile.
@@ -195,7 +185,7 @@ class SaveFilesManager(con : Context) {
                         3 -> dragImageReadFromFile = it.toInt()
                         4 -> parameterReadFromFile = it.toDouble()
                         5 -> textReadFromFile = it
-                        6 -> type = DragDropBlock.e_type.valueOf(it.toString())
+                        6 -> type = DragDropBlock.e_type.valueOf(it)
                         7 -> parameterEnabled = it.toBoolean()
                     }
                     if (count < 7) {
@@ -225,7 +215,7 @@ class SaveFilesManager(con : Context) {
         }
     }
 
-    fun loadProject(projectName: String): ArrayList<DragDropBlock> {
+    fun getProject(projectName: String): ArrayList<DragDropBlock> {
         setLastOpenedProject(projectName)
         val index = arrayWithProjectNames.indexOf(projectName)
         return arrayWithProjects[index]
@@ -254,12 +244,11 @@ class SaveFilesManager(con : Context) {
         if(File(context.filesDir, lastOpenProjectFile).isFile) {
             File(context.filesDir, lastOpenProjectFile).bufferedReader().use {
                 val projectName =  it.readLine()
-                if(getArrayWithNames().contains(projectName)){
+                return if(getArrayWithNames().contains(projectName)){
                     Log.e("FILE_LOG", "Last opened project was: $projectName")
-                    return projectName
-                }
-                else{
-                    return null
+                    projectName
+                } else{
+                    null
                 }
             }
         }
