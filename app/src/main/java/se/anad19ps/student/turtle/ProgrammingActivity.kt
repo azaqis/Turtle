@@ -227,7 +227,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             when (state) {
                 RunState.IDLE -> {  //When play button is first pressed
                     traverseListCoroutine = GlobalScope.launch(Dispatchers.Main) {
-                        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+                        if (!Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
                             if (recyclerViewItemList.isNotEmpty()) {
                                 state = RunState.RUNNING
                                 programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
@@ -371,7 +371,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
                 if (savedInstanceState.getString("traversingList") == "true") {
                     traverseListCoroutine = GlobalScope.launch(Dispatchers.Main) {
-                        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+                        if (!Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
                             if (recyclerViewItemList.isNotEmpty()) {
                                 state = RunState.RUNNING
                                 programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
@@ -765,6 +765,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     Utils.UtilsObject.showUpdatedToast(getString(R.string.project_deleted), this)
                     Log.e("FILE_LOG", "Yes clicked, project deleted")
 
+                    if(state == RunState.PAUSE){
+                        traverseListCoroutine?.cancel()
+                        resetListTraverse()
+                    }
+
                     saveFilesManager.deleteProject(projectName)
                     recyclerViewItemList.clear()
                     projectName = newProjectStandardName
@@ -965,7 +970,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     private suspend fun traverseList() {
 
-        if (Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
+        if (!Utils.UtilsObject.isBluetoothConnectionThreadActive()) {
             val recycler = findViewById<RecyclerView>(R.id.programming_recycle_view)
             val tenthOfSecondInMS: Long = 100
             val secondInMS: Long = 1000
