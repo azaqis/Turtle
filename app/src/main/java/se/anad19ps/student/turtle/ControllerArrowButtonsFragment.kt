@@ -35,17 +35,17 @@ class ControllerArrowButtonsFragment : Fragment() {
     }
 
     private fun setupButtons(root: View) {
-        val btnUp = root.findViewById<View>(R.id.button_up) as Button
-        val btnDown = root.findViewById<View>(R.id.button_down) as Button
-        val btnLeft = root.findViewById<View>(R.id.button_left) as Button
-        val btnRight = root.findViewById<View>(R.id.button_right) as Button
+        val btnUp = root.findViewById<View>(R.id.fragment_controller_arrows_button_up) as Button
+        val btnDown = root.findViewById<View>(R.id.fragment_controller_arrows_button_down) as Button
+        val btnLeft = root.findViewById<View>(R.id.fragment_controller_arrows_button_left) as Button
+        val btnRight = root.findViewById<View>(R.id.fragment_controller_arrows_button_right) as Button
 
-        val btnAvoidObstacles = root.findViewById<View>(R.id.button_avoid_obstacles) as Button
-        val btnLineFollow = root.findViewById<View>(R.id.button_line_follower) as Button
-        val btnStop = root.findViewById<View>(R.id.button_stop) as Button
+        val btnAvoidObstacles = root.findViewById<View>(R.id.fragment_controller_arrows_button_avoid_obstacles) as Button
+        val btnLineFollow = root.findViewById<View>(R.id.fragment_controller_arrows_button_line_follower) as Button
+        val btnStop = root.findViewById<View>(R.id.fragment_controller_arrows_button_stop) as Button
 
-        val btnGearUp = root.findViewById<View>(R.id.button_gear_up) as Button
-        val btnGearDown = root.findViewById<View>(R.id.button_gear_down) as Button
+        val btnGearUp = root.findViewById<View>(R.id.fragment_controller_arrows_button_gear_up) as Button
+        val btnGearDown = root.findViewById<View>(R.id.fragment_controller_arrows_button_gear_down) as Button
 
         btnAvoidObstacles.setBackgroundColor(
             getColor(

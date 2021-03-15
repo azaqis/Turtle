@@ -1,11 +1,9 @@
 package se.anad19ps.student.turtle
 
 import android.content.Intent
-import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -15,9 +13,9 @@ RecyclerView.Adapter<ManageCustomDragDropBlocksRecyclerAdapter.ViewHolder>(){
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val itemTitle: TextView = itemView.findViewById(R.id.text_view_title)
-        val itemDescription: TextView = itemView.findViewById(R.id.text_view_description)
-        val itemPicture: ImageView = itemView.findViewById(R.id.image_view)
+        val itemTitle: TextView = itemView.findViewById(R.id.manage_custom_commands_recyclerview_row_layout_text_view_title)
+        val itemDescription: TextView = itemView.findViewById(R.id.manage_custom_commands_recyclerview_row_layout_text_view_description)
+        val itemPicture: ImageView = itemView.findViewById(R.id.manage_custom_commands_recyclerview_row_layout_image_view)
 
         init {
             itemView.setOnClickListener { v : View ->

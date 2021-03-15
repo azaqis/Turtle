@@ -24,12 +24,12 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_custom_dragdropblocks)
 
-        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
+        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburger_menu_icon)
 
-        recycler_view.layoutManager = LinearLayoutManager(this)
+        manage_custom_dadb_recycler_view.layoutManager = LinearLayoutManager(this)
         recyclerViewAdapter =
             ManageCustomDragDropBlocksRecyclerAdapter(titlesList, descriptionList, imagesList)
-        recycler_view.adapter = recyclerViewAdapter
+        manage_custom_dadb_recycler_view.adapter = recyclerViewAdapter
 
         setUpButtons()
 
@@ -39,7 +39,7 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity() {
     }
 
     private fun setUpButtons() {
-        val buttonCreate = findViewById<Button>(R.id.buttonCreate)
+        val buttonCreate = findViewById<Button>(R.id.manage_custom_dadb_button_create)
         buttonCreate.setBackgroundColor(ContextCompat.getColor(this, R.color.PrimaryColor))
         buttonCreate.setOnClickListener {
             val intent = Intent(this, CreateCustomDragDropBlocksActivity::class.java)

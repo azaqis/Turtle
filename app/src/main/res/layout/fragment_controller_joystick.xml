@@ -11,7 +11,7 @@
     android:focusable="true">
 
     <se.anad19ps.student.turtle.JoystickView
-        android:id="@+id/joystick"
+        android:id="@+id/fragment_controller_joystick_joystick"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

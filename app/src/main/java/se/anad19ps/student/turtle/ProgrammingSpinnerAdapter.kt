@@ -31,21 +31,21 @@ class ProgrammingSpinnerAdapter(
         /*Set color on item depending on type*/
         when (item?.type) {
             DragDropBlock.e_type.DRIVE ->
-                view.card_spinner_constraint.setBackgroundColor(
+                view.card_spinner_block_linear_layout.setBackgroundColor(
                     ContextCompat.getColor(
                         context,
                         R.color.SpinnerBackgroundTurquoise
                     )
                 )
             DragDropBlock.e_type.MODULE ->
-                view.card_spinner_constraint.setBackgroundColor(
+                view.card_spinner_block_linear_layout.setBackgroundColor(
                     ContextCompat.getColor(
                         context,
                         R.color.SpinnerBackgroundPink
                     )
                 )
             DragDropBlock.e_type.CUSTOM ->
-                view.card_spinner_constraint.setBackgroundColor(
+                view.card_spinner_block_linear_layout.setBackgroundColor(
                     ContextCompat.getColor(
                         context,
                         R.color.SpinnerBackgroundOrange
@@ -54,10 +54,10 @@ class ProgrammingSpinnerAdapter(
         }
 
         if (item != null) {
-            view.card_spinner_image.setImageResource(item.directionImage)
+            view.card_spinner_block_spinner_image.setImageResource(item.directionImage)
         }
 
-        view.card_spinner_text.text = item?.text
+        view.card_spinner_block_spinner_text.text = item?.text
         return view
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,18 +8,17 @@
 
 
     <LinearLayout
-        android:id="@+id/create_custom_dadb_top_level_linear_layout"
+        android:id="@+id/edit_custom_dadb_top_level_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <include
-            android:id="@+id/create_custom_dadb_top_bar"
-            layout="@layout/top_bar">
-        </include>
+            android:id="@+id/edit_custom_dadb_top_bar"
+            layout="@layout/top_bar" />
 
         <LinearLayout
-            android:id="@+id/controller_top_level_linear_layout"
+            android:id="@+id/edit_top_level_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -27,8 +26,8 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
                 android:layout_marginStart="20dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp">
 
@@ -37,21 +36,24 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/create_custom_dadb_text_view_name"
+                        android:id="@+id/edit_custom_dadb_text_view_name"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="20dp"
                         android:layout_weight="2"
-                        android:text="@string/name" />
+                        android:gravity="center_vertical"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="0dp"
+                        android:text="@string/name_semicolon" />
 
                     <EditText
-                        android:id="@+id/create_custom_dadb_édit_text_name"
+                        android:id="@+id/edit_custom_dadb_edit_text_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="right"
+                        android:layout_gravity="end"
                         android:layout_weight="5"
-                        android:inputType="textPersonName"/>
+                        android:autofillHints="no"
+                        android:hint="@string/name"
+                        android:inputType="textPersonName" />
 
                 </LinearLayout>
 
@@ -61,16 +63,16 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/controller_top_linear_layout"
+            android:id="@+id/edit_custom_dadb_top_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp">
+            android:layout_marginEnd="20dp"
+            android:orientation="horizontal">
 
             <CheckBox
-                android:id="@+id/checkBox"
-                android:layout_width="wrap_content"
+                android:id="@+id/edit_custom_dadb_parameter_check_box"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/enable_parameter" />
@@ -82,26 +84,29 @@
             android:layout_margin="20dp">
 
             <LinearLayout
-                android:id="@+id/controller_bottom_linear_layout"
+                android:id="@+id/edit_custom_dadb_bottom_linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/edit_custom_dadb_command_text_view"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center_vertical"
-                    android:paddingLeft="20dp"
-                    android:text="@string/command" />
+                    android:paddingStart="20dp"
+                    android:paddingEnd="0dp"
+                    android:text="@string/command_semicolon" />
 
                 <EditText
-                    android:id="@+id/editTextDragDropBlockCommand"
+                    android:id="@+id/edit_custom_dadb_command_edit_text"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="5"
-                    android:inputType="textPersonName"/>
+                    android:autofillHints="no"
+                    android:hint="@string/command"
+                    android:inputType="textPersonName" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
@@ -111,12 +116,13 @@
             android:layout_height="match_parent"
             android:gravity="bottom"
             android:orientation="vertical">
+
             <Button
-                android:id="@+id/editCustomCommandsButtonUpdate"
+                android:id="@+id/edit_custom_dadb_button_update"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="@string/update"/>
+                android:text="@string/update" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -125,30 +131,30 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/editCustomCommandsButtonDelete"
+                    android:id="@+id/edit_custom_dadb_button_delete"
+                    style="?android:attr/buttonBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
-                    android:text="@string/delete"/>
+                    android:layout_weight="1"
+                    android:text="@string/delete" />
 
                 <Button
-                    android:id="@+id/editCustomCommandsButtonCancel"
+                    android:id="@+id/edit_custom_dadb_button_cancel"
+                    style="?android:attr/buttonBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
-                    android:text="@string/cancel"/>
+                    android:layout_weight="1"
+                    android:text="@string/cancel" />
 
             </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
 
-    <include
-        layout="@layout/drawer_layout">
-    </include>
+    <include layout="@layout/drawer_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,9 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_create_custom_dragdropblock.checkBox
-import kotlinx.android.synthetic.main.activity_create_custom_dragdropblock.editTextDragDropBlockCommand
-import kotlinx.android.synthetic.main.activity_create_custom_dragdropblock.create_custom_dadb_édit_text_name
+import kotlinx.android.synthetic.main.activity_create_custom_dragdropblock.create_custom_dadb_parameter_check_box
+import kotlinx.android.synthetic.main.activity_create_custom_dragdropblock.create_custom_dadb_command_edit_text
+import kotlinx.android.synthetic.main.activity_create_custom_dragdropblock.create_custom_dadb_edit_text_name
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
 
@@ -27,14 +27,14 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_custom_dragdropblock)
 
-        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
+        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburger_menu_icon)
 
         saveCustomDragDropBlockManager = SaveCustomDragDropBlockManager(this)
 
         if (savedInstanceState != null) {
-            create_custom_dadb_édit_text_name.setText(savedInstanceState.getString("inputName"))
-            checkBox.isChecked = savedInstanceState.getBoolean("parameterEnabled")
-            editTextDragDropBlockCommand.setText(savedInstanceState.getString("inputCommand"))
+            create_custom_dadb_edit_text_name.setText(savedInstanceState.getString("inputName"))
+            create_custom_dadb_parameter_check_box.isChecked = savedInstanceState.getBoolean("parameterEnabled")
+            create_custom_dadb_command_edit_text.setText(savedInstanceState.getString("inputCommand"))
 
             openDialog =
                 savedInstanceState.getString("openDialog")?.let { OpenDialog.valueOf(it) }!!
@@ -53,9 +53,9 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        val inputName: String = editTextDragDropBlockCommand.text.toString()
-        val parameterEnabled: Boolean = checkBox.isChecked
-        val inputCommand: String = editTextDragDropBlockCommand.text.toString()
+        val inputName: String = create_custom_dadb_command_edit_text.text.toString()
+        val parameterEnabled: Boolean = create_custom_dadb_parameter_check_box.isChecked
+        val inputCommand: String = create_custom_dadb_command_edit_text.text.toString()
 
         outState.putString("inputName", inputName)
         outState.putString("parameterEnabled", parameterEnabled.toString())
@@ -68,9 +68,9 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
         val buttonSave = findViewById<Button>(R.id.createCustomCommandsButtonSave)
         buttonSave.setBackgroundColor(ContextCompat.getColor(this, R.color.PrimaryColor))
         buttonSave.setOnClickListener {
-            val name = create_custom_dadb_édit_text_name.text.toString()
-            val parameterEnabled = checkBox.isChecked
-            val command = editTextDragDropBlockCommand.text.toString()
+            val name = create_custom_dadb_edit_text_name.text.toString()
+            val parameterEnabled = create_custom_dadb_parameter_check_box.isChecked
+            val command = create_custom_dadb_command_edit_text.text.toString()
 
             if (name.isNotBlank() && command.isNotBlank()) {
                 val dragDropBlock = DragDropBlock(

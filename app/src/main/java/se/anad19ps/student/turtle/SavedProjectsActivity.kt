@@ -34,7 +34,7 @@ class SavedProjectsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_saved_projects)
-        HamburgerMenu().setUpHamburgerMenu(this, navView, drawerLayout, hamburgerMenuIcon)
+        HamburgerMenu().setUpHamburgerMenu(this, drawer_layout_nav_view, drawer_layout, hamburger_menu_icon)
 
         savedFilesManager = if (intent.hasExtra("SAVED_PROJECT_MANAGER")) {
             intent.getSerializableExtra("SAVED_PROJECT_MANAGER") as SaveFilesManager
@@ -77,21 +77,21 @@ class SavedProjectsActivity : AppCompatActivity() {
 
     private fun setUpButtonsAndListView() {
         //Set-up create button
-        savedProjectsCreateButton.setBackgroundColor(
+        saved_projects_create_button.setBackgroundColor(
             ContextCompat.getColor(
                 this,
                 R.color.PrimaryColor
             )
         )
-        savedProjectsCreateButton.setOnClickListener {
+        saved_projects_create_button.setOnClickListener {
             displayDialogInputName(null)
         }
 
         //Set-up list view
         savedProjectsListViewAdapter =
             ArrayAdapter(this, android.R.layout.simple_list_item_1, listWithNames)
-        savedProjectsListView.adapter = savedProjectsListViewAdapter
-        savedProjectsListView.onItemClickListener =
+        saved_projects_list_view.adapter = savedProjectsListViewAdapter
+        saved_projects_list_view.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, position, _ ->
                 val intent = Intent(this, ProgrammingActivity::class.java)
                 intent.putExtra("PROJECT_NAME", savedFilesManager.getArrayWithNames()[position])
@@ -110,7 +110,7 @@ class SavedProjectsActivity : AppCompatActivity() {
         dialogInputNameBuilder.setMessage(R.string.please_enter_project_name)
 
         if (savedInputText != null) {
-            viewDialogInputName!!.dialogTextFieldName.setText(savedInputText)
+            viewDialogInputName!!.input_text_dialog_layout_dialog_text_field_name.setText(savedInputText)
         }
 
         val inputNameDialogClickListener = DialogInterface.OnClickListener { _, which ->
@@ -120,28 +120,28 @@ class SavedProjectsActivity : AppCompatActivity() {
                 }
                 DialogInterface.BUTTON_POSITIVE -> {
                     when {
-                        viewDialogInputName!!.dialogTextFieldName.text.toString().isBlank() -> {
+                        viewDialogInputName!!.input_text_dialog_layout_dialog_text_field_name.text.toString().isBlank() -> {
                             displayDialogNameBlankWarning()
                         }
                         savedFilesManager.createNewEmptyProject(
-                            viewDialogInputName.dialogTextFieldName.text.toString(),
+                            viewDialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString(),
                             false
                         ) -> {
                             val intent = Intent(this, ProgrammingActivity::class.java)
-                            intent.putExtra("PROJECT_NAME", viewDialogInputName.dialogTextFieldName.text.toString())
+                            intent.putExtra("PROJECT_NAME", viewDialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString())
                             startActivity(intent)
                             finish()
                         }
                         else -> {
-                            displayDialogNameExistsWarning(viewDialogInputName.dialogTextFieldName.text.toString())
+                            displayDialogNameExistsWarning(viewDialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString())
                         }
                     }
                 }
             }
         }
 
-        viewDialogInputName!!.dialogTextFieldName.doAfterTextChanged {
-            inputText = viewDialogInputName.dialogTextFieldName.text.toString()
+        viewDialogInputName!!.input_text_dialog_layout_dialog_text_field_name.doAfterTextChanged {
+            inputText = viewDialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString()
         }
 
         dialogInputNameBuilder.setPositiveButton(R.string.save, inputNameDialogClickListener)
