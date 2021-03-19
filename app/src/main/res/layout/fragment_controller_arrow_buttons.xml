@@ -25,33 +25,27 @@
         android:weightSum="3"
         app:layout_rowWeight="1">
 
-        <Button
-            style="?attr/buttonStyle"
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/fragment_controller_arrows_button_avoid_obstacles"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:textColor="@color/PrimaryLight"
             android:layout_weight="1"
             android:text="@string/avoidance" />
 
-        <Button
-            style="?attr/buttonStyle"
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/fragment_controller_arrows_button_stop"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:textColor="@color/PrimaryLight"
             android:layout_weight="1"
             android:text="@string/stop" />
 
-        <Button
-            style="?attr/buttonStyle"
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/fragment_controller_arrows_button_line_follower"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:textColor="@color/PrimaryLight"
             android:layout_weight="1"
             android:text="@string/line_follow" />
 
@@ -66,33 +60,28 @@
         app:layout_rowWeight="1"
         android:weightSum="3">
 
-        <Button
-            style="?attr/buttonStyle"
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/fragment_controller_arrows_button_gear_up"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:textColor="@color/PrimaryLight"
             android:text="@string/gear_up" />
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/fragment_controller_arrows_button_up"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_marginLeft="20sp"
             android:layout_marginRight="20sp"
-            android:background="@drawable/controller_arrow_button_up"
-            android:contentDescription="@string/up" />
+            android:background="@drawable/controller_arrow_button_up" />
 
-        <Button
-            style="?attr/buttonStyle"
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/fragment_controller_arrows_button_gear_down"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:textColor="@color/PrimaryLight"
             android:layout_weight="1"
             android:text="@string/gear_down" />
 
@@ -107,35 +96,28 @@
         app:layout_rowWeight="1"
         android:weightSum="3">
 
-        <ImageButton
-            style="?attr/buttonStyle"
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/fragment_controller_arrows_button_left"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/controller_arrow_button_left"
+            android:background="@drawable/controller_arrow_button_left" />
 
-            android:contentDescription="@string/left" />
-
-        <ImageButton
-            style="?attr/buttonStyle"
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/fragment_controller_arrows_button_down"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginLeft="20sp"
             android:layout_marginRight="20sp"
-            android:background="@drawable/controller_arrow_button_down"
-            android:contentDescription="@string/down" />
+            android:background="@drawable/controller_arrow_button_down" />
 
-        <ImageButton
-            style="?attr/buttonStyle"
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/fragment_controller_arrows_button_right"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/controller_arrow_button_right"
-            android:contentDescription="@string/right" />
+            android:background="@drawable/controller_arrow_button_right" />
 
     </LinearLayout>
 
