@@ -75,7 +75,10 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="20sp"
             android:layout_marginRight="20sp"
-            android:background="@drawable/controller_arrow_button_up" />
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:background="@color/PrimaryDark"
+            app:srcCompat="@drawable/controller_arrow_button_up" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/fragment_controller_arrows_button_gear_down"
@@ -101,7 +104,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/controller_arrow_button_left" />
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:background="@color/PrimaryDark"
+            app:srcCompat="@drawable/controller_arrow_button_left" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/fragment_controller_arrows_button_down"
@@ -110,14 +116,20 @@
             android:layout_weight="1"
             android:layout_marginLeft="20sp"
             android:layout_marginRight="20sp"
-            android:background="@drawable/controller_arrow_button_down" />
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:background="@color/PrimaryDark"
+            app:srcCompat="@drawable/controller_arrow_button_down" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/fragment_controller_arrows_button_right"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/controller_arrow_button_right" />
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:background="@color/PrimaryDark"
+            app:srcCompat="@drawable/controller_arrow_button_right" />
 
     </LinearLayout>
 
