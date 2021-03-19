@@ -78,7 +78,7 @@
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
             android:background="@color/PrimaryDark"
-            android:src="@drawable/controller_arrow_button_up" />
+            app:srcCompat="@drawable/controller_arrow_button_up" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/fragment_controller_arrows_button_gear_down"
@@ -107,7 +107,7 @@
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
             android:background="@color/PrimaryDark"
-            android:src="@drawable/controller_arrow_button_left" />
+            app:srcCompat="@drawable/controller_arrow_button_left" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/fragment_controller_arrows_button_down"
@@ -119,7 +119,7 @@
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
             android:background="@color/PrimaryDark"
-            android:src="@drawable/controller_arrow_button_down" />
+            app:srcCompat="@drawable/controller_arrow_button_down" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/fragment_controller_arrows_button_right"
@@ -129,7 +129,7 @@
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
             android:background="@color/PrimaryDark"
-            android:src="@drawable/controller_arrow_button_right" />
+            app:srcCompat="@drawable/controller_arrow_button_right" />
 
     </LinearLayout>
 
