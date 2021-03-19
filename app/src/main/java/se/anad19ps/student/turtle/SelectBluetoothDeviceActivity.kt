@@ -328,8 +328,9 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         //(as you should do cited from developer site)
         if (bluetoothAdapter != null && bluetoothAdapter!!.isDiscovering) {
             bluetoothAdapter!!.cancelDiscovery()
-            bluetoothAdapter!!.startDiscovery()
         }
+        if (bluetoothAdapter != null)
+        bluetoothAdapter!!.startDiscovery()
 
         val discoverDevicesIntent = IntentFilter(BluetoothDevice.ACTION_FOUND)
         registerReceiver(discoverReceiver, discoverDevicesIntent)
