@@ -135,4 +135,14 @@
     <string name="leaving_unsaved_project_warning">Vill du verkligen lämna detta osparade projekt? Allt innehåll kommer att gå förlorat om du fortsätter!</string>
     <string name="now_running">Körs nu</string>
     <string name="paused">Pausad</string>
+    <string name="welcome_to_turtle">Välkommen till Turtle!</string>
+    <string name="turtle_intro_1">Turtle är en app för dig som vill ha möjligheten att kontrollera din robot på ett användarvänligt sätt med många inbyggda funktionaliteter som gör det enkelt och roligt att använda!</string>
+    <string name="skip">Skippa</string>
+    <string name="this_is_what_you_can_do_in">Det här är vad du kan göra i</string>
+    <string name="lets_get_going">Kör igång!</string>
+    <string name="turtle_intro_bluetooth_connect">I den här vyn har du möjligheten att skanna kringliggande bluetooth-enheter och ansluta till ditt val av robot som kommer att vara ansluted genom användandet av Turtle.</string>
+    <string name="turtle_intro_4">Vill du fortsätta introduktionen eller hoppa över den och fortsätta direkt till Turtle?</string>
+    <string name="turtle_intro_programming">I den här vyn kan du skapa dina egna för-programmerade projekt med smidiga Drag-And-Drop-Blocks för att skapa återanvändbara körningar din robot kan exekvera.</string>
+    <string name="turtle_intro_remote_controller">I den här vyn kan du kontrollera din robot genom att använda pil-knappar för att köra den, för-programmerade knappar för att automatiskt få roboten att utföra specifika algoritmer eller använd en joystick där alla alternativ är enkla att använda.</string>
+    <string name="turtle_intro_manage_custom_commands">I den här vyn kan du skapa och lagra dina egna kommand vilket du kan använda i programmeringsvyn. Du kan genom denna funktionalitet skicka kommand som inte redan är för-programmerade i Turtle om du själv har lagt till nya funktionaliteter i din robots kod som du vill exekvera.</string>
 </resources>

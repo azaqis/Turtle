@@ -4,7 +4,7 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/PrimaryComplement</item>
         <item name="colorPrimaryVariant">@color/PrimaryComplement</item>
-        <item name="colorOnPrimary">@color/PrimaryLight</item>
+        <item name="colorOnPrimary">@color/PrimaryDark</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_700</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>

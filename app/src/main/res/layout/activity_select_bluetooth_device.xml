@@ -73,7 +73,7 @@
                 app:layout_constraintBottom_toTopOf="@id/select_bluetooth_device_button_refresh"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/select_bluetooth_device_text_view_scanned_devices"></ListView>
+                app:layout_constraintTop_toBottomOf="@+id/select_bluetooth_device_text_view_scanned_devices"/>
 
         </LinearLayout>
 

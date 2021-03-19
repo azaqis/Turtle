@@ -167,5 +167,15 @@
     <string name="leaving_unsaved_project_warning">Do you really want to leave this unsaved project? All progress will be lost if you continue!</string>
     <string name="now_running">Now running</string>
     <string name="paused">Paused</string>
+    <string name="welcome_to_turtle">Welcome to Turtle!</string>
+    <string name="turtle_intro_1">Turtle is an app for you who want to be able to controll your robot in a user friendly way with alot of built in functionalities that makes it easy and fun to use!</string>
+    <string name="turtle_intro_bluetooth_connect">In this view, you will be able to scan your surrounding bluetooth devices and connect to your robot of choice which will be connected throughout Turtle.</string>
+    <string name="turtle_intro_4">Do you wish to continue the tutorial or skip it and get directly into Turtle?</string>
+    <string name="skip">Skip</string>
+    <string name="turtle_intro_programming">In this view you can create your own pre-programmed projects with easy to use Drag-And-Drop-Blocks to make reusable runs that your robot can execute.</string>
+    <string name="turtle_intro_remote_controller">In this view you can control your robot by using arrow buttons to drive it, pre-programmed buttons to automaticly make the robot do ceratin algorithms or use a joytstick which are all easy to use.</string>
+    <string name="this_is_what_you_can_do_in">This is what you can do in</string>
+    <string name="turtle_intro_manage_custom_commands">In this view you can create and store your own commands which you may want to send to the robot from the programming view. You can through this functionality send commands that are not pre-progammed in Turtle if you have added new functionalites in your robots code that you want to execute.</string>
+    <string name="lets_get_going">Lets get going!</string>
 
 </resources>

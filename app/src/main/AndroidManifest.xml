@@ -35,7 +35,7 @@
             android:label="@string/title_activity_bluetooth"
             android:theme="@style/Theme.Turtle.NoActionBar"
             android:screenOrientation="portrait"/>
-        <activity android:name=".MainActivity"
+        <activity android:name=".WelcomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -98,7 +98,7 @@
                 android:contentDescription="@string/programming_delete_btn_description"
                 android:padding="10dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_baseline_delete_24" />
+                app:srcCompat="@drawable/ic_baseline_delete_24" />
 
             <ImageButton
                 android:id="@+id/programming_reset_btn"
@@ -109,7 +109,7 @@
                 android:contentDescription="@string/programming_reset_btn_description"
                 android:padding="10dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_restart" />
+                app:srcCompat="@drawable/ic_restart" />
 
             <ImageButton
                 android:id="@+id/programming_play_or_pause_button"
@@ -120,7 +120,7 @@
                 android:contentDescription="@string/programming_play_or_pause_btn_description"
                 android:padding="20dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_play_arrow" />
+                app:srcCompat="@drawable/ic_play_arrow" />
 
             <ImageButton
                 android:id="@+id/programming_load_button"
@@ -131,7 +131,7 @@
                 android:contentDescription="@string/programming_load_btn_description"
                 android:padding="10dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_folder" />
+                app:srcCompat="@drawable/ic_folder" />
 
             <ImageButton
                 android:id="@+id/programming_save_button"
@@ -142,7 +142,7 @@
                 android:contentDescription="@string/programming_save_btn_description"
                 android:padding="10dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_baseline_save_alt_24" />
+                app:srcCompat="@drawable/ic_baseline_save_alt_24" />
         </LinearLayout>
 
         <LinearLayout
@@ -167,12 +167,12 @@
                 android:contentDescription="@string/programming_delete_selected_btn_description"
                 android:padding="10dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_baseline_delete_24" />
+                app:srcCompat="@drawable/ic_baseline_delete_24" />
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <include layout="@layout/drawer_layout"></include>
+    <include layout="@layout/drawer_layout"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
