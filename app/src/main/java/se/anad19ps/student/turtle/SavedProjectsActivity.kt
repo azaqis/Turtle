@@ -51,7 +51,7 @@ class SavedProjectsActivity : AppCompatActivity() {
         )
 
 
-        SaveFilesManager(this)
+        savedFilesManager = SaveFilesManager(this)
 
         if (savedInstanceState != null) {
             openDialog =
