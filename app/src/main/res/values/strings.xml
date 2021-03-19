@@ -177,5 +177,9 @@
     <string name="this_is_what_you_can_do_in">This is what you can do in</string>
     <string name="turtle_intro_manage_custom_commands">In this view you can create and store your own commands which you may want to send to the robot from the programming view. You can through this functionality send commands that are not pre-progammed in Turtle if you have added new functionalites in your robots code that you want to execute.</string>
     <string name="lets_get_going">Lets get going!</string>
+    <string name="up">Up</string>
+    <string name="down">Down</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
 
 </resources>
