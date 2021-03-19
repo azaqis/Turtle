@@ -47,7 +47,8 @@
         <receiver
             android:name=".SelectBluetoothDeviceActivity"
             android:enabled="true"
-            android:stopWithTask="false">
+            android:stopWithTask="false"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.simplemobiletools.applauncher.sendbroadcast" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
