@@ -31,8 +31,6 @@ class ControllerArrowButtonsFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_controller_arrow_buttons, container, false)
 
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-
         setupButtons(root)
 
         return root
