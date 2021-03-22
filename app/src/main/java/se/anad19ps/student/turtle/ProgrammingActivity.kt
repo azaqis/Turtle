@@ -130,11 +130,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         state = RunState.IDLE
 
         /*De loading main thread to avoid slowed start of activity*/
-        Thread(Runnable {
+        Thread {
             setupSpinners()
             setupButtons(this)
             apiDependentConfigurations()
-        }).start()
+        }.start()
 
         setupRecyclerSimpleCallback()   //Enables RecyclerView drag and drop
         restoreRuntimeConfigurationState(savedInstanceState)
