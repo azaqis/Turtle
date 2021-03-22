@@ -20,7 +20,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         private var oldDragDropBlock: DragDropBlock? = null
 
         private lateinit var saveCustomDragDropBlockManager: SaveCustomDragDropBlockManager
-        private lateinit var saveFilesManager: SaveFilesManager
+        private lateinit var saveProjectsManager: SaveProjectsManager
 
         private const val INPUT_NAME = "inputName"
         private const val PARAMETER_ENABLED = "parameterEnabled"
@@ -35,7 +35,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
 
         saveCustomDragDropBlockManager = SaveCustomDragDropBlockManager(this)
 
-        saveFilesManager = SaveFilesManager(this)
+        saveProjectsManager = SaveProjectsManager(this)
 
         HamburgerMenu().setUpHamburgerMenu(
             this,
@@ -127,7 +127,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
                             this
                         )
                     ) {
-                        saveFilesManager.updateCustomDragDropBlocksInAllProjects(
+                        saveProjectsManager.updateCustomDragDropBlocksInAllProjects(
                             oldDragDropBlock!!,
                             updatedDragDropBlock,
                             this

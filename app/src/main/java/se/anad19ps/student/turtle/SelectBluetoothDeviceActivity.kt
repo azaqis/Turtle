@@ -197,7 +197,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED)
         registerReceiver(aclDisconnectedRequestedReceiver, filterACLDisconnectRequested)
         val filterACLDisconnected = IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED)
-        registerReceiver(aclDisconnectedReciever, filterACLDisconnected)
+        registerReceiver(aclDisconnectedReceiver, filterACLDisconnected)
     }
 
     override fun onStart() {
@@ -464,7 +464,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         }
     }
 
-    private val aclDisconnectedReciever: BroadcastReceiver = object : BroadcastReceiver() {
+    private val aclDisconnectedReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
             if (action == BluetoothDevice.ACTION_ACL_DISCONNECTED) {

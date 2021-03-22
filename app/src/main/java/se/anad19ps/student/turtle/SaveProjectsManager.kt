@@ -7,7 +7,7 @@ import java.io.FileWriter
 import kotlin.collections.ArrayList
 
 @Suppress("UNCHECKED_CAST")
-class SaveFilesManager(con: Context) {
+class SaveProjectsManager(con: Context) {
 
     companion object {
         private const val PROJECTS_NAME_FILE = "projectNames.txt"
