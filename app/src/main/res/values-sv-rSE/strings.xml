@@ -3,7 +3,7 @@
 
     <string-array name="controller_spinner_controller">
         <item name="controller_joystick">Kontroller: Joystick</item>
-        <item name="controller_arrow_buttons">Kontroller: Pil-knappar</item>
+        <item name="controller_arrow_buttons">Kontroller: Knappar</item>
     </string-array>
 
     <string name="app_name">Turtle</string>
@@ -160,4 +160,6 @@
     <string name="arrow_down">Pil ner</string>
     <string name="arrow_right">Pil höger</string>
     <string name="debug_window">Debug-ruta</string>
+    <string name="list_is_already_empty">Listan är redan tom</string>
+    <string name="list_cleared">Listan tömd</string>
 </resources>

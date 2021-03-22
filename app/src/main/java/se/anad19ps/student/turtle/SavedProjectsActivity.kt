@@ -27,7 +27,7 @@ class SavedProjectsActivity : AppCompatActivity() {
         }
 
         private lateinit var savedProjectsListViewAdapter: ArrayAdapter<String>
-        private lateinit var savedFilesManager: SaveFilesManager
+        private lateinit var savedProjectsManager: SaveProjectsManager
         private lateinit var listWithNames: ArrayList<String>
 
         private var openDialog = OpenDialog.NONE
@@ -51,7 +51,7 @@ class SavedProjectsActivity : AppCompatActivity() {
         )
 
 
-        savedFilesManager = SaveFilesManager(this)
+        savedProjectsManager = SaveProjectsManager(this)
 
         if (savedInstanceState != null) {
             openDialog =
@@ -70,7 +70,7 @@ class SavedProjectsActivity : AppCompatActivity() {
             }
         }
 
-        listWithNames = savedFilesManager.getArrayWithNames()
+        listWithNames = savedProjectsManager.getArrayWithNames()
         setUpButtonsAndListView()
     }
 
@@ -105,7 +105,7 @@ class SavedProjectsActivity : AppCompatActivity() {
         saved_projects_list_view.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, position, _ ->
                 val intent = Intent(this, ProgrammingActivity::class.java)
-                intent.putExtra(PROJECT_NAME, savedFilesManager.getArrayWithNames()[position])
+                intent.putExtra(PROJECT_NAME, savedProjectsManager.getArrayWithNames()[position])
                 startActivity(intent)
                 finish()
             }
@@ -137,7 +137,7 @@ class SavedProjectsActivity : AppCompatActivity() {
                             .isBlank() -> {
                             displayDialogNameBlankWarning()
                         }
-                        savedFilesManager.createNewEmptyProject(
+                        savedProjectsManager.createNewEmptyProject(
                             viewDialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString(),
                             false,
                             this
@@ -202,7 +202,7 @@ class SavedProjectsActivity : AppCompatActivity() {
                     displayDialogInputName(inputNameThatExists)
                 }
                 DialogInterface.BUTTON_POSITIVE -> {
-                    if (savedFilesManager.createNewEmptyProject(
+                    if (savedProjectsManager.createNewEmptyProject(
                             inputNameThatExists,
                             true,
                             this

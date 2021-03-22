@@ -33,7 +33,7 @@
                 android:textStyle="bold"
                 android:text="@string/debug_window"
                 android:textAlignment="center"
-                android:textColor="@color/PrimaryDark"
+                android:textColor="?attr/colorOnPrimary"
                 android:textSize="20sp" />
 
             <FrameLayout

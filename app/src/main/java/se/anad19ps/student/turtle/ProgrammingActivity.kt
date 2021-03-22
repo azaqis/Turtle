@@ -81,7 +81,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         private lateinit var state: RunState    //State for iteration through list. Needed for play, pause and stop
         private val sem = Semaphore(1)  //Can force the state machine to halt coroutine when pausing
 
-        private lateinit var saveFilesManager: SaveFilesManager
+        private lateinit var saveProjectsManager: SaveProjectsManager
         private lateinit var projectName: String
         private lateinit var customCommandManager: SaveCustomDragDropBlockManager
 
@@ -146,12 +146,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         restoreRuntimeConfigurationState(savedInstanceState)
 
         newProjectStandardName = getString(R.string.new_project)
-        saveFilesManager = SaveFilesManager(this)
+        saveProjectsManager = SaveProjectsManager(this)
         customCommandManager = SaveCustomDragDropBlockManager(this)
 
         checkForIntentExtra()
 
-        savedList = saveFilesManager.getProject(projectName, this)
+        savedList = saveProjectsManager.getProject(projectName, this)
 
         if (recyclerViewItemList.count() > 0) {
             /*The way it works when loading lists is that last element has highest id number.
@@ -302,7 +302,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_load_button.setOnClickListener {
             val newIntent = Intent(this, SavedProjectsActivity::class.java)
 
-            if (projectName != newProjectStandardName || recyclerViewItemList.isNotEmpty()) {
+            if (isProjectModified()) {
                 displayDialogAskIfWantToSave(newIntent)
             } else {
                 startActivity(newIntent)
@@ -312,7 +312,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
 
         programming_save_button.setOnClickListener {
-            if (projectName != newProjectStandardName || recyclerViewItemList.isNotEmpty()) {
+            if (isProjectModified()) {
                 displayDialogInputName()
             } else {
                 Utils.UtilsObject.showUpdatedToast(
@@ -355,14 +355,14 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
             projectName =
                 intent.getSerializableExtra("PROJECT_NAME").toString()
 
-            val loadedProject = saveFilesManager.getProject(projectName, this)
+            val loadedProject = saveProjectsManager.getProject(projectName, this)
 
             recyclerViewItemList = loadedProject
 
         } else {
-            val lastOpenProject = saveFilesManager.getNameOfLastOpenedProject()
+            val lastOpenProject = saveProjectsManager.getNameOfLastOpenedProject()
             if (lastOpenProject != null) {
-                val loadedProject = saveFilesManager.getProject(lastOpenProject, this)
+                val loadedProject = saveProjectsManager.getProject(lastOpenProject, this)
 
                 recyclerViewItemList = loadedProject
                 projectName = lastOpenProject
@@ -787,7 +787,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         resetListTraverse()
                     }
 
-                    saveFilesManager.deleteProject(projectName, this)
+                    saveProjectsManager.deleteProject(projectName, this)
                     recyclerViewItemList.clear()
                     projectName = newProjectStandardName
                     programming_text_view_current_project.text = projectName
@@ -829,7 +829,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                             .isBlank()
                     ) {
                         displayDialogNameBlankWarning(intent)
-                    } else if (saveFilesManager.saveProject(
+                    } else if (saveProjectsManager.saveProject(
                             dialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString(),
                             recyclerViewItemList,
                             false,
@@ -840,6 +840,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         projectName =
                             dialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString()
                         programming_text_view_current_project.text = projectName
+
+                        savedList = saveProjectsManager.getProject(projectName, this)
 
                         if (intent != null) {
                             startActivity(intent)
@@ -1126,7 +1128,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     displayDialogInputName(intent)
                 }
                 DialogInterface.BUTTON_POSITIVE -> {
-                    if (saveFilesManager.saveProject(
+                    if (saveProjectsManager.saveProject(
                             inputNameThatExists,
                             recyclerViewItemList,
                             true,
@@ -1141,6 +1143,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         projectName =
                             inputNameThatExists
                         programming_text_view_current_project.text = projectName
+
+                        savedList = saveProjectsManager.getProject(projectName, this)
 
                         if (intent != null) {
                             startActivity(intent)
