@@ -52,7 +52,7 @@
                         android:autofillHints="no"
                         android:hint="@string/name"
                         android:inputType="textPersonName"
-                        android:maxLength="17"/>
+                        android:maxLength="17" />
 
                 </LinearLayout>
 
@@ -106,7 +106,7 @@
                     android:autofillHints="no"
                     android:hint="@string/command"
                     android:inputType="textPersonName"
-                    android:maxLength="12"/>
+                    android:maxLength="12" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
@@ -124,8 +124,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:textColor="@color/PrimaryLight"
-                android:text="@string/save" />
+                android:text="@string/save"
+                android:textColor="@color/PrimaryLight" />
 
             <Button
                 android:id="@+id/createCustomCommandsButtonCancel"
@@ -134,8 +134,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:textColor="@color/PrimaryLight"
-                android:text="@string/cancel" />
+                android:text="@string/cancel"
+                android:textColor="@color/PrimaryLight" />
 
         </LinearLayout>
 

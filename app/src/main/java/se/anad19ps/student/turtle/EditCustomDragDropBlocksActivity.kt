@@ -123,12 +123,14 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
 
                     if (saveCustomDragDropBlockManager.editDragDropBlock(
                             oldDragDropBlock!!.text,
-                            updatedDragDropBlock
+                            updatedDragDropBlock,
+                            this
                         )
                     ) {
                         saveFilesManager.updateCustomDragDropBlocksInAllProjects(
                             oldDragDropBlock!!,
-                            updatedDragDropBlock
+                            updatedDragDropBlock,
+                            this
                         )
                         finish()
                     } else {
@@ -200,7 +202,7 @@ class EditCustomDragDropBlocksActivity : AppCompatActivity() {
         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
             when (which) {
                 DialogInterface.BUTTON_POSITIVE -> {
-                    saveCustomDragDropBlockManager.deleteCustomDragDropBlock(oldDragDropBlock!!.text)
+                    saveCustomDragDropBlockManager.deleteCustomDragDropBlock(oldDragDropBlock!!.text, this)
                     finish()
                 }
                 DialogInterface.BUTTON_NEGATIVE -> {

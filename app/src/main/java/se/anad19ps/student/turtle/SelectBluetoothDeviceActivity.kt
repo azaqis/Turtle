@@ -40,15 +40,19 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
         private const val TRIPLE_DOTS_STRING = "..."
 
         var bluetoothAdapter: BluetoothAdapter? = null
-        lateinit var clientThread: BluetoothClient
         lateinit var scannedDevicesNameListViewAdapter: ArrayAdapter<String>
         lateinit var pairedDevicesNameListViewAdapter: ArrayAdapter<String>
+
+        lateinit var clientThread: BluetoothClient
 
         var bluetoothConnectionThreadActive: Boolean = false
         var inputBuffer = ByteArray(1024)
         var messageReceived: String? = null
-    }
 
+        fun getActivity() : Activity{
+            return this.getActivity()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -154,7 +158,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                 )
 
                 showProgressHideButton()
-                clientThread = BluetoothClient(device, this)
+                clientThread = BluetoothClient(device)
                 clientThread.start()
             }
 
@@ -177,7 +181,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             }
 
         //Init BT Adapter
-        if(BluetoothAdapter.getDefaultAdapter() != null)
+        if (BluetoothAdapter.getDefaultAdapter() != null)
             bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
     }
 
@@ -201,7 +205,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
         //Check permissions
         checkBluetoothAvailability()
-        if(bluetoothAdapter != null){
+        if (bluetoothAdapter != null) {
             if (bluetoothAdapter!!.isEnabled && checkFineLocationAllowed()) {
                 discoverBluetoothDevices()
                 updatePairedDevicesList()
@@ -303,8 +307,8 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
     private fun getInternalPairedDevicesList(): ArrayList<BluetoothDevice>? {
         //Make a set that holds all of the pre-paired devices
-        var pairedDevices : Set<BluetoothDevice>? = null
-        if(bluetoothAdapter != null){
+        var pairedDevices: Set<BluetoothDevice>? = null
+        if (bluetoothAdapter != null) {
             pairedDevices = bluetoothAdapter!!.bondedDevices
         }
 
@@ -330,7 +334,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             bluetoothAdapter!!.cancelDiscovery()
         }
         if (bluetoothAdapter != null)
-        bluetoothAdapter!!.startDiscovery()
+            bluetoothAdapter!!.startDiscovery()
 
         val discoverDevicesIntent = IntentFilter(BluetoothDevice.ACTION_FOUND)
         registerReceiver(discoverReceiver, discoverDevicesIntent)
@@ -367,7 +371,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
             )
             Log.d(TAG, "Trying to connect to: " + device.name)
 
-            clientThread = BluetoothClient(device, this)
+            clientThread = BluetoothClient(device)
             clientThread.start()
         }
     }
@@ -404,7 +408,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
                     )
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDED.")
                     Log.e(TAG, "BroadcastReceiver: BOND_BONDED." + mDevice.name)
-                    if(bluetoothAdapter != null)
+                    if (bluetoothAdapter != null)
                         bluetoothAdapter!!.cancelDiscovery()
                 }
                 //Case2: creating a bond
@@ -533,7 +537,7 @@ class SelectBluetoothDeviceActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if(bluetoothAdapter != null)
+        if (bluetoothAdapter != null)
             bluetoothAdapter!!.cancelDiscovery()
         unregisterReceiver(discoverReceiver)
     }

@@ -103,7 +103,7 @@ class CreateCustomDragDropBlocksActivity : AppCompatActivity() {
                     NEW_DRAG_DROP_BLOCK_STANDARD_ID
                 )
 
-                if (saveCustomDragDropBlockManager.saveDragDropBlock(dragDropBlock, false)) {
+                if (saveCustomDragDropBlockManager.saveDragDropBlock(dragDropBlock, false, this)) {
                     finish()
                 } else {
                     displayDialogNameExists()

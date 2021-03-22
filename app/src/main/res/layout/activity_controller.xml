@@ -29,10 +29,11 @@
                 android:id="@+id/controller_text_view_top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/gradient_background_text_view"
                 android:padding="10dp"
+                android:textStyle="bold"
+                android:text="@string/debug_window"
                 android:textAlignment="center"
-                android:textColor="@color/PrimaryLight"
+                android:textColor="@color/PrimaryDark"
                 android:textSize="20sp" />
 
             <FrameLayout
@@ -67,7 +68,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <include layout="@layout/drawer_layout"/>
+    <include layout="@layout/drawer_layout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

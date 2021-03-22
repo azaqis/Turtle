@@ -1,6 +1,5 @@
 package se.anad19ps.student.turtle
 
-import android.app.Activity
 import android.bluetooth.BluetoothDevice
 import android.util.Log
 import android.view.View
@@ -8,10 +7,9 @@ import kotlinx.android.synthetic.main.activity_select_bluetooth_device.*
 import java.io.IOException
 import java.io.OutputStream
 
-class BluetoothClient(device: BluetoothDevice, activityUI: Activity) : Thread() {
+class BluetoothClient(device: BluetoothDevice) : Thread() {
 
     private val socket = device.createRfcommSocketToServiceRecord(device.uuids?.get(0)!!.uuid)
-    private val activity = activityUI
 
     private lateinit var outputStream: OutputStream
 
@@ -22,13 +20,15 @@ class BluetoothClient(device: BluetoothDevice, activityUI: Activity) : Thread() 
         } catch (e: IOException) {
             Log.d("BT.Client", "Connection failed")
             Utils.UtilsObject.showUpdatedToast(
-                activity.getString(R.string.connection_failed),
-                activity.applicationContext
+                SelectBluetoothDeviceActivity.getActivity().getString(R.string.connection_failed),
+                SelectBluetoothDeviceActivity.getActivity().applicationContext
             )
             SelectBluetoothDeviceActivity.bluetoothConnectionThreadActive = false
-            this.activity.runOnUiThread {
-                activity.select_bluetooth_device_progress_bar.visibility = View.INVISIBLE
-                activity.select_bluetooth_device_button_refresh.visibility = View.VISIBLE
+            SelectBluetoothDeviceActivity.getActivity().runOnUiThread {
+                SelectBluetoothDeviceActivity.getActivity().select_bluetooth_device_progress_bar.visibility =
+                    View.INVISIBLE
+                SelectBluetoothDeviceActivity.getActivity().select_bluetooth_device_button_refresh.visibility =
+                    View.VISIBLE
             }
         }
 

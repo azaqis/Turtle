@@ -70,7 +70,7 @@ class ManageCustomDragDropBlocksActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        customDragDropBlockManager.loadCustomDragDropBlocks()
+        customDragDropBlockManager.loadCustomDragDropBlocks(this)
         populateLists()
     }
 }

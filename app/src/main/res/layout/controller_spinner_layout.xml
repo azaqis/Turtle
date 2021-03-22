@@ -5,6 +5,7 @@
     android:padding="10dp"
     android:textAlignment="center"
     android:textColor="@color/PrimaryLight"
+    android:textStyle="bold"
     android:textSize="20sp">
 
 </CheckedTextView>

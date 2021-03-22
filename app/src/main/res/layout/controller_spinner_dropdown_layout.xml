@@ -5,6 +5,7 @@
     android:background="@drawable/gradient_background_spinner"
     android:padding="10dp"
     android:textColor="@color/PrimaryLight"
+    android:textStyle="bold"
     android:textSize="20sp">
 
 </TextView>

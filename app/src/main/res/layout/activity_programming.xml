@@ -85,15 +85,17 @@
             android:layout_height="wrap_content"
             android:background="@color/PrimaryDark"
             android:gravity="center"
+            android:weightSum="5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageButton
                 android:id="@+id/programming_delete_btn"
-                android:layout_width="50dp"
+                android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_margin="10dp"
+                android:layout_weight="1"
                 android:background="@drawable/rounded_button_delete"
                 android:contentDescription="@string/programming_delete_btn_description"
                 android:padding="10dp"
@@ -102,9 +104,10 @@
 
             <ImageButton
                 android:id="@+id/programming_reset_btn"
-                android:layout_width="50dp"
+                android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_margin="10dp"
+                android:layout_weight="1"
                 android:background="@drawable/rounded_button"
                 android:contentDescription="@string/programming_reset_btn_description"
                 android:padding="10dp"
@@ -113,20 +116,22 @@
 
             <ImageButton
                 android:id="@+id/programming_play_or_pause_button"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
                 android:layout_margin="10dp"
+                android:layout_weight="1"
                 android:background="@drawable/rounded_button"
                 android:contentDescription="@string/programming_play_or_pause_btn_description"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_play_arrow" />
 
             <ImageButton
                 android:id="@+id/programming_load_button"
-                android:layout_width="50dp"
+                android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_margin="10dp"
+                android:layout_weight="1"
                 android:background="@drawable/rounded_button"
                 android:contentDescription="@string/programming_load_btn_description"
                 android:padding="10dp"
@@ -135,9 +140,10 @@
 
             <ImageButton
                 android:id="@+id/programming_save_button"
-                android:layout_width="50dp"
+                android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_margin="10dp"
+                android:layout_weight="1"
                 android:background="@drawable/rounded_button"
                 android:contentDescription="@string/programming_save_btn_description"
                 android:padding="10dp"
@@ -159,8 +165,8 @@
 
             <ImageButton
                 android:id="@+id/programming_delete_btn_selected"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/rounded_button_delete"
@@ -173,6 +179,6 @@
 
     </LinearLayout>
 
-    <include layout="@layout/drawer_layout"/>
+    <include layout="@layout/drawer_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
 import kotlinx.coroutines.*
 
-
 class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
     JoystickView.JoystickListener {
 
@@ -47,7 +46,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         val spinnerSpinnerController = findViewById<Spinner>(R.id.controller_spinner_bottom)
         val adapterSpinnerController = ArrayAdapter.createFromResource(
             this,
-            R.array.controllerSpinnerController, R.layout.controller_spinner_layout
+            R.array.controller_spinner_controller, R.layout.controller_spinner_layout
         )
         adapterSpinnerController.setDropDownViewResource(R.layout.controller_spinner_dropdown_layout)
         spinnerSpinnerController.adapter = adapterSpinnerController

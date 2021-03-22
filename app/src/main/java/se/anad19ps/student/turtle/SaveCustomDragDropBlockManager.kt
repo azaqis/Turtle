@@ -11,31 +11,27 @@ class SaveCustomDragDropBlockManager(con: Context) {
         private const val EMPTY_STRING = ""
         private const val NEW_LINE_STRING = "\n"
 
-        private lateinit var context: Context
-
         private var arrayWithDragDropBlocks = arrayListOf<DragDropBlock>()
         private var arrayWithDragDropBlockNames = arrayListOf<String>()
     }
 
     init {
-        context = con
+        if (!File(con.filesDir, CUSTOM_DRAG_DROP_BLOCK_SAVE_FILE).isFile) {
 
-        if (!File(context.filesDir, CUSTOM_DRAG_DROP_BLOCK_SAVE_FILE).isFile) {
+            File(con.filesDir, CUSTOM_DRAG_DROP_BLOCK_SAVE_FILE).writeText("")
 
-            File(context.filesDir, CUSTOM_DRAG_DROP_BLOCK_SAVE_FILE).writeText("")
-
-            if (File(context.filesDir, CUSTOM_DRAG_DROP_BLOCK_SAVE_FILE).isFile) {
+            if (File(con.filesDir, CUSTOM_DRAG_DROP_BLOCK_SAVE_FILE).isFile) {
                 Log.d("CUSTOM_LOG", "customDragDropBlockSaveFile.txt was successfully created")
             } else {
                 Log.e("CUSTOM_LOG", "customDragDropBlockSaveFile.txt could not be created")
             }
         } else {
             Log.d("CUSTOM_LOG", "customDragDropBlockSaveFile.txt was already created")
-            loadCustomDragDropBlocks()
+            loadCustomDragDropBlocks(con)
         }
     }
 
-    fun saveDragDropBlock(dragDropBlock: DragDropBlock, allowOverwriting: Boolean): Boolean {
+    fun saveDragDropBlock(dragDropBlock: DragDropBlock, allowOverwriting: Boolean, context : Context): Boolean {
         val dragAndDropBlockName = dragDropBlock.text
 
         Log.d("CUSTOM_LOG", "Request to save: $dragAndDropBlockName")
@@ -52,7 +48,7 @@ class SaveCustomDragDropBlockManager(con: Context) {
             Log.d("CUSTOM_LOG", "Overwriting: $dragAndDropBlockName")
             val index = arrayWithDragDropBlockNames.indexOf(dragAndDropBlockName)
             arrayWithDragDropBlocks[index] = dragDropBlock
-            saveToFile()
+            saveToFile(context)
             return true
         }
         //Name does not exist, save as a new block
@@ -60,12 +56,12 @@ class SaveCustomDragDropBlockManager(con: Context) {
             Log.d("CUSTOM_LOG", "Saving: $dragAndDropBlockName")
             arrayWithDragDropBlockNames.add(dragAndDropBlockName)
             arrayWithDragDropBlocks.add(dragDropBlock)
-            saveToFile()
+            saveToFile(context)
             return true
         }
     }
 
-    fun editDragDropBlock(oldName: String, updatedDragDropBlock: DragDropBlock): Boolean {
+    fun editDragDropBlock(oldName: String, updatedDragDropBlock: DragDropBlock, context: Context): Boolean {
         val newName = updatedDragDropBlock.text
         return if (dragAndDropBlockNameExist(newName) && oldName != newName) {
             false
@@ -77,12 +73,12 @@ class SaveCustomDragDropBlockManager(con: Context) {
                 arrayWithDragDropBlocks[index] = updatedDragDropBlock
             }
 
-            saveToFile()
+            saveToFile(context)
             true
         }
     }
 
-    private fun saveToFile() {
+    private fun saveToFile(context : Context) {
         File(context.filesDir, CUSTOM_DRAG_DROP_BLOCK_SAVE_FILE).createNewFile()
         val fwCustomDragDropBlockSaveFile =
             FileWriter(File(context.filesDir, CUSTOM_DRAG_DROP_BLOCK_SAVE_FILE), false)
@@ -105,7 +101,7 @@ class SaveCustomDragDropBlockManager(con: Context) {
         return arrayWithDragDropBlockNames.contains(name)
     }
 
-    fun loadCustomDragDropBlocks() {
+    fun loadCustomDragDropBlocks(context : Context) {
         arrayWithDragDropBlocks.clear()
         arrayWithDragDropBlockNames.clear()
 
@@ -172,14 +168,14 @@ class SaveCustomDragDropBlockManager(con: Context) {
         }
     }
 
-    fun deleteCustomDragDropBlock(name: String): Boolean {
+    fun deleteCustomDragDropBlock(name: String, context : Context): Boolean {
         if (dragAndDropBlockNameExist(name)) {
             val index = arrayWithDragDropBlockNames.indexOf(name)
 
             arrayWithDragDropBlockNames.remove(name)
             arrayWithDragDropBlocks.removeAt(index)
 
-            saveToFile()
+            saveToFile(context)
             return true
         }
         return false

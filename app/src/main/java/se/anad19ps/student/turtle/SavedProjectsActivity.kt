@@ -139,7 +139,8 @@ class SavedProjectsActivity : AppCompatActivity() {
                         }
                         savedFilesManager.createNewEmptyProject(
                             viewDialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString(),
-                            false
+                            false,
+                            this
                         ) -> {
                             val intent = Intent(this, ProgrammingActivity::class.java)
                             intent.putExtra(
@@ -203,7 +204,8 @@ class SavedProjectsActivity : AppCompatActivity() {
                 DialogInterface.BUTTON_POSITIVE -> {
                     if (savedFilesManager.createNewEmptyProject(
                             inputNameThatExists,
-                            true
+                            true,
+                            this
                         )
                     ) {
                         val intent = Intent(this, ProgrammingActivity::class.java)

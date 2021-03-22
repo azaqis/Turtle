@@ -15,13 +15,13 @@ class Utils {
         private var toastMessage: Toast? = null
 
         //This function sends strings to the module which in turn sends it into the robot through UART
-        fun bluetoothSendString(string: String, uicontext: Context) {
+        fun bluetoothSendString(string: String, uiContext: Context) {
             if (SelectBluetoothDeviceActivity.bluetoothConnectionThreadActive)
                 SelectBluetoothDeviceActivity.clientThread.writeToConnectedDevice(string)
             else
                 showUpdatedToast(
-                    uicontext.getString(R.string.not_connected_to_bt_device_warning),
-                    uicontext
+                    uiContext.getString(R.string.not_connected_to_bt_device_warning),
+                    uiContext
                 )
         }
 

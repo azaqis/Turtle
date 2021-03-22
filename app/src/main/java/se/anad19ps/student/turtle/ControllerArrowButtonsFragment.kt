@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 
