@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 
@@ -35,11 +37,14 @@ class ControllerArrowButtonsFragment : Fragment() {
     }
 
     private fun setupButtons(root: View) {
-        val btnUp = root.findViewById<View>(R.id.fragment_controller_arrows_button_up) as Button
-        val btnDown = root.findViewById<View>(R.id.fragment_controller_arrows_button_down) as Button
-        val btnLeft = root.findViewById<View>(R.id.fragment_controller_arrows_button_left) as Button
+        val btnUp =
+            root.findViewById<View>(R.id.fragment_controller_arrows_button_up) as ImageButton
+        val btnDown =
+            root.findViewById<View>(R.id.fragment_controller_arrows_button_down) as ImageButton
+        val btnLeft =
+            root.findViewById<View>(R.id.fragment_controller_arrows_button_left) as ImageButton
         val btnRight =
-            root.findViewById<View>(R.id.fragment_controller_arrows_button_right) as Button
+            root.findViewById<View>(R.id.fragment_controller_arrows_button_right) as ImageButton
 
         val btnAvoidObstacles =
             root.findViewById<View>(R.id.fragment_controller_arrows_button_avoid_obstacles) as Button

@@ -58,7 +58,7 @@
     <string name="project_has_run_through_completely">Projeket har körts igenom!</string>
     <string name="clicked_on">Klickat på</string>
     <string name="please_enter_project_name">Var snäll och ange projektnamn</string>
-    <string name="please_wait_still_scanning">Var snäll och vänta, skannar fortfarande...</string>
+    <string name="please_wait_still_scanning">Var snäll och vänta, skannar fortfarande…</string>
     <string name="connecting_to">Kopplar till</string>
     <string name="no_paired_device_warning">Det finns inga kopplade enheter på denna enhet</string>
     <string name="bluetooth_is_enabled">Bluetooth är aktiverat</string>
@@ -145,4 +145,8 @@
     <string name="turtle_intro_programming">I den här vyn kan du skapa dina egna för-programmerade projekt med smidiga Drag-And-Drop-Blocks för att skapa återanvändbara körningar din robot kan exekvera.</string>
     <string name="turtle_intro_remote_controller">I den här vyn kan du kontrollera din robot genom att använda pil-knappar för att köra den, för-programmerade knappar för att automatiskt få roboten att utföra specifika algoritmer eller använd en joystick där alla alternativ är enkla att använda.</string>
     <string name="turtle_intro_manage_custom_commands">I den här vyn kan du skapa och lagra dina egna kommand vilket du kan använda i programmeringsvyn. Du kan genom denna funktionalitet skicka kommand som inte redan är för-programmerade i Turtle om du själv har lagt till nya funktionaliteter i din robots kod som du vill exekvera.</string>
+    <string name="up">Upp</string>
+    <string name="down">Ner</string>
+    <string name="left">Vänster</string>
+    <string name="right">Höger</string>
 </resources>

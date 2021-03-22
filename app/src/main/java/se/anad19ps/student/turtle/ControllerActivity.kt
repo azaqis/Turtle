@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.top_bar.*
@@ -27,6 +28,9 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_controller)
+
+        //Needed to make vector graphics work for arrow-buttons in API < 21
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
         HamburgerMenu().setUpHamburgerMenu(
             this,
