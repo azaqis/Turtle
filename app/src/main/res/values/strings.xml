@@ -43,7 +43,7 @@
 
     <string-array name="controller_spinner_controller">
         <item name="controller_joystick">Controller: Joystick</item>
-        <item name="controller_arrow_buttons">Controller: Arrow-buttons</item>
+        <item name="controller_arrow_buttons">Controller: Buttons</item>
     </string-array>
 
     <string name="connection_failed">Connection failed</string>
@@ -179,5 +179,7 @@
     <string name="arrow_down">Arrow down</string>
     <string name="arrow_right">Arrow right</string>
     <string name="debug_window">Debug Window</string>
+    <string name="list_is_already_empty">List is already empty</string>
+    <string name="list_cleared">List cleared</string>
 
 </resources>

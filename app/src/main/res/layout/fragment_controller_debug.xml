@@ -12,6 +12,7 @@
     tools:context=".ControllerDebugFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_margin="4dp"
         android:id="@+id/fragment_controller_debug_recycler_view"
         android:layout_width="0dp"
         android:layout_height="match_parent"

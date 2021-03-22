@@ -302,7 +302,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         programming_load_button.setOnClickListener {
             val newIntent = Intent(this, SavedProjectsActivity::class.java)
 
-            if (projectName != newProjectStandardName || recyclerViewItemList.isNotEmpty()) {
+            if (isProjectModified()) {
                 displayDialogAskIfWantToSave(newIntent)
             } else {
                 startActivity(newIntent)
@@ -312,7 +312,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         }
 
         programming_save_button.setOnClickListener {
-            if (projectName != newProjectStandardName || recyclerViewItemList.isNotEmpty()) {
+            if (isProjectModified()) {
                 displayDialogInputName()
             } else {
                 Utils.UtilsObject.showUpdatedToast(
@@ -841,6 +841,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                             dialogInputName.input_text_dialog_layout_dialog_text_field_name.text.toString()
                         programming_text_view_current_project.text = projectName
 
+                        savedList = saveFilesManager.getProject(projectName, this)
+
                         if (intent != null) {
                             startActivity(intent)
                             finish()
@@ -1141,6 +1143,8 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         projectName =
                             inputNameThatExists
                         programming_text_view_current_project.text = projectName
+
+                        savedList = saveFilesManager.getProject(projectName, this)
 
                         if (intent != null) {
                             startActivity(intent)

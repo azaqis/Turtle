@@ -54,9 +54,14 @@ class ControllerDebugFragment : Fragment() {
 
     private fun clearDebugList() {
         operationsDone = 0
-        if (debugList.isNotEmpty())
+        if (debugList.isNotEmpty()){
             debugList.clear()
-        updateList()
+            updateList()
+            Utils.UtilsObject.showUpdatedToast(getString(R.string.list_cleared), this.requireActivity())
+        }
+        else
+            Utils.UtilsObject.showUpdatedToast(getString(R.string.list_is_already_empty), this.requireActivity())
+
     }
 
     private fun updateList() {
