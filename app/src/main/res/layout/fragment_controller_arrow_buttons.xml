@@ -77,6 +77,7 @@
             android:layout_marginRight="20sp"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
+            android:background="@color/PrimaryDark"
             app:srcCompat="@drawable/controller_arrow_button_up"
             android:contentDescription="@string/arrow_up" />
 
@@ -106,6 +107,7 @@
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
+            android:background="@color/PrimaryDark"
             app:srcCompat="@drawable/controller_arrow_button_left"
             android:contentDescription="@string/arrow_left" />
 
@@ -118,6 +120,7 @@
             android:layout_marginRight="20sp"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
+            android:background="@color/PrimaryDark"
             app:srcCompat="@drawable/controller_arrow_button_down"
             android:contentDescription="@string/arrow_down" />
 
@@ -128,6 +131,7 @@
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
+            android:background="@color/PrimaryDark"
             app:srcCompat="@drawable/controller_arrow_button_right"
             android:contentDescription="@string/arrow_right" />
 
