@@ -97,12 +97,12 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
         private var inputtedTextExists: String? = null
         private var changeIntentNotNull: Boolean = false
 
-        private const val DADB_COMMAND = "7"
+        private const val DRAG_DROP_BLOCK_COMMAND = "7"
         private const val STOP_COMMAND = "5"
-        private const val DADB_PARAMETER = 1
-        private const val STANDARD_DADB_PARAMETER = 1.0
-        private const val STANDARD_DADB_DISPLAY_PARAMETER = 1.0
-        private const val STANDARD_DADB_ID = 1L
+        private const val DRAG_DROP_BLOCK_PARAMETER = 1
+        private const val STANDARD_DRAG_DROP_BLOCK_PARAMETER = 1.0
+        private const val STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER = 1.0
+        private const val STANDARD_DRAG_DROP_BLOCK_ID = 1L
 
         //Used via Utils into HamburgerMenu
         fun isProjectModified(): Boolean {
@@ -581,11 +581,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_baseline_highlight_24,
                 getString(R.string.module_spinner_led_on),
                 "Not implemented",
-                STANDARD_DADB_PARAMETER,
-                STANDARD_DADB_DISPLAY_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.MODULE,
                 false,
-                STANDARD_DADB_ID
+                STANDARD_DRAG_DROP_BLOCK_ID
             )
         )
 
@@ -595,11 +595,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_baseline_highlight_24,
                 getString(R.string.module_spinner_led_off),
                 "Not implemented",
-                STANDARD_DADB_DISPLAY_PARAMETER,
-                STANDARD_DADB_DISPLAY_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.MODULE,
                 false,
-                STANDARD_DADB_ID
+                STANDARD_DRAG_DROP_BLOCK_ID
             )
         )
 
@@ -609,11 +609,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_baseline_surround_sound_24,
                 getString(R.string.module_spinner_buzzer),
                 "Not implemented",
-                STANDARD_DADB_PARAMETER,
-                STANDARD_DADB_DISPLAY_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.MODULE,
                 true,
-                STANDARD_DADB_ID
+                STANDARD_DRAG_DROP_BLOCK_ID
             )
         )
 
@@ -624,11 +624,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_modules,
                 getString(R.string.module_spinner_title),
                 "Null",
-                STANDARD_DADB_PARAMETER,
-                STANDARD_DADB_DISPLAY_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.MODULE,
                 false,
-                STANDARD_DADB_ID
+                STANDARD_DRAG_DROP_BLOCK_ID
             )
         )
 
@@ -644,11 +644,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_arrow_up,
                 getString(R.string.drive_spinner_forward),
                 "2",
-                STANDARD_DADB_PARAMETER,
-                STANDARD_DADB_DISPLAY_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
                 true,
-                STANDARD_DADB_ID
+                STANDARD_DRAG_DROP_BLOCK_ID
             )
         )
 
@@ -658,11 +658,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_arrow_right,
                 getString(R.string.drive_spinner_turn_right),
                 "6",
-                STANDARD_DADB_PARAMETER,
-                STANDARD_DADB_DISPLAY_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
                 true,
-                STANDARD_DADB_ID
+                STANDARD_DRAG_DROP_BLOCK_ID
             )
         )
 
@@ -672,11 +672,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_arrow_down,
                 getString(R.string.drive_spinner_reverse),
                 "8",
-                STANDARD_DADB_PARAMETER,
-                STANDARD_DADB_DISPLAY_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
                 true,
-                STANDARD_DADB_ID
+                STANDARD_DRAG_DROP_BLOCK_ID
             )
         )
 
@@ -686,11 +686,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_arrow_left,
                 getString(R.string.drive_spinner_turn_left),
                 "4",
-                STANDARD_DADB_PARAMETER,
-                STANDARD_DADB_DISPLAY_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
                 true,
-                STANDARD_DADB_ID
+                STANDARD_DRAG_DROP_BLOCK_ID
             )
         )
 
@@ -700,11 +700,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_stop,
                 getString(R.string.drive_spinner_stop),
                 "5",
-                STANDARD_DADB_PARAMETER,
-                STANDARD_DADB_DISPLAY_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
                 true,
-                STANDARD_DADB_ID
+                STANDARD_DRAG_DROP_BLOCK_ID
             )
         )
 
@@ -718,7 +718,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 0.0,
                 DragDropBlock.BlockType.DRIVE,
                 false,
-                STANDARD_DADB_ID
+                STANDARD_DRAG_DROP_BLOCK_ID
             )
         )
 
@@ -732,7 +732,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 0.0,
                 DragDropBlock.BlockType.DRIVE,
                 false,
-                STANDARD_DADB_ID
+                STANDARD_DRAG_DROP_BLOCK_ID
             )
         )
 
@@ -743,11 +743,11 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drive,
                 getString(R.string.drive_spinner_title),
                 "Null",
-                STANDARD_DADB_PARAMETER,
-                STANDARD_DADB_DISPLAY_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_PARAMETER,
+                STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
                 false,
-                STANDARD_DADB_ID
+                STANDARD_DRAG_DROP_BLOCK_ID
             )
         )
         return list
@@ -1041,7 +1041,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                         when (state) {  //State machine
                             RunState.RUNNING -> {
                                 Utils.UtilsObject.bluetoothSendString(
-                                    "$DADB_COMMAND${item.command}$DADB_PARAMETER",
+                                    "$DRAG_DROP_BLOCK_COMMAND${item.command}$DRAG_DROP_BLOCK_PARAMETER",
                                     this.baseContext
                                 )
                                 delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause

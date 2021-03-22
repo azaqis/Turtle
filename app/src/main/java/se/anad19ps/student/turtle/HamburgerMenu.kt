@@ -102,8 +102,8 @@ class HamburgerMenu {
         fun checkIfInProgrammingAndProjectActive(it: MenuItem) {
             if (currentActivity == ActivityNumber.PROGRAMMING_ACTIVITY && Utils.UtilsObject.programmingIsTraversingList()) {
                 val dialogWantToSave = android.app.AlertDialog.Builder(con)
-                dialogWantToSave.setTitle(R.string.changing_activity_while_traversinglist)
-                dialogWantToSave.setMessage(R.string.change_activity_or_stay_traverselist)
+                dialogWantToSave.setTitle(R.string.changing_activity_while_traversing_list)
+                dialogWantToSave.setMessage(R.string.change_activity_or_stay_traverse_list)
                 val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                     when (which) {
                         DialogInterface.BUTTON_NEGATIVE -> {

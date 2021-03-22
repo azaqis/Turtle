@@ -7,7 +7,6 @@
     tools:context=".ControllerActivity">
 
     <LinearLayout
-        android:id="@+id/controller_top_level_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -19,14 +18,12 @@
             layout="@layout/top_bar" />
 
         <LinearLayout
-            android:id="@+id/controller_top_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/controller_text_view_top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
@@ -46,7 +43,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/controller_bottom_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"

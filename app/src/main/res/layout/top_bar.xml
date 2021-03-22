@@ -4,8 +4,7 @@
     android:id="@+id/top_bar"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:background="@color/PrimaryDark"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:background="@color/PrimaryDark">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

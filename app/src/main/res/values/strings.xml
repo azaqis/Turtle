@@ -2,26 +2,11 @@
     <string name="app_name">Turtle</string>
     <string name="title_activity_bluetooth">BluetoothActivity</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
     <string name="open">Open</string>
     <string name="close">Close</string>
-    <string name="title_activity_main2">MainActivity</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
 
-    <string name="input_dialog_change_parameter">Change parameter</string>
-
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
     <string name="title_activity_controller">ControllerActivity</string>
 
     <string name="input_dialog_hint">Enter time</string>
@@ -47,8 +32,6 @@
     </string-array>
 
     <string name="connection_failed">Connection failed</string>
-    <string name="title_already_exists">Title already exists</string>
-    <string name="please_choose_a_unique_title">Please choose a unique title</string>
     <string name="okay">Okay</string>
     <string name="name_or_command_field_is_empty">Name or command field is empty</string>
     <string name="name_or_command_field_is_empty_warning">Please make sure that neither name or command field is empty or only containing spaces!</string>
@@ -76,12 +59,8 @@
     <string name="cancel">Cancel</string>
     <string name="save_before_opening_new_project">Do you want to save this project before opening a new project?</string>
     <string name="dont_save_progress_loss_warning">If you don\'t save, all progress in the current project will be lost</string>
-    <string name="cancel_clicked">Cancel clicked</string>
-    <string name="did_not_override_save_file">Did not override save file</string>
-    <string name="overwrite_save_file">Overwrite save file</string>
     <string name="change_parameter">Change parameter</string>
     <string name="project_has_run_through_completely">Project has run through completely!</string>
-    <string name="clicked_on">Clicked on</string>
     <string name="please_enter_project_name">Please enter project name</string>
     <string name="please_wait_still_scanning">Please wait, still scanning…</string>
     <string name="connecting_to">Connecting to</string>
@@ -117,14 +96,10 @@
     <string name="programming">Programming</string>
     <string name="remote_controller">Remote Controller</string>
     <string name="manage_custom_commands">Manage Custom Commands</string>
-    <string name="changing_activity_while_traversinglist">You are still running your program</string>
-    <string name="change_activity_or_stay_traverselist">Do you wish to stop the running project and change view or stay with the current project?</string>
+    <string name="changing_activity_while_traversing_list">You are still running your program</string>
+    <string name="change_activity_or_stay_traverse_list">Do you wish to stop the running project and change view or stay with the current project?</string>
     <string name="stay">Stay</string>
     <string name="change_view">Change view</string>
-    <string name="controller_activity">ControllerActivity</string>
-    <string name="select_bluetooth_device_activity">SelectBluetoothDeviceActivity</string>
-    <string name="programming_activity">ProgrammingActivity</string>
-    <string name="manage_custom_drag_drop_blocks_activity">ManageCustomDragDropBlockActivity</string>
     <string name="project_is_empty">Your current project is empty!</string>
     <string name="bluetooth_client_not_active">Bluetooth client is not active</string>
     <string name="new_project">New project</string>
@@ -161,19 +136,15 @@
     <string name="now_running">Now running</string>
     <string name="paused">Paused</string>
     <string name="welcome_to_turtle">Welcome to Turtle!</string>
-    <string name="turtle_intro_1">Turtle is an app for you who want to be able to controll your robot in a user friendly way with alot of built in functionalities that makes it easy and fun to use!</string>
+    <string name="turtle_intro_1">Turtle is an app for you who want to be able to control your robot in a user friendly way with a lot of built in functionalities that makes it easy and fun to use!</string>
     <string name="turtle_intro_bluetooth_connect">In this view, you will be able to scan your surrounding bluetooth devices and connect to your robot of choice which will be connected throughout Turtle.</string>
     <string name="turtle_intro_4">Do you wish to continue the tutorial or skip it and get directly into Turtle?</string>
     <string name="skip">Skip</string>
     <string name="turtle_intro_programming">In this view you can create your own pre-programmed projects with easy to use Drag-And-Drop-Blocks to make reusable runs that your robot can execute.</string>
-    <string name="turtle_intro_remote_controller">In this view you can control your robot by using arrow buttons to drive it, pre-programmed buttons to automaticly make the robot do ceratin algorithms or use a joytstick which are all easy to use.</string>
+    <string name="turtle_intro_remote_controller">In this view you can control your robot by using arrow buttons to drive it, pre-programmed buttons to automatically make the robot do certain algorithms or use a joytstick which are all easy to use.</string>
     <string name="this_is_what_you_can_do_in">This is what you can do in</string>
-    <string name="turtle_intro_manage_custom_commands">In this view you can create and store your own commands which you may want to send to the robot from the programming view. You can through this functionality send commands that are not pre-progammed in Turtle if you have added new functionalites in your robots code that you want to execute.</string>
+    <string name="turtle_intro_manage_custom_commands">In this view you can create and store your own commands which you may want to send to the robot from the programming view. You can through this functionality send commands that are not pre-programmed in Turtle if you have added new functionalites in your robots code that you want to execute.</string>
     <string name="lets_get_going">Lets get going!</string>
-    <string name="up">Up</string>
-    <string name="down">Down</string>
-    <string name="left">Left</string>
-    <string name="right">Right</string>
     <string name="arrow_up">Arrow up</string>
     <string name="arrow_left">Arrow left</string>
     <string name="arrow_down">Arrow down</string>

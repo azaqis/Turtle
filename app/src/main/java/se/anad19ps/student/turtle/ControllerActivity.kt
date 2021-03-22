@@ -112,7 +112,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
                 coroutineActive = false
             }
         } else {
-            Log.d("TAG", "In else from joystickmoved")
+            Log.d("TAG", "In else from joystick moved")
         }
     }
 
