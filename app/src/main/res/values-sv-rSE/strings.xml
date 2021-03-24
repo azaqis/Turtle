@@ -23,7 +23,7 @@
     <string name="confirm_delete_custom_command_warning">Är du säker på att du vill radera detta custom-kommand?</string>
     <string name="yes">Ja</string>
     <string name="no">Nej</string>
-    <string name="save_project_when_empty">Det här är ett tomt osparat projekt. Inget behov av att spara förens ändringar är gjorda</string>
+    <string name="save_project_when_empty">Projektet har inga ändringar att spara.</string>
     <string name="do_you_want_to_delete_this_project">Vill du radera detta projekt?</string>
     <string name="all_progress_for_this_project_will_be_lost">Allt inom detta projekt kommer att försvinna.</string>
     <string name="project_not_deleted">Projekt ej raderat</string>
