@@ -10,6 +10,13 @@ class SaveCustomDragDropBlockManager(con: Context) {
         private const val CUSTOM_DRAG_DROP_BLOCK_SAVE_FILE = "customDragDropBlockSaveFile.txt"
         private const val EMPTY_STRING = ""
         private const val NEW_LINE_STRING = "\n"
+        private const val NUMBER_OF_DATA_ITEMS = 7
+
+        private const val NON_INIT_DIRECTION_IMAGE_READ_FROM_FILE = -1
+        private const val NON_INIT_DISPLAY_PARAMETER_READ_FROM_FILE = -1.0
+        private const val NON_INIT_DRAG_IMAGE_READ_FROM_FILE = -1
+        private const val NON_INIT_PARAMETER_READ_FROM_FILE = -1.0
+        private const val ID_NUMBER_READ_FROM_FILE : Long = 0
 
         private var arrayWithDragDropBlocks = arrayListOf<DragDropBlock>()
         private var arrayWithDragDropBlockNames = arrayListOf<String>()
@@ -109,14 +116,14 @@ class SaveCustomDragDropBlockManager(con: Context) {
 
         //null would be a better init, but don't know if i can change DragDropBlock to accept null?
         var commandReadFromFile = EMPTY_STRING
-        var directionImageReadFromFile: Int = -1
-        var displayParameterReadFromFile: Double = -1.0
-        var dragImageReadFromFile: Int = -1
-        var parameterReadFromFile: Double = -1.0
+        var directionImageReadFromFile: Int = NON_INIT_DIRECTION_IMAGE_READ_FROM_FILE
+        var displayParameterReadFromFile: Double = NON_INIT_DISPLAY_PARAMETER_READ_FROM_FILE
+        var dragImageReadFromFile: Int = NON_INIT_DRAG_IMAGE_READ_FROM_FILE
+        var parameterReadFromFile: Double = NON_INIT_PARAMETER_READ_FROM_FILE
         var textReadFromFile = EMPTY_STRING
         var typeReadFromFile: DragDropBlock.BlockType = DragDropBlock.BlockType.CUSTOM
         var parameterEnableReadFromFile = false
-        var idNumberReadFromFile: Long = 0
+        var idNumberReadFromFile: Long = ID_NUMBER_READ_FROM_FILE
 
         File(context.filesDir, CUSTOM_DRAG_DROP_BLOCK_SAVE_FILE).useLines { lines ->
             lines.forEach {
@@ -131,7 +138,7 @@ class SaveCustomDragDropBlockManager(con: Context) {
                     7 -> parameterEnableReadFromFile = it.toBoolean()
                     8 -> idNumberReadFromFile = it.toLong()
                 }
-                if (count < 7) {
+                if (count < NUMBER_OF_DATA_ITEMS) {
                     count++
                 } else {
                     Log.d("CUSTOM_LOG", "Loaded: $textReadFromFile")

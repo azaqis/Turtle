@@ -152,5 +152,8 @@
     <string name="debug_window">Debug Window</string>
     <string name="list_is_already_empty">List is already empty</string>
     <string name="list_cleared">List cleared</string>
+    <string name="traversing_list_warning">You are traversing the list right now!</string>
+    <string name="location_needed_title">We will need the location of your device</string>
+    <string name="location_needed_info">Android API 29 or above require the user to permit the usage of location when using Bluetooth in an application even though the location is not used by this application. This is why you will be asked to permit Turtle the usage of your location. If you deny this permission Bluetooth will not work properly but you can still access the application.</string>
 
 </resources>

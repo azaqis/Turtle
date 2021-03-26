@@ -134,4 +134,7 @@
     <string name="debug_window">Debug-ruta</string>
     <string name="list_is_already_empty">Listan är redan tom</string>
     <string name="list_cleared">Listan tömd</string>
+    <string name="traversing_list_warning">Du går igenom listan just nu!</string>
+    <string name="location_needed_title">Vi kommer att behöva din enhets plats</string>
+    <string name="location_needed_info">Android API 29 och över kräver att användaren tillåter användningen av enhetens plats när Bluetooth ska användas i en applikation även fast enhetens plats inte används i denna applikation. Det är därför du kommer att bli ombedd att tillåta Turtle att se din nuvarande plats. Om du nekar denna tillåtelse kommer Bluetooth inte att fungera som det är tänkt men du kan fortfarande komma åt allt annat i applikationen.</string>
 </resources>

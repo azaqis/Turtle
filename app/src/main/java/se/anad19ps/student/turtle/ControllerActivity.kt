@@ -119,6 +119,7 @@ class ControllerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
     private fun getConvertedPercentageToString(percentageMoved: Int): String {
         var movedString: String = percentageMoved.toString()
 
+        //We always want the string to be of length 3, modify the string so we get a three-digit number
         if (movedString.length == 1)
             movedString = "00$movedString"
         else if (movedString.length == 2)

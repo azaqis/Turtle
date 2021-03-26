@@ -74,7 +74,7 @@
                     app:cardCornerRadius="15dp">
 
                     <Button
-                        android:id="@+id/welcome_button_skip_1"
+                        android:id="@+id/welcome_button_skip_intro"
                         style="?android:attr/buttonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -93,7 +93,7 @@
                     app:cardCornerRadius="15dp">
 
                     <Button
-                        android:id="@+id/welcome_button_next_1"
+                        android:id="@+id/welcome_button_next_intro"
                         style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -169,7 +169,7 @@
                     app:cardCornerRadius="15dp">
 
                     <Button
-                        android:id="@+id/welcome_button_skip_2"
+                        android:id="@+id/welcome_button_skip_bluetooth"
                         style="?android:attr/buttonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -188,7 +188,7 @@
                     app:cardCornerRadius="15dp">
 
                     <Button
-                        android:id="@+id/welcome_button_next_2"
+                        android:id="@+id/welcome_button_next_bluetooth"
                         style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -264,7 +264,7 @@
                     app:cardCornerRadius="15dp">
 
                     <Button
-                        android:id="@+id/welcome_button_skip_3"
+                        android:id="@+id/welcome_button_skip_programming"
                         style="?android:attr/buttonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -283,7 +283,7 @@
                     app:cardCornerRadius="15dp">
 
                     <Button
-                        android:id="@+id/welcome_button_next_3"
+                        android:id="@+id/welcome_button_next_programming"
                         style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -359,7 +359,7 @@
                     app:cardCornerRadius="15dp">
 
                     <Button
-                        android:id="@+id/welcome_button_skip_4"
+                        android:id="@+id/welcome_button_skip_remote_controller"
                         style="?android:attr/buttonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -378,7 +378,7 @@
                     app:cardCornerRadius="15dp">
 
                     <Button
-                        android:id="@+id/welcome_button_next_4"
+                        android:id="@+id/welcome_button_next_remote_controller"
                         style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -459,6 +459,71 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="@string/lets_get_going"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="20sp" />
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/welcome_linear_layout_location_warning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/turtle"
+                app:srcCompat="@drawable/ic_baseline_location" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="40dp"
+                android:text="@string/location_needed_title"
+                android:textAlignment="center"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/location_needed_info"
+                android:textAlignment="center"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    app:cardCornerRadius="15dp">
+
+                    <Button
+                        android:id="@+id/welcome_button_finish_api_29_or_above"
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:text="@string/okay"
                         android:textColor="?attr/colorOnPrimary"
                         android:textSize="20sp" />
 

@@ -2,6 +2,7 @@ package se.anad19ps.student.turtle
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -17,7 +18,8 @@ class WelcomeActivity : AppCompatActivity() {
             INTRODUCTION_BLUETOOTH,
             INTRODUCTION_PROGRAMMING,
             INTRODUCTION_REMOTE_CONTROLLER,
-            INTRODUCTION_CUSTOM_COMMANDS
+            INTRODUCTION_CUSTOM_COMMANDS,
+            INTRODUCTION_LOCATION_INFO
         }
 
         private var introductionState = IntroductionState.INTRODUCTION_WELCOME
@@ -42,6 +44,7 @@ class WelcomeActivity : AppCompatActivity() {
                 IntroductionState.INTRODUCTION_PROGRAMMING -> showIntroductionProgramming()
                 IntroductionState.INTRODUCTION_REMOTE_CONTROLLER -> showIntroductionRemoteController()
                 IntroductionState.INTRODUCTION_CUSTOM_COMMANDS -> showIntroductionCustomCommands()
+                IntroductionState.INTRODUCTION_LOCATION_INFO -> showLocationInfo()
             }
         }
 
@@ -54,47 +57,64 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     private fun setupButtons() {
-        val btnNext1 = findViewById<View>(R.id.welcome_button_next_1) as Button
-        val btnNext2 = findViewById<View>(R.id.welcome_button_next_2) as Button
-        val btnNext3 = findViewById<View>(R.id.welcome_button_next_3) as Button
-        val btnNext4 = findViewById<View>(R.id.welcome_button_next_4) as Button
+        val btnNextIntro = findViewById<View>(R.id.welcome_button_next_intro) as Button
+        val btnNextBluetooth = findViewById<View>(R.id.welcome_button_next_bluetooth) as Button
+        val btnNextProgramming = findViewById<View>(R.id.welcome_button_next_programming) as Button
+        val btnNextRemoteController = findViewById<View>(R.id.welcome_button_next_remote_controller) as Button
 
-        val btnSkip1 = findViewById<View>(R.id.welcome_button_skip_1) as Button
-        val btnSkip2 = findViewById<View>(R.id.welcome_button_skip_2) as Button
-        val btnSkip3 = findViewById<View>(R.id.welcome_button_skip_3) as Button
-        val btnSkip4 = findViewById<View>(R.id.welcome_button_skip_4) as Button
+        val btnSkipIntro = findViewById<View>(R.id.welcome_button_skip_intro) as Button
+        val btnSkipBluetooth = findViewById<View>(R.id.welcome_button_skip_bluetooth) as Button
+        val btnSkipProgramming = findViewById<View>(R.id.welcome_button_skip_programming) as Button
+        val btnSkipRemoteController = findViewById<View>(R.id.welcome_button_skip_remote_controller) as Button
 
         val btnFinish = findViewById<View>(R.id.welcome_button_finish) as Button
 
-        btnNext1.setOnClickListener {
+        val btnLocationFinish = findViewById<View>(R.id.welcome_button_finish_api_29_or_above) as Button
+
+        btnNextIntro.setOnClickListener {
             showIntroductionBluetooth()
         }
-        btnNext2.setOnClickListener {
+        btnNextBluetooth.setOnClickListener {
             showIntroductionProgramming()
         }
-        btnNext3.setOnClickListener {
+        btnNextProgramming.setOnClickListener {
             showIntroductionRemoteController()
         }
-        btnNext4.setOnClickListener {
+        btnNextRemoteController.setOnClickListener {
             showIntroductionCustomCommands()
         }
 
-        btnSkip1.setOnClickListener {
-            exitIntroduction()
+        btnSkipIntro.setOnClickListener {
+            tryExitIntroduction()
         }
-        btnSkip2.setOnClickListener {
-            exitIntroduction()
+        btnSkipBluetooth.setOnClickListener {
+            tryExitIntroduction()
         }
-        btnSkip3.setOnClickListener {
-            exitIntroduction()
+        btnSkipProgramming.setOnClickListener {
+            tryExitIntroduction()
         }
-        btnSkip4.setOnClickListener {
-            exitIntroduction()
+        btnSkipRemoteController.setOnClickListener {
+            tryExitIntroduction()
         }
 
         btnFinish.setOnClickListener {
+            tryExitIntroduction()
+        }
+
+        btnLocationFinish.setOnClickListener{
             exitIntroduction()
         }
+    }
+
+    private fun tryExitIntroduction(){
+        if(!isApi29OrAbove())
+            exitIntroduction()
+        else
+            showLocationInfo()
+    }
+
+    private fun isApi29OrAbove() : Boolean{
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
     }
 
     private fun scrollToTop() {
@@ -134,6 +154,13 @@ class WelcomeActivity : AppCompatActivity() {
         hideAll()
         welcome_linear_layout_manage_custom_commands.visibility = View.VISIBLE
         introductionState = IntroductionState.INTRODUCTION_CUSTOM_COMMANDS
+        scrollToTop()
+    }
+
+    private fun showLocationInfo() {
+        hideAll()
+        welcome_linear_layout_location_warning.visibility = View.VISIBLE
+        introductionState = IntroductionState.INTRODUCTION_LOCATION_INFO
         scrollToTop()
     }
 

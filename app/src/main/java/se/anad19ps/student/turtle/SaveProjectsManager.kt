@@ -15,6 +15,13 @@ class SaveProjectsManager(con: Context) {
         private const val START_OF_PROJECT_SAVE_FILE_NAME = "save_project_file_"
         private const val EMPTY_STRING = ""
         private const val NEW_LINE_STRING = "\n"
+        private const val NUMBER_OF_DATA_ITEMS = 7
+
+        private const val NON_INIT_DIRECTION_IMAGE_READ_FROM_FILE = -1
+        private const val NON_INIT_DISPLAY_PARAMETER_READ_FROM_FILE = -1.0
+        private const val NON_INIT_DRAG_IMAGE_READ_FROM_FILE = -1
+        private const val NON_INIT_PARAMETER_READ_FROM_FILE = -1.0
+        private const val START_ID_NUMBER : Long = 0
 
         private var lastOpenProject: String? = null
         private var arrayWithProjectNames = arrayListOf<String>()
@@ -177,14 +184,14 @@ class SaveProjectsManager(con: Context) {
             val projectItemsList = ArrayList<DragDropBlock>()
 
             var commandReadFromFile = EMPTY_STRING
-            var directionImageReadFromFile: Int = -1
-            var displayParameterReadFromFile: Double = -1.0
-            var dragImageReadFromFile: Int = -1
-            var parameterReadFromFile: Double = -1.0
+            var directionImageReadFromFile: Int = NON_INIT_DIRECTION_IMAGE_READ_FROM_FILE
+            var displayParameterReadFromFile: Double = NON_INIT_DISPLAY_PARAMETER_READ_FROM_FILE
+            var dragImageReadFromFile: Int = NON_INIT_DRAG_IMAGE_READ_FROM_FILE
+            var parameterReadFromFile: Double = NON_INIT_PARAMETER_READ_FROM_FILE
             var textReadFromFile = EMPTY_STRING
             var type: DragDropBlock.BlockType = DragDropBlock.BlockType.CUSTOM
             var parameterEnabled = false
-            var idNumber: Long = 0
+            var idNumber: Long = START_ID_NUMBER
 
             //Loop through every line in the file. Reading in the same order as we are writing to file in saveProjectToFile.
             // We know that a DragDropBlock contains 8 attributes. Therefore we know on the 8th iteration that we have read a
@@ -204,7 +211,7 @@ class SaveProjectsManager(con: Context) {
                         6 -> type = DragDropBlock.BlockType.valueOf(it)
                         7 -> parameterEnabled = it.toBoolean()
                     }
-                    if (count < 7) {
+                    if (count < NUMBER_OF_DATA_ITEMS) {
                         count++
                     } else {
                         Log.e("FILE_LOG", "Type read was: $type")
@@ -235,6 +242,7 @@ class SaveProjectsManager(con: Context) {
         setLastOpenedProject(projectName, context)
         val index = arrayWithProjectNames.indexOf(projectName)
 
+        //indexOf(projectName) function can return -1 if projectName does not exist
         return if (index == -1)
             ArrayList()
         else

@@ -87,7 +87,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         private lateinit var recyclerSimpleCallback: ItemTouchHelper.SimpleCallback
 
-        private lateinit var savedList : ArrayList<DragDropBlock>
+        private lateinit var savedList: ArrayList<DragDropBlock>
 
         /*Start coroutine from button click. Traverse list*/
         private var traverseListCoroutine: Job? = null
@@ -99,6 +99,17 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         private const val DRAG_DROP_BLOCK_COMMAND = "7"
         private const val STOP_COMMAND = "5"
+        private const val FORWARD_COMMAND = "2"
+        private const val REVERSE_COMMAND = "8"
+        private const val RIGHT_COMMAND = "6"
+        private const val LEFT_COMMAND = "4"
+        private const val LED_TURN_ON_COMMAND = "o"
+        private const val LED_TURN_OFF_COMMAND = "f"
+        private const val BUZZER_COMMAND = "b"
+        private const val NULL_COMMAND = "-1"
+        private const val GEAR_UP_COMMAND = "u"
+        private const val GEAR_DOWN_COMMAND = "d"
+
         private const val DRAG_DROP_BLOCK_PARAMETER = 1
         private const val STANDARD_DRAG_DROP_BLOCK_PARAMETER = 1.0
         private const val STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER = 1.0
@@ -153,7 +164,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
         savedList = saveProjectsManager.getProject(projectName, this)
 
-        if (recyclerViewItemList.count() > 0) {
+        if (recyclerViewItemList.isNotEmpty()) {
             /*The way it works when loading lists is that last element has highest id number.
         * We want to start counting from there.*/
             itemIdCounter = recyclerViewItemList[recyclerViewItemList.count() - 1].idNumber + 1
@@ -267,7 +278,6 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                     programming_play_or_pause_button.setImageResource(R.drawable.ic_pause)
                     Utils.UtilsObject.showUpdatedToast(getString(R.string.now_running), context)
                     state = RunState.RUNNING
-                    traversingList = false
                 }
                 RunState.RUNNING -> {
                     programming_play_or_pause_button.setImageResource(R.drawable.ic_play_arrow)
@@ -514,16 +524,23 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 id: Long
             ) {
                 if (position != 0) { //We shouldn't add the title block
-                    val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
-                    block.idNumber =
-                        itemIdCounter++    //Increment after adding id
-                    recyclerViewItemList.add(block)
-                    recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.itemCount)
-                    recycler.scrollToPosition(recyclerViewAdapter.itemCount - 1)
+                    if (!traversingList) {
+                        val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
+                        block.idNumber =
+                            itemIdCounter++    //Increment after adding id
+                        recyclerViewItemList.add(block)
+                        recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.itemCount)
+                        recycler.scrollToPosition(recyclerViewAdapter.itemCount - 1)
+                    } else
+                        Utils.UtilsObject.showUpdatedToast(
+                            getString(R.string.traversing_list_warning),
+                            baseContext
+                        )
+                    //Make title block stay on top
                     programming_spinner_driving.setSelection(
                         0,
                         false
-                    )//Make title block stay on top
+                    )
                 }
             }
         }
@@ -539,12 +556,18 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 id: Long
             ) {
                 if (position != 0) {
-                    val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
-                    block.idNumber =
-                        itemIdCounter++
-                    recyclerViewItemList.add(block)
-                    recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.itemCount)
-                    recycler.scrollToPosition(recyclerViewAdapter.itemCount - 1)
+                    if (!traversingList) {
+                        val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
+                        block.idNumber =
+                            itemIdCounter++
+                        recyclerViewItemList.add(block)
+                        recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.itemCount)
+                        recycler.scrollToPosition(recyclerViewAdapter.itemCount - 1)
+                    } else
+                        Utils.UtilsObject.showUpdatedToast(
+                            getString(R.string.traversing_list_warning),
+                            baseContext
+                        )
                     programming_spinner_modules.setSelection(0, false)
                 }
             }
@@ -561,12 +584,18 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 id: Long
             ) {
                 if (position != 0) {
-                    val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
-                    block.idNumber =
-                        itemIdCounter++
-                    recyclerViewItemList.add(block)
-                    recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.itemCount)
-                    recycler.scrollToPosition(recyclerViewAdapter.itemCount - 1)
+                    if (!traversingList) {
+                        val block = (parent?.getItemAtPosition(position) as DragDropBlock).copy()
+                        block.idNumber =
+                            itemIdCounter++
+                        recyclerViewItemList.add(block)
+                        recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.itemCount)
+                        recycler.scrollToPosition(recyclerViewAdapter.itemCount - 1)
+                    } else
+                        Utils.UtilsObject.showUpdatedToast(
+                            getString(R.string.traversing_list_warning),
+                            baseContext
+                        )
                     programming_spinner_custom.setSelection(0, false)
                 }
             }
@@ -580,7 +609,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_baseline_highlight_24,
                 getString(R.string.module_spinner_led_on),
-                "Not implemented",
+                LED_TURN_ON_COMMAND,
                 STANDARD_DRAG_DROP_BLOCK_PARAMETER,
                 STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.MODULE,
@@ -594,7 +623,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_baseline_highlight_24,
                 getString(R.string.module_spinner_led_off),
-                "Not implemented",
+                LED_TURN_OFF_COMMAND,
                 STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.MODULE,
@@ -608,7 +637,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_baseline_surround_sound_24,
                 getString(R.string.module_spinner_buzzer),
-                "Not implemented",
+                BUZZER_COMMAND,
                 STANDARD_DRAG_DROP_BLOCK_PARAMETER,
                 STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.MODULE,
@@ -623,7 +652,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_modules,
                 getString(R.string.module_spinner_title),
-                "Null",
+                NULL_COMMAND,
                 STANDARD_DRAG_DROP_BLOCK_PARAMETER,
                 STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.MODULE,
@@ -643,7 +672,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_arrow_up,
                 getString(R.string.drive_spinner_forward),
-                "2",
+                FORWARD_COMMAND,
                 STANDARD_DRAG_DROP_BLOCK_PARAMETER,
                 STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
@@ -657,7 +686,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_arrow_right,
                 getString(R.string.drive_spinner_turn_right),
-                "6",
+                RIGHT_COMMAND,
                 STANDARD_DRAG_DROP_BLOCK_PARAMETER,
                 STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
@@ -671,7 +700,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_arrow_down,
                 getString(R.string.drive_spinner_reverse),
-                "8",
+                REVERSE_COMMAND,
                 STANDARD_DRAG_DROP_BLOCK_PARAMETER,
                 STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
@@ -685,7 +714,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_arrow_left,
                 getString(R.string.drive_spinner_turn_left),
-                "4",
+                LEFT_COMMAND,
                 STANDARD_DRAG_DROP_BLOCK_PARAMETER,
                 STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
@@ -699,7 +728,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_stop,
                 getString(R.string.drive_spinner_stop),
-                "5",
+                STOP_COMMAND,
                 STANDARD_DRAG_DROP_BLOCK_PARAMETER,
                 STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
@@ -713,7 +742,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_gear,
                 getString(R.string.drive_spinner_gear_up),
-                "u",
+                GEAR_UP_COMMAND,
                 0.0,
                 0.0,
                 DragDropBlock.BlockType.DRIVE,
@@ -727,7 +756,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_gear,
                 getString(R.string.drive_spinner_gear_down),
-                "d",
+                GEAR_DOWN_COMMAND,
                 0.0,
                 0.0,
                 DragDropBlock.BlockType.DRIVE,
@@ -742,7 +771,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                 R.drawable.ic_drag_dots,
                 R.drawable.ic_drive,
                 getString(R.string.drive_spinner_title),
-                "Null",
+                NULL_COMMAND,
                 STANDARD_DRAG_DROP_BLOCK_PARAMETER,
                 STANDARD_DRAG_DROP_BLOCK_DISPLAY_PARAMETER,
                 DragDropBlock.BlockType.DRIVE,
@@ -917,7 +946,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
     }
 
     override fun onParameterButtonClicked(position: Int) {
-        changeItemParameterDialog(position)
+        if (!traversingList)
+            changeItemParameterDialog(position)
+        else
+            Utils.UtilsObject.showUpdatedToast(getString(R.string.traversing_list_warning), this)
     }
 
     /*Used for activating selection by clicking items*/
@@ -933,7 +965,10 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
 
     override fun onDragDots(view: RecyclerView.ViewHolder) {
         /*onMove from ItemTouchHelper.simpleCallback will be accessed through startDrag*/
-        itemTouchHelper.startDrag(view)
+        if (!traversingList)
+            itemTouchHelper.startDrag(view)
+        else
+            Utils.UtilsObject.showUpdatedToast(getString(R.string.traversing_list_warning), this)
     }
 
     /*Shows an input dialog for changing an items parameter.*/
@@ -1012,7 +1047,7 @@ class ProgrammingActivity : AppCompatActivity(), ProgrammingRecyclerAdapter.Item
                             when (state) {  //State machine
                                 RunState.RUNNING -> {
                                     Utils.UtilsObject.bluetoothSendString(
-                                        "7${item.command}$parameter",
+                                        "$DRAG_DROP_BLOCK_COMMAND${item.command}$parameter",
                                         this.baseContext
                                     )
                                     delay(tenthOfSecondInMS) //Will finish current 'delayTimeMillis' period before pause
